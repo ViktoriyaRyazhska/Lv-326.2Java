@@ -1,7 +1,6 @@
 package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
-
 import javax.persistence.*;
 
 @Data
@@ -10,11 +9,19 @@ import javax.persistence.*;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long commentId;
+    private Long id;
     private String message;
-    private long userId;
-    private long statusId;
-    private long ticketId;
-    private String createTime;
-    private String updateTime;
+//    private String createTime;
+//    private String updateTime;
+
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private User user;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Status status;
+
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Ticket ticket;
 }

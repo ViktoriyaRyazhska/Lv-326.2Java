@@ -1,8 +1,9 @@
 package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
-
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -10,10 +11,21 @@ import javax.persistence.*;
 public class TableList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long listId;
+    private Long id;
     private String name;
-    private long boardId;
-    private long statusId;
-    private String createTime;
-    private String updateTime;
+//    private String createTime;
+//    private String updateTime;
+
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Board board;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Status status;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "tableList")
+    private List<Ticket> tickets = new ArrayList<>();
+
 }
