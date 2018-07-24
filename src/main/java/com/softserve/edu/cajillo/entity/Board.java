@@ -32,4 +32,8 @@ public class Board {
             cascade = CascadeType.ALL,
             mappedBy = "board")
     private List<TableList> tableLists = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private List<RoleManager> roleManagers = new ArrayList<>();
 }

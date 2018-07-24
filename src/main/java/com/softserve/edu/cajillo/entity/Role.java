@@ -1,6 +1,8 @@
 package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,11 +12,19 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
 
-    @OneToOne(mappedBy = "role",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
-    private User user;
+    @Enumerated(EnumType.STRING)
+    @NaturalId
+    private RoleName name;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_role")
+    private RoleManager roleManager;
+
+    public Role() {
+    }
+
+    public Role(RoleName name) {
+        this.name = name;
+    }
 }

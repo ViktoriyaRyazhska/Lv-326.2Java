@@ -1,22 +1,26 @@
 package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "tickets")
-public class Ticket {
+@EqualsAndHashCode(callSuper = false)
+public class Ticket extends DateAudit{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String priority;
-//    private String createTime;
-//    private String updateTime;
-//    private String expirationDate;
+    private Instant createTime;
+    private Instant updateTime;
+    private Instant expirationDate;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
