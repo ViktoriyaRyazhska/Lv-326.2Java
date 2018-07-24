@@ -1,14 +1,18 @@
 package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Data
-public class User {
+@EqualsAndHashCode(callSuper = false)
+public class User extends DateAudit{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,12 +22,8 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
-//    private java.sql.Timestamp createTime;
-//    private String avatar;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
-    private Role role;
+    private Instant createTime;
+    private String avatar;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
@@ -33,4 +33,8 @@ public class User {
             cascade = CascadeType.ALL,
             mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private List<RoleManager> roleManagers = new ArrayList<>();
 }

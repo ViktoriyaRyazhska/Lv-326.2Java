@@ -1,18 +1,21 @@
 package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import javax.persistence.*;
+import java.time.Instant;
 
 @Data
 @Entity
 @Table(name = "comments")
-public class Comment {
+@EqualsAndHashCode(callSuper = false)
+public class Comment extends DateAudit{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String message;
-//    private String createTime;
-//    private String updateTime;
+    private Instant createTime;
+    private Instant updateTime;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
