@@ -32,7 +32,6 @@ public class User extends DateAudit {
     private String password;
     private String firstName;
     private String lastName;
-    private Instant createTime;
     private String avatar;
 
     @ManyToMany(fetch = FetchType.LAZY,

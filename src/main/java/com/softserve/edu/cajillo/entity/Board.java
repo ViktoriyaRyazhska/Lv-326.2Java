@@ -24,6 +24,11 @@ public class Board {
     @JoinColumn(name = "status_id")
     private Status status;
 
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "board")
+    private List<Ticket> tickets = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private BoardType boardType;

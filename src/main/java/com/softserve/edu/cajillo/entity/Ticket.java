@@ -12,17 +12,21 @@ import java.util.List;
 @Entity
 @Table(name = "tickets")
 @EqualsAndHashCode(callSuper = false)
+
 public class Ticket extends DateAudit{
 
     private String name;
     private String priority;
-    private Instant createTime;
-    private Instant updateTime;
+
     private Instant expirationDate;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private TableList tableList;
+
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Board board;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Status status;
