@@ -2,6 +2,7 @@ package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
 import javax.persistence.*;
 import java.time.Instant;
 
@@ -10,9 +11,7 @@ import java.time.Instant;
 @Table(name = "comments")
 @EqualsAndHashCode(callSuper = false)
 public class Comment extends DateAudit{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
     private String message;
     private Instant createTime;
     private Instant updateTime;

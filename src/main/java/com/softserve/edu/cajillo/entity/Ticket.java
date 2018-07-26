@@ -13,9 +13,7 @@ import java.util.List;
 @Table(name = "tickets")
 @EqualsAndHashCode(callSuper = false)
 public class Ticket extends DateAudit{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
     private String name;
     private String priority;
     private Instant createTime;
