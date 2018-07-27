@@ -8,6 +8,8 @@ import com.softserve.edu.cajillo.repository.TableListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class TableListService {
 
@@ -40,5 +42,10 @@ public class TableListService {
                 .orElseThrow(() -> new NullPointerException(String.format("BoardList id = %d not found", listId)));
         return new TableListDto(returnedTableList.getId(), returnedTableList.getName(), returnedTableList.getCreateTime(),
                 returnedTableList.getUpdateTime(), tableList.getBoard().getId(), tableList.getBoard().getName());
+    }
+
+    public List<TableListDto> getAllTableLists(Long boardId) {
+        List<TableList> allByBoardId = tableListRepository.findAllByBoardId(boardId);
+        return null;
     }
 }

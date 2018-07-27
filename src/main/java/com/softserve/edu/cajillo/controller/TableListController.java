@@ -6,6 +6,8 @@ import com.softserve.edu.cajillo.service.TableListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class TableListController {
 
@@ -26,5 +28,10 @@ public class TableListController {
     public TableListDto updateTableList(@PathVariable("listId") Long listId, @PathVariable("id") Long boardId,
                                         @RequestBody TableList tableList) {
         return tableListService.updateTableList(listId, boardId, tableList);
+    }
+
+    @GetMapping("/api/boards/{id}/lists")
+    public List<TableListDto> getAllTableLists(@PathVariable("id") Long boardId) {
+        return tableListService.getAllTableLists(boardId);
     }
 }

@@ -3,6 +3,7 @@ package com.softserve.edu.cajillo.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "board_types")
+@ToString(exclude = "boards")
 public class BoardType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
