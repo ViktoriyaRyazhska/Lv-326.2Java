@@ -1,6 +1,5 @@
 package com.softserve.edu.cajillo.service;
 
-import com.softserve.edu.cajillo.converter.impl.TableListConverterImpl;
 import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.TableList;

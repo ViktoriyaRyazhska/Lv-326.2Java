@@ -25,7 +25,7 @@ public class Sprint {
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            mappedBy = "ticket")
+            mappedBy = "sprint")
     private List<Ticket> tickets = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY,

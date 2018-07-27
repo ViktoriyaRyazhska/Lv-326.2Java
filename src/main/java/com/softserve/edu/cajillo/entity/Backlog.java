@@ -23,11 +23,11 @@ public class Backlog {
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            mappedBy = "ticket")
+            mappedBy = "backlog")
     private List<Ticket> tickets = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            mappedBy = "ticket")
+            mappedBy = "backlog")
     private List<Sprint> sprints = new ArrayList<>();
 }
