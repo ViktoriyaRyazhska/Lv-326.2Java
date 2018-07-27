@@ -5,4 +5,5 @@ import com.softserve.edu.cajillo.entity.User;
 public interface UserService {
 
     User getUser(Long id);
+    void save(User user);
 }

@@ -1,26 +1,59 @@
 package com.softserve.edu.cajillo.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "username"
+        }),
+        @UniqueConstraint(columnNames = {
+                "email"
+        })
+})
 public class User extends DateAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @NotNull
+    @Size(min = 3, max = 20)
+    @Column(name = "username")
     private String username;
+
+    @NotNull
+    @Size(max = 40,message = "Email size < 40")
+    @Email
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @NotBlank
+    @Size(min = 8, max = 32)
+    @Column(name = "password")
     private String password;
+
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "avatar")
     private String avatar;
 
     @ManyToMany(fetch = FetchType.LAZY,
@@ -32,6 +65,7 @@ public class User extends DateAudit {
             mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
+    @NotNull
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private List<RoleManager> roleManagers = new ArrayList<>();
