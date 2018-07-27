@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.entity;
 
+import com.softserve.edu.cajillo.entity.enums.TicketIssueType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,7 +17,9 @@ import java.util.List;
 public class Ticket extends DateAudit{
 
     private String name;
+    private String description;
     private String priority;
+    private TicketIssueType ticketIssueType;
 
     private Instant expirationDate;
 
@@ -36,5 +39,11 @@ public class Ticket extends DateAudit{
             mappedBy = "ticket")
     private List<Comment> comments = new ArrayList<>();
 
-
+//    @ManyToOne(fetch = FetchType.LAZY,
+//            cascade = CascadeType.ALL)
+//    private BackLog backLog;
+//
+//    @ManyToOne(fetch = FetchType.LAZY,
+//            cascade = CascadeType.ALL)
+//    private Sprint sprint;
 }
