@@ -6,25 +6,37 @@ import com.softserve.edu.cajillo.service.TableListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class TableListController {
 
     @Autowired
     TableListService tableListService;
 
-    @PostMapping("/api/boards/{id}/lists")
-    public TableListDto createTableList(@PathVariable Long id, @RequestBody TableList tableList) {
-        return tableListService.createTableList(id, tableList);
+    @PostMapping("/api/boards/{boardId}/lists")
+    public TableListDto createTableList(@PathVariable Long boardId, @RequestBody TableList tableList) {
+        return tableListService.createTableList(boardId, tableList);
     }
 
-    @DeleteMapping("/api/boards/{id}/lists/{listId}")
+    @DeleteMapping("/api/boards/{boardId}/lists/{listId}")
     public void deleteTableList(@PathVariable("listId") Long listId) {
         tableListService.deleteTableList(listId);
     }
 
-    @PutMapping("/api/boards/{id}/lists/{listId}")
-    public TableListDto updateTableList(@PathVariable("listId") Long listId, @PathVariable("id") Long boardId,
+    @PutMapping("/api/boards/{boardId}/lists/{listId}")
+    public TableListDto updateTableList(@PathVariable("listId") Long listId, @PathVariable("boardId") Long boardId,
                                         @RequestBody TableList tableList) {
         return tableListService.updateTableList(listId, boardId, tableList);
+    }
+
+    @GetMapping("/api/boards/{boardId}/lists")
+    public List<TableListDto> getAllTableLists(@PathVariable("boardId") Long boardId) {
+        return tableListService.getAllTableLists(boardId);
+    }
+
+    @GetMapping("/api/boards/{boardId}/lists/{listId}")
+    public TableListDto getTableList(@PathVariable("listId") Long listId) {
+        return tableListService.getTableList(listId);
     }
 }
