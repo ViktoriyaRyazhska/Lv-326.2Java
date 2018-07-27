@@ -1,6 +1,9 @@
 package com.softserve.edu.cajillo.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
+import org.springframework.context.annotation.Lazy;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,4 +44,5 @@ public class Board {
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private List<RoleManager> roleManagers = new ArrayList<>();
+
 }

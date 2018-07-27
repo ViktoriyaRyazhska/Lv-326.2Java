@@ -1,6 +1,5 @@
 package com.softserve.edu.cajillo.entity;
 
-import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
@@ -8,12 +7,20 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
 @Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
@@ -25,14 +32,9 @@ import java.util.List;
 })
 public class User extends DateAudit {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @NotNull
     @Size(min = 3, max = 20)
-    @Column(name = "username")
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @NotNull
@@ -43,7 +45,7 @@ public class User extends DateAudit {
 
     @NotBlank
     @Size(min = 8, max = 32)
-    @Column(name = "password")
+    @Column(name = "password",nullable = false)
     private String password;
 
 

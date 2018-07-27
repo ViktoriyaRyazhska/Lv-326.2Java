@@ -6,4 +6,6 @@ public interface UserService {
 
     User getUser(Long id);
     void save(User user);
+
+    void updateUser(User user, String oldPassword, String newPassword, String repeatPassword);
 }
