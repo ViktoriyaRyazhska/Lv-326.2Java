@@ -12,10 +12,9 @@ import java.util.List;
 @Entity
 @Table(name = "tickets")
 @EqualsAndHashCode(callSuper = false)
-public class Ticket extends DateAudit {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+public class Ticket extends DateAudit{
+
     private String name;
     private String priority;
 
