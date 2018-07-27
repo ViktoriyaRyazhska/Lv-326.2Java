@@ -20,6 +20,10 @@ public class UserServiceImpl implements UserService {
     public User getUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
     }
+    @Override
+    public void save(User user){
+        userRepository.save(user);
+    }
 
     @Override
     public void updateUser(User user, String oldPassword, String newPassword, String repeatPassword) {
