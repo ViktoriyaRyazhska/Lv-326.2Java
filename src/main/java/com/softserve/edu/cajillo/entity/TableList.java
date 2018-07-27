@@ -2,10 +2,13 @@ package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -17,7 +20,7 @@ public class TableList extends DateAudit {
     private Long id;
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY,
+    @ManyToOne(fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
     private Board board;
 
