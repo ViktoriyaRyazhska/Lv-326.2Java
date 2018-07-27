@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.time.Instant;
 
 @Data
 @Entity
@@ -13,8 +12,6 @@ import java.time.Instant;
 public class Comment extends DateAudit{
 
     private String message;
-    private Instant createTime;
-    private Instant updateTime;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
