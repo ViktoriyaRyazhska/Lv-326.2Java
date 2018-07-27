@@ -16,7 +16,7 @@ public interface TableListRepository extends JpaRepository<TableList, Long>, Jpa
     void deleteById(@Param("listId") Long id);
 
     @Query(value = "select * from table_lists where id = :id", nativeQuery = true)
-    Optional<TableList> findById(@Param("id") Long id);
+    Optional<TableList> findByQueryAndId(@Param("id") Long id);
 
     List<TableList> findAllByBoardId(Long boardId);
 

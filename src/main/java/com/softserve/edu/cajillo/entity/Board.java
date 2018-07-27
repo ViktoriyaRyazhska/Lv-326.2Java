@@ -3,6 +3,7 @@ package com.softserve.edu.cajillo.entity;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class Board {
     private Long id;
     private String name;
 
+
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "boards")
@@ -34,8 +36,8 @@ public class Board {
             mappedBy = "board")
     private List<Ticket> tickets = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
+    @Enumerated(EnumType.STRING)
+    @NaturalId
     private BoardType boardType;
 
     @OneToMany(fetch = FetchType.LAZY,
@@ -46,5 +48,8 @@ public class Board {
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private List<RoleManager> roleManagers = new ArrayList<>();
+
+//    @OneToOne(fetch = FetchType.LAZY)
+//    private Backlog backlog;
 
 }

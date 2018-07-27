@@ -18,6 +18,7 @@ public class TableList extends DateAudit{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Integer sequenceNumber;
 
     @ManyToOne(fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)

@@ -2,6 +2,7 @@ package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -12,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "tickets")
 @EqualsAndHashCode(callSuper = false)
-
+@ToString(exclude = {"board", "tableList"})
 public class Ticket extends DateAudit{
 
     private String name;
