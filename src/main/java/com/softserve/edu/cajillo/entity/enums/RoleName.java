@@ -1,4 +1,4 @@
-package com.softserve.edu.cajillo.entity;
+package com.softserve.edu.cajillo.entity.enums;
 
 public enum RoleName {
     ROLE_USER,
