@@ -11,9 +11,6 @@ import java.util.Optional;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-//    @Query(value = "select * from boards where id = :id", nativeQuery = true)
-//    Optional<Board> findById(@Param("id") Long id);
-
     @Override
     Optional<Board> findById(Long aLong);
 
