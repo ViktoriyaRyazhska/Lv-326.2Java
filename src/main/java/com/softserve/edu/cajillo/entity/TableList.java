@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Table(name = "table_lists")
 @EqualsAndHashCode(callSuper = false)
-@ToString(exclude = "board")
 public class TableList extends DateAudit{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,13 +19,15 @@ public class TableList extends DateAudit{
     private String name;
     private Integer sequenceNumber;
 
-    @ManyToOne(fetch = FetchType.EAGER,
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Board board;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Status status;
 
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "tableList")

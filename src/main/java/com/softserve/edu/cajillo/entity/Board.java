@@ -1,10 +1,9 @@
 package com.softserve.edu.cajillo.entity;
 
-import com.fasterxml.jackson.annotation.*;
+import com.softserve.edu.cajillo.entity.enums.BoardType;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
-import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "boards")
-@ToString(exclude = "boardType")
 public class Board {
 
     @Id
@@ -21,6 +19,9 @@ public class Board {
     private Long id;
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @NaturalId
+    private BoardType boardType;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
@@ -31,15 +32,13 @@ public class Board {
     @JoinColumn(name = "status_id")
     private Status status;
 
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "board")
     private List<Ticket> tickets = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    @NaturalId
-    private BoardType boardType;
-
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "board")

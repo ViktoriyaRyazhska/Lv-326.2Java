@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Table(name = "tickets")
 @EqualsAndHashCode(callSuper = false)
-@ToString(exclude = {"board", "tableList"})
 public class Ticket extends DateAudit{
 
     private String name;
@@ -21,10 +20,12 @@ public class Ticket extends DateAudit{
 
     private Instant expirationDate;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private TableList tableList;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Board board;

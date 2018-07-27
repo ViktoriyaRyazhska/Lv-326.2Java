@@ -43,7 +43,7 @@ public class TableListService {
                 .orElseThrow(() -> new NullPointerException(String.format("Board id = %d not found", boardId)));
         tableList.setBoard(board);
         tableListRepository.save(tableList);
-        TableList resultTableList = tableListRepository.findByQueryAndId(listId)
+        TableList resultTableList = tableListRepository.findById(listId)
                 .orElseThrow(() -> new NullPointerException(String.format("TableList with id %d not found", listId)));
         resultTableList.setCreateTime(createTimeById);
         return tableListConverter.convertToDto(resultTableList);
@@ -51,11 +51,12 @@ public class TableListService {
 
     public List<TableListDto> getAllTableLists(Long boardId) {
         List<TableList> allByBoardId = tableListRepository.findAllByBoardId(boardId);
-        return tableListConverter.convertToDto(allByBoardId);
+        List<TableListDto> tableListDtos = tableListConverter.convertToDto(allByBoardId);
+        return tableListDtos;
     }
 
     public TableListDto getTableList(Long listId) {
-        TableList tableList = tableListRepository.findByQueryAndId(listId)
+        TableList tableList = tableListRepository.findById(listId)
                 .orElseThrow(() -> new NullPointerException(String.format("TableList with id %d not found", listId)));
         return tableListConverter.convertToDto(tableList);
     }
