@@ -2,19 +2,18 @@ package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @Entity
 @Table(name = "table_lists")
 @EqualsAndHashCode(callSuper = false)
-public class TableList extends DateAudit {
+@ToString(exclude = "board")
+public class TableList extends DateAudit{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

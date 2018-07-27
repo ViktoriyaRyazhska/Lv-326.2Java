@@ -2,6 +2,7 @@ package com.softserve.edu.cajillo.entity;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "boards")
+@ToString(exclude = "boardType")
 public class Board {
 
     @Id

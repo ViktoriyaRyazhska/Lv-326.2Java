@@ -4,7 +4,6 @@ package com.softserve.edu.cajillo.controller;
 import com.softserve.edu.cajillo.converter.TicketConverter;
 import com.softserve.edu.cajillo.dto.*;
 import com.softserve.edu.cajillo.entity.Ticket;
-//import com.softserve.edu.cajillo.repository.GetSingleTicketRepository;
 import com.softserve.edu.cajillo.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +29,11 @@ public class TicketController {
     public GetSingleTicketResponse getTicket(@PathVariable("id") Long id) {
         return ticketConverter.convertToDto(ticketService.getTicket(id));
     }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<?> getTicket(@PathVariable("id") Long id) {
+//        return ticketConverter.convertToDto(ticketService.getTicket(id));
+//    }
 
 
     // Creating new ticket
