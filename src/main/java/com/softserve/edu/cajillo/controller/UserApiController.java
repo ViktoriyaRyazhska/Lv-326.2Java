@@ -4,10 +4,9 @@ import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,4 +20,10 @@ public class UserApiController {
         User user = userService.getUser(id);
         return new UserDto(user.getUsername(), user.getLastName(), user.getLastName(), user.getEmail());
     }
+
+    @PostMapping("/register")
+    public void registrationSubmit(@ModelAttribute @Valid User registration) {
+        userService.save(registration);
+    }
+
 }
