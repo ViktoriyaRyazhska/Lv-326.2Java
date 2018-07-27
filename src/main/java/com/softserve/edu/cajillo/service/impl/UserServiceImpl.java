@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id=";
-    private static final String USER_USERNAME_NOT_FOUND_MESSAGE = "Could not find student with name=";
+    private static final String USER_USERNAME_NOT_FOUND_MESSAGE = "Could not find user with name=";
 
     @Autowired
     private UserRepository userRepository;

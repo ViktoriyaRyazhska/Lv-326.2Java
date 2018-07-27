@@ -25,9 +25,7 @@ public class UserApiController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createStudent(@RequestBody UpdateUserDto userDto) {//, UpdatePasswordDto passwordDto) {
-        System.out.println(userDto);
-        System.out.println(userConverter.convertToEntity(userDto));
+    public void updateUser(@RequestBody UpdateUserDto userDto) {
         userService.updateUser(userConverter.convertToEntity(userDto), userDto.getOldPassword(),
                 userDto.getNewPassword(), userDto.getRepeatPassword());
     }
