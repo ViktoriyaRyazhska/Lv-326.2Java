@@ -6,9 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,19 +14,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "table_lists")
 @EqualsAndHashCode(callSuper = false)
-@NamedEntityGraph(name = "TableList.board",
-        attributeNodes = @NamedAttributeNode("board"))
-public class TableList extends DateAudit{
+public class TableList extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
-    @CreatedDate
-    private Instant createTime;
-
-    @LastModifiedDate
-    private Instant updateTime;
 
     @ManyToOne(fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
