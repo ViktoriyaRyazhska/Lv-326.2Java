@@ -20,6 +20,7 @@ public class Ticket extends DateAudit{
     private String description;
     private String priority;
     private TicketIssueType ticketIssueType;
+    private Long AssignedTo;
 
     private Instant expirationDate;
 
@@ -39,11 +40,11 @@ public class Ticket extends DateAudit{
             mappedBy = "ticket")
     private List<Comment> comments = new ArrayList<>();
 
-//    @ManyToOne(fetch = FetchType.LAZY,
-//            cascade = CascadeType.ALL)
-//    private BackLog backLog;
-//
-//    @ManyToOne(fetch = FetchType.LAZY,
-//            cascade = CascadeType.ALL)
-//    private Sprint sprint;
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Backlog backlog;
+
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Sprint sprint;
 }
