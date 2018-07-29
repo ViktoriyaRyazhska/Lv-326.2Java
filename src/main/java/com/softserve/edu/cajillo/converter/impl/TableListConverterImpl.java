@@ -20,10 +20,6 @@ public class TableListConverterImpl implements TableListConverter {
 
     @Override
     public TableListDto convertToDto(TableList entity) {
-        TableListDto dto = modelMapper.map(entity, TableListDto.class);
-        dto.setBoardId(entity.getBoard().getId());
-        dto.setBoardName(entity.getBoard().getName());
-//        dto.setTickets(entity.getTickets());
-        return dto;
+        return modelMapper.map(entity, TableListDto.class);
     }
 }

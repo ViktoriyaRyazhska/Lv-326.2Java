@@ -2,6 +2,7 @@ package com.softserve.edu.cajillo.repository;
 
 import com.softserve.edu.cajillo.entity.TableList;
 
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
@@ -17,10 +18,9 @@ public interface TableListRepository extends JpaRepository<TableList, Long>, Jpa
     @Query(value = "delete from table_lists where id = :listId", nativeQuery = true)
     void deleteById(@Param("listId") Long id);
 
-    @Override
-    Optional<TableList> findById(Long aLong);
+    Optional<TableList> findByIdAndStatus(Long aLong, ItemsStatus status);
 
-    List<TableList> findAllByBoardId(Long boardId);
+    List<TableList> findAllByBoardIdAndStatus(Long id, ItemsStatus status);
 
     @Query(value = "select create_time from table_lists where id = :id", nativeQuery = true)
     Instant findCreateTimeById(@Param("id") Long id);
