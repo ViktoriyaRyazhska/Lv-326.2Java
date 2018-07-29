@@ -18,6 +18,6 @@ public class TableListDto extends BaseDto{
     private Instant updateTime;
     private Long boardId;
     private String boardName;
-    private List<Ticket> tickets;
+//    private List<Ticket> tickets;
 
 }

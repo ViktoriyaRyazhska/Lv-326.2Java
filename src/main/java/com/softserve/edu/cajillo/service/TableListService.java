@@ -51,7 +51,8 @@ public class TableListService {
 
     public List<TableListDto> getAllTableLists(Long boardId) {
         List<TableList> allByBoardId = tableListRepository.findAllByBoardId(boardId);
-        return tableListConverter.convertToDto(allByBoardId);
+        List<TableListDto> tableListDtos = tableListConverter.convertToDto(allByBoardId);
+        return tableListDtos;
     }
 
     public TableListDto getTableList(Long listId) {

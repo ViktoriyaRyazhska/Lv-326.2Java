@@ -1,6 +1,7 @@
 package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -25,7 +26,7 @@ public class Sprint {
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            mappedBy = "ticket")
+            mappedBy = "sprint")
     private List<Ticket> tickets = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY,

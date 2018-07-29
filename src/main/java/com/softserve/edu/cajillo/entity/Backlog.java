@@ -17,17 +17,13 @@ public class Backlog {
 
     private String label;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    private BoardName boardName;
-
-
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            mappedBy = "ticket")
+            mappedBy = "backlog")
     private List<Ticket> tickets = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            mappedBy = "ticket")
+            mappedBy = "backlog")
     private List<Sprint> sprints = new ArrayList<>();
 }
