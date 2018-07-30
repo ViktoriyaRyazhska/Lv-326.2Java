@@ -1,18 +1,17 @@
 package com.softserve.edu.cajillo.entity;
 
 import com.softserve.edu.cajillo.entity.enums.TicketIssueType;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+
 @Entity
 @Table(name = "tickets")
+@Data
 @EqualsAndHashCode(callSuper = false)
 public class Ticket extends DateAudit{
 
@@ -20,16 +19,28 @@ public class Ticket extends DateAudit{
     private String description;
     private String priority;
     private TicketIssueType ticketIssueType;
-    private Long AssignedTo;
+
+//    @OneToMany(fetch = FetchType.LAZY,
+//            cascade = CascadeType.ALL,df
+//            mappedBy = "ticket")
+//    private List<User> AssignedTo;
+
+//    @ManyToOne(fetch = FetchType.LAZY,
+//            cascade = CascadeType.ALL)
+//    private List<User> assignedTo;
+
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private User assignedTo;
 
     private Instant expirationDate;
 
-    @ToString.Exclude
+
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private TableList tableList;
 
-    @ToString.Exclude
+
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Board board;
@@ -37,13 +48,32 @@ public class Ticket extends DateAudit{
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "ticket")
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
     @ManyToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.ALL)//
     private Backlog backlog;
+
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Sprint sprint;
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", priority='" + priority + '\'' +
+//                ", ticketIssueType=" + ticketIssueType +
+//                ", AssignedTo=" + AssignedTo +
+                ", expirationDate=" + expirationDate +
+//                ", tableList=" + tableList +
+//                ", board=" + board +
+//                ", comments=" + comments +
+//                ", status=" + status +
+//                ", backlog=" + backlog +
+//                ", sprint=" + sprint +
+                '}';
+    }
 }

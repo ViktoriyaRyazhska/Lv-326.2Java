@@ -68,4 +68,9 @@ public class User extends DateAudit {
             cascade = CascadeType.ALL,
             mappedBy = "user")
     private List<RoleManager> roleManagers = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "assignedTo")
+    private List<Ticket> tickets;
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "boards")
-public class Board extends BaseEntity<Long>{
+public class Board extends BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,5 +48,18 @@ public class Board extends BaseEntity<Long>{
 //    @OneToOne(fetch = FetchType.LAZY)
 //    private Backlog backlog;
 
+    @Override
+    public String toString() {
+        return "Board{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+//                ", boardType=" + boardType +
+//                ", users=" + users +
+//                ", status=" + status +
+//                ", tickets=" + tickets +
+//                ", tableLists=" + tableLists +
+//                ", roleManagers=" + roleManagers +
+                '}';
+    }
 }
 

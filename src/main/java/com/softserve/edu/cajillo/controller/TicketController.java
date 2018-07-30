@@ -26,8 +26,12 @@ public class TicketController {
 
 //     Get single ticket by ID
     @GetMapping("/{id}")
-    public GetSingleTicketResponse getTicket(@PathVariable("id") Long id) {
-        return ticketConverter.convertToDto(ticketService.getTicket(id));
+    public GetSingleTicketResponse/*ResponseEntity<?>*/ getTicket(@PathVariable("id") Long id) {
+        Ticket ticket = ticketService.getTicket(id);
+
+        return /*ResponseEntity.ok().body*/(ticketConverter.convertToDto(ticket));
+//                .body(new GetSingleTicketResponse(ticket.getId(), ticket.getName(),ticket.getDescription(), ticket.getPriority(), ticket.getAssignedTo().getId(), ticket.getCreateTime(), ticket.getUpdateTime(), ticket.getExpirationDate(), ticket.getTableList().getId(), ticket.getBoard().getId(), ticket.getStatus().getName(), ticket.getBacklog().getId(), ticket.getSprint().getId()));
+//        return ticketConverter.convertToDto(ticketService.getTicket(id));
     }
 
 //    @GetMapping("/{id}")
