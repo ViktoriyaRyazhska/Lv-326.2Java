@@ -39,4 +39,9 @@ public class TableListController {
     public TableListDto getTableList(@PathVariable("listId") Long listId) {
         return tableListService.getTableList(listId);
     }
+
+    @GetMapping("/api/boards/{boardId}/lists/{listId1}/{listId2}")
+    public List<TableListDto> swapSequenceNumbers(@PathVariable Long listId1, @PathVariable Long listId2) {
+        return tableListService.swapSequenceNumbers(listId1, listId2);
+    }
 }

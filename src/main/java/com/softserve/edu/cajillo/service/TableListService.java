@@ -31,6 +31,9 @@ public class TableListService {
                 .orElseThrow(() -> new UnsatisfiedException(String.format("Board id = %d not found", id)));
         tableList.setBoard(board);
         tableList.setStatus(ItemsStatus.OPENED);
+        Long maxSequenceValue = tableListRepository.getMaxSequenceValue(id);
+        Long nextSequenceNumber = (maxSequenceValue == null) ? 1 : ++maxSequenceValue;
+        tableList.setSequenceNumber(Math.toIntExact(nextSequenceNumber));
         tableListRepository.save(tableList);
         return tableListConverter.convertToDto(tableList);
     }
@@ -38,6 +41,8 @@ public class TableListService {
     public void deleteTableList(Long listId) {
         TableList tableList = tableListRepository.findById(listId)
                 .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId)));
+        decrementNextTableLists(tableList.getBoard().getId(), listId);
+        tableList.setSequenceNumber(null);
         tableList.setStatus(ItemsStatus.DELETED);
         tableListRepository.save(tableList);
     }
@@ -65,5 +70,33 @@ public class TableListService {
         TableList tableList = tableListRepository.findByIdAndStatus(listId, ItemsStatus.OPENED)
                 .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId)));
         return tableListConverter.convertToDto(tableList);
+    }
+
+    public void decrementNextTableLists(Long boardId, Long listId) {
+        TableList tableList = tableListRepository.findById(listId)
+                .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId)));
+        List<TableList> boards = tableListRepository
+                .findByBoardIdAndSequenceNumberGreaterThan(boardId, tableList.getSequenceNumber());
+        for (TableList board : boards) {
+            board.setSequenceNumber(board.getSequenceNumber() - 1);
+        }
+    }
+
+    public List<TableListDto> swapSequenceNumbers(Long listId1, Long listId2) {
+        TableList tableList1 = tableListRepository.findById(listId1)
+                .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId1)));
+        TableList tableList2 = tableListRepository.findById(listId2)
+                .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId2)));
+        swapNumbers(tableList1, tableList2);
+        tableListRepository.save(tableList1);
+        tableListRepository.save(tableList2);
+        List<TableList> tableLists = tableListRepository.findAllByBoardIdAndStatus(tableList1.getBoard().getId(), ItemsStatus.OPENED);
+        return tableListConverter.convertToDto(tableLists);
+    }
+
+    public void swapNumbers(TableList tableList1, TableList tableList2) {
+        int number = tableList1.getSequenceNumber();
+        tableList1.setSequenceNumber(tableList2.getSequenceNumber());
+        tableList2.setSequenceNumber(number);
     }
 }

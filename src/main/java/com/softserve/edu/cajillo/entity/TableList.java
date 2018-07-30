@@ -27,6 +27,8 @@ public class TableList extends DateAudit{
     @Enumerated(EnumType.STRING)
     private ItemsStatus status;
 
+    private Integer sequenceNumber;
+
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
