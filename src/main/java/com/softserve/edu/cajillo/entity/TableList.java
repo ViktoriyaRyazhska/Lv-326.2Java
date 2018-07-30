@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.entity;
 
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -17,15 +18,14 @@ public class TableList extends DateAudit{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Integer sequenceNumber;
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Board board;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private ItemsStatus status;
 
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,

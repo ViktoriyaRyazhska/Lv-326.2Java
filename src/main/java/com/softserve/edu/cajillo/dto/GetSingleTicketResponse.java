@@ -36,7 +36,7 @@ public class GetSingleTicketResponse extends BaseDto {
 
     private Board board;
 
-    private Status status;
+//    private Status status;
 
     private List<Comment> comments = new ArrayList<>();
 
