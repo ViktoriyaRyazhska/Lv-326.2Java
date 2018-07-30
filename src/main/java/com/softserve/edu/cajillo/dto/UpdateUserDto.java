@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto extends BaseDto {
+public class UpdateUserDto extends UserDto {
 
-    private String username;
-    private String firstName;
-    private String lastName;
-    private String email;
+    private String oldPassword;
+    private String newPassword;
+    private String repeatPassword;
 }

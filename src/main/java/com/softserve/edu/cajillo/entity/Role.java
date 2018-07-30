@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.entity;
 
+import com.softserve.edu.cajillo.entity.enums.RoleName;
 import lombok.Data;
 import org.hibernate.annotations.NaturalId;
 
