@@ -23,16 +23,17 @@ public class User extends DateAudit {
     private String lastName;
     private String avatar;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private List<Board> boards = new ArrayList<>();
+//    @ManyToMany(fetch = FetchType.LAZY,
+//            cascade = CascadeType.ALL)
+//    private List<Board> boards = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "user")
     private List<RoleManager> roleManagers = new ArrayList<>();
 }

@@ -15,30 +15,18 @@ public class Board {
     private Long id;
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "boards")
-    private List<User> users = new ArrayList<>();
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_id")
-    private Status status;
-
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
+    @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "board")
     private List<Ticket> tickets = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
+    @ManyToOne
     private BoardType boardType;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
+    @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "board")
     private List<TableList> tableLists = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "board")
     private List<RoleManager> roleManagers = new ArrayList<>();
 }

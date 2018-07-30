@@ -17,14 +17,7 @@ public class Role {
     @NaturalId
     private RoleName name;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_role")
+    @OneToOne(mappedBy = "role",
+            fetch = FetchType.LAZY)
     private RoleManager roleManager;
-
-    public Role() {
-    }
-
-    public Role(RoleName name) {
-        this.name = name;
-    }
 }

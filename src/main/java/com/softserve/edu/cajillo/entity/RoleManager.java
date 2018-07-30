@@ -2,29 +2,26 @@ package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "board_user_role")
 @Data
-public class RoleManager {
+public class RoleManager extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "roleManagers")
-    private List<Board> boards = new ArrayList<>();
+    @ManyToOne
+    private Board board;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "roleManagers")
-    private List<User> users = new ArrayList<>();
+    @ManyToOne
+    private User user;
 
-    @OneToOne(mappedBy = "roleManager",
-            cascade = CascadeType.ALL,
+    @OneToOne(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
     private Role role;
+
+    @ManyToOne
+    private Team team;
 }
