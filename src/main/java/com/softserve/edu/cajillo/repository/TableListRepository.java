@@ -24,4 +24,10 @@ public interface TableListRepository extends JpaRepository<TableList, Long>, Jpa
 
     @Query(value = "select create_time from table_lists where id = :id", nativeQuery = true)
     Instant findCreateTimeById(@Param("id") Long id);
+
+    @Query(value = "SELECT max(sequence_number) FROM table_lists where board_id = :id", nativeQuery = true)
+    Long getMaxSequenceValue(@Param("id") Long id);
+
+    List<TableList> findByBoardIdAndSequenceNumberGreaterThan(Long id, Integer sequenceNumber);
+
 }
