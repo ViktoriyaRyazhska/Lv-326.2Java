@@ -13,16 +13,25 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "boards")
-public class Board extends BaseEntity<Long>{
+public class Board extends BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
+    @ToString.Exclude
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "board")
+    private List<Ticket> tickets = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @NaturalId
     private BoardType boardType;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "board")
+    private List<TableList> tableLists = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
@@ -32,25 +41,12 @@ public class Board extends BaseEntity<Long>{
     @Enumerated(EnumType.STRING)
     private ItemsStatus status;
 
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
+    @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "board")
-    private List<Ticket> tickets = new ArrayList<>();
-
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "board")
-    private List<TableList> tableLists = new ArrayList<>();
-
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
     private List<RoleManager> roleManagers = new ArrayList<>();
 
 //    @OneToOne(fetch = FetchType.LAZY)
 //    private Backlog backlog;
-
 
     @Override
     public String toString() {
@@ -66,3 +62,4 @@ public class Board extends BaseEntity<Long>{
                 '}';
     }
 }
+

@@ -1,12 +1,9 @@
 package com.softserve.edu.cajillo.config;
 
 import com.softserve.edu.cajillo.dto.BoardDto;
-import com.softserve.edu.cajillo.dto.GetSingleTicketResponse;
 import com.softserve.edu.cajillo.dto.TableListDto;
-import com.softserve.edu.cajillo.entity.BaseEntity;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.TableList;
-import com.softserve.edu.cajillo.entity.Ticket;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -46,3 +43,4 @@ public class ModelMapperConfig {
     }
 
 }
+

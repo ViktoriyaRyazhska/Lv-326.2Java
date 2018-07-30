@@ -45,16 +45,10 @@ public class Ticket extends DateAudit{
             cascade = CascadeType.ALL)
     private Board board;
 
-
-//    @OneToOne(fetch = FetchType.LAZY)
-//    private Status status;
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "ticket")
     private List<Comment> comments;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)//
