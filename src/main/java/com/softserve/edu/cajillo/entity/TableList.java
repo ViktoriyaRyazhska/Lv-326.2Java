@@ -33,4 +33,15 @@ public class TableList extends DateAudit{
             mappedBy = "tableList")
     private List<Ticket> tickets = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "TableList{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", sequenceNumber=" + sequenceNumber +
+//                ", board=" + board +
+//                ", status=" + status +
+//                ", tickets=" + tickets +
+                '}';
+    }
 }

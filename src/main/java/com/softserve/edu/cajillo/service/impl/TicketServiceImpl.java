@@ -17,6 +17,9 @@ public class TicketServiceImpl implements TicketService {
     private TicketRepository ticketRepository;
 
     @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
     private TableListRepository tableListRepository;
 
     @Autowired
@@ -25,8 +28,8 @@ public class TicketServiceImpl implements TicketService {
     // Get single ticket
     @Override
     public Ticket getTicket(Long id) {
-
         Ticket ticket = ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + id));
+        ticket.setComments(commentRepository.findByTicketId(id));
         return ticket;
     }
 

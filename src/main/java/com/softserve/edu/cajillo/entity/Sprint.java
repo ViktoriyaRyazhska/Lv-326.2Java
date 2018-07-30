@@ -24,12 +24,27 @@ public class Sprint {
     //long description about the goal of sprint (length 200)
     private String goal;
 
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             mappedBy = "sprint")
     private List<Ticket> tickets = new ArrayList<>();
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Backlog backlog;
+
+    @Override
+    public String toString() {
+        return "Sprint{" +
+//                "id=" + id +
+//                ", label='" + label + '\'' +
+//                ", startDate=" + startDate +
+//                ", endDate=" + endDate +
+//                ", goal='" + goal + '\'' +
+//                ", tickets=" + tickets +
+//                ", backlog=" + backlog +
+                '}';
+    }
 }

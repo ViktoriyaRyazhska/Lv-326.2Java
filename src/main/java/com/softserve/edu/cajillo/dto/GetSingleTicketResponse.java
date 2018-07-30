@@ -14,9 +14,25 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 public class GetSingleTicketResponse extends BaseDto {
+
+    public GetSingleTicketResponse(Long id, String name, String description, String priority, Long assignedTo, Instant createTime, Instant updateTime, Instant expirationDate, Long tableListOId, Long boardId, String status, Long backlogId, Long sprintId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.assignedTo = assignedTo;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.expirationDate = expirationDate;
+        this.tableListOId = tableListOId;
+        this.boardId = boardId;
+        this.status = status;
+        this.backlogId = backlogId;
+        this.sprintId = sprintId;
+    }
 
     private Long id;
 
@@ -26,22 +42,46 @@ public class GetSingleTicketResponse extends BaseDto {
 
     private String priority;
 
-    private TicketIssueType ticketIssueType;
+//    private String ticketIssueType;
 
-    private Long AssignedTo;
+    private Long assignedTo;
+
+    private Instant createTime;
+
+    private Instant updateTime;
 
     private Instant expirationDate;
 
-    private TableList tableList;
+    private Long tableListOId;
 
-    private Board board;
+    private Long boardId;
 
+    private String status;
+  
 //    private Status status;
 
-    private List<Comment> comments = new ArrayList<>();
 
-    private Backlog backlog;
+//    private List<Comment> comments;
 
-    private Sprint sprint;
+    private Long backlogId;
 
+    private Long sprintId;
+
+    @Override
+    public String toString() {
+        return "GetSingleTicketResponse{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", description='" + description + '\'' +
+//                ", priority='" + priority + '\'' +
+////                ", ticketIssueType='" + ticketIssueType + '\'' +
+////                ", AssignedTo=" + AssignedTo +
+//                ", expirationDate=" + expirationDate +
+//                ", tableListOId=" + tableListOId +
+//                ", boardId=" + boardId +
+//                ", status=" + status +
+//                ", backlogId=" + backlogId +
+//                ", sprintId=" + sprintId +
+                '}';
+    }
 }
