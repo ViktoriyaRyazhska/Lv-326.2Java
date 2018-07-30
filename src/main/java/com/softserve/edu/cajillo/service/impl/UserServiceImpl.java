@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user, String oldPassword, String newPassword, String repeatPassword) {
-        User currentUser = userRepository.findUserByUsername(user.getUsername()).orElseThrow(() ->
+        User currentUser = userRepository.findByUsername(user.getUsername()).orElseThrow(() ->
                 new UserNotFoundException(USER_USERNAME_NOT_FOUND_MESSAGE + user.getUsername()));
         if ((oldPassword != null) && (newPassword != null) && (repeatPassword != null)) {
             if (newPassword.equals(repeatPassword) && currentUser.getPassword().equals(oldPassword)) {

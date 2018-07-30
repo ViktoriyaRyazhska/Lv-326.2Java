@@ -2,6 +2,7 @@ package com.softserve.edu.cajillo.controller;
 
 import com.softserve.edu.cajillo.exception.DatabaseItemNotFoundException;
 import com.softserve.edu.cajillo.exception.ServiceException;
+import com.softserve.edu.cajillo.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
