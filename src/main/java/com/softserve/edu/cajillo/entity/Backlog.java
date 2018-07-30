@@ -1,12 +1,15 @@
 package com.softserve.edu.cajillo.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "scrum_backlogs")
 public class Backlog {
@@ -26,4 +29,14 @@ public class Backlog {
             cascade = CascadeType.ALL,
             mappedBy = "backlog")
     private List<Sprint> sprints = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Backlog{" +
+                "id=" + id +
+                ", label='" + label + '\'' +
+//                ", tickets=" + tickets +
+//                ", sprints=" + sprints +
+                '}';
+    }
 }

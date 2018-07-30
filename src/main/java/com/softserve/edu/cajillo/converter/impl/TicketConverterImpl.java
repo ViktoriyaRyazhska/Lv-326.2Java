@@ -23,7 +23,21 @@ public class TicketConverterImpl implements TicketConverter {
 
     @Override
     public GetSingleTicketResponse convertToDto(Ticket entity) {
-        return modelMapper.map(entity, GetSingleTicketResponse.class);
+        GetSingleTicketResponse dto = modelMapper.map(entity, GetSingleTicketResponse.class);
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        dto.setPriority(entity.getPriority());
+        dto.setAssignedTo(entity.getAssignedTo().getId());
+        dto.setCreateTime(entity.getCreateTime());
+        dto.setUpdateTime(entity.getUpdateTime());
+        dto.setExpirationDate(entity.getExpirationDate());
+        dto.setTableListOId(entity.getTableList().getId());
+        dto.setBoardId(entity.getBoard().getId());
+        dto.setStatus(entity.getStatus().getName());
+        dto.setBacklogId(entity.getBacklog().getId());
+        dto.setSprintId(entity.getSprint().getId());
+        return dto;
     }
 
 }

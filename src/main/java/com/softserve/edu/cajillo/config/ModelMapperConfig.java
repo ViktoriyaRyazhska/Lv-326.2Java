@@ -22,7 +22,10 @@ public class ModelMapperConfig {
 
     private void mapEntitiesToDto(ModelMapper modelMapper) {
 //        modelMapper.createTypeMap(Ticket.class, GetSingleTicketResponse.class)
-//                .addMapping(Ticket::getId, GetSingleTicketResponse::setIdBoard);
+//                .addMapping(Ticket -> Ticket.getBoard().getId(), GetSingleTicketResponse::setBoardId)
+//                .addMapping(Ticket -> Ticket.getTicketIssueType().toString(), GetSingleTicketResponse::setTicketIssueType)
+//                .addMapping(Ticket -> Ticket.getBacklog().getId(), GetSingleTicketResponse::setBacklogId)
+//                .addMapping(Ticket -> Ticket.getSprint().getId(), GetSingleTicketResponse::setSprintId);
     }
 
     private void mapDtoToEntities(ModelMapper modelMapper) {

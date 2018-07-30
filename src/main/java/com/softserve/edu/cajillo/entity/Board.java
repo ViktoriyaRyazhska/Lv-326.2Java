@@ -51,4 +51,18 @@ public class Board {
 //    @OneToOne(fetch = FetchType.LAZY)
 //    private Backlog backlog;
 
+
+    @Override
+    public String toString() {
+        return "Board{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+//                ", boardType=" + boardType +
+//                ", users=" + users +
+//                ", status=" + status +
+//                ", tickets=" + tickets +
+//                ", tableLists=" + tableLists +
+//                ", roleManagers=" + roleManagers +
+                '}';
+    }
 }

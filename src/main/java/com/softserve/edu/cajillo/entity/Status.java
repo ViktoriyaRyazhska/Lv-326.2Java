@@ -13,7 +13,7 @@ public class Status {
     private String name;
 
     @OneToOne(mappedBy = "status",
-            cascade = CascadeType.ALL,
+//            cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
 //            , optional = false
     )
@@ -38,4 +38,16 @@ public class Status {
             fetch = FetchType.LAZY
     )
     private Ticket ticket;
+
+    @Override
+    public String toString() {
+        return "Status{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", board=" + board +
+                ", tableList=" + tableList +
+                ", comment=" + comment +
+                ", ticket=" + ticket +
+                '}';
+    }
 }
