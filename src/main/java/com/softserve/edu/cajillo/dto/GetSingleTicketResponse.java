@@ -57,6 +57,9 @@ public class GetSingleTicketResponse extends BaseDto {
     private Long boardId;
 
     private String status;
+  
+//    private Status status;
+
 
 //    private List<Comment> comments;
 

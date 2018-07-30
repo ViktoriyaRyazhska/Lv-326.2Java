@@ -17,8 +17,8 @@ public class Comment extends DateAudit{
             cascade = CascadeType.ALL)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Status status;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)

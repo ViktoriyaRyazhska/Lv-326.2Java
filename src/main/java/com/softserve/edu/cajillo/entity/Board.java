@@ -1,6 +1,7 @@
 package com.softserve.edu.cajillo.entity;
 
 import com.softserve.edu.cajillo.entity.enums.BoardType;
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "boards")
-public class Board {
+public class Board extends BaseEntity<Long>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +29,8 @@ public class Board {
             mappedBy = "boards")
     private List<User> users = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_id")
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private ItemsStatus status;
 
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
