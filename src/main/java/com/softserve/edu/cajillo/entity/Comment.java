@@ -9,25 +9,18 @@ import javax.persistence.*;
 @Entity
 @Table(name = "comments")
 @EqualsAndHashCode(callSuper = false)
-public class Comment extends DateAudit{
+public class Comment extends DateAudit {
 
+    @Column(name = "message", nullable = false)
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
+    @JoinColumn(name = "ticket_id", referencedColumnName = "id", nullable = false)
     private Ticket ticket;
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-//                "message='" + message + '\'' +
-//                ", user=" + user +
-//                ", status=" + status +
-//                ", ticket=" + ticket +
-                '}';
-    }
 }

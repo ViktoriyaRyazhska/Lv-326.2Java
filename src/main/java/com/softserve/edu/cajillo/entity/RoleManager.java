@@ -1,27 +1,31 @@
 package com.softserve.edu.cajillo.entity;
 
+import com.softserve.edu.cajillo.entity.enums.RoleName;
 import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "board_user_role")
 @Data
-public class RoleManager extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class RoleManager extends BaseEntity<Long> {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id", referencedColumnName = "id")
     private Board board;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_name", nullable = false)
+    private RoleName roleName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
 }
