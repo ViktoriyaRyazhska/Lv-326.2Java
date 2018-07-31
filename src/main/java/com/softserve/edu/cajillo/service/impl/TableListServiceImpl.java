@@ -8,6 +8,7 @@ import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.TableListRepository;
+import com.softserve.edu.cajillo.service.TableListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Component
-public class TableListServiceImpl {
+public class TableListServiceImpl implements TableListService {
 
     @Autowired
     TableListRepository tableListRepository;

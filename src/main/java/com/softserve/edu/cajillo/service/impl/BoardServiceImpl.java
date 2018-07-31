@@ -6,11 +6,12 @@ import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
+import com.softserve.edu.cajillo.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BoardServiceImpl {
+public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private BoardConverterImpl boardConverter;
