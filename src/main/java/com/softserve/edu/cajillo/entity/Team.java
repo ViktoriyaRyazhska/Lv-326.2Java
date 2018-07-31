@@ -15,6 +15,6 @@ public class Team extends DateAudit {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "avatar")
+    @Column(name = "avatar", columnDefinition = "TEXT")
     private String avatar;
 }
