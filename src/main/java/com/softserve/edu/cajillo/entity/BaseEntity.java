@@ -14,6 +14,4 @@ public abstract class BaseEntity<I> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
     private I id;
-
 }
-
