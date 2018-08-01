@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface SprintService {
 
-    SprintDto createSprint(SprintDto sprintDto);
+    void createSprint(SprintDto sprintDto);
 
     SprintDto getSprint(Long id);
 
     List<SprintDto> getAllSprints(Long boardId);
 
-    SprintDto updateTableList(Long sprintId, SprintDto sprintDto);
+    SprintDto updateSprint(Long boardId, SprintDto sprintDto);
 
     void deleteSprint(Long listId);
 

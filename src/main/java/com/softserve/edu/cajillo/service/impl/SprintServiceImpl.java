@@ -30,17 +30,8 @@ public class SprintServiceImpl implements SprintService {
     SprintConverterImpl sprintConverter;
 
     @Override
-    public SprintDto createSprint(SprintDto createSprintDto) {
-        Sprint sprint = new Sprint();
-        sprint.setLabel(createSprintDto.getLabel());
-        sprint.setStartDate(createSprintDto.getStartDate());
-        sprint.setEndDate(createSprintDto.getEndDate());
-        sprint.setGoal(createSprintDto.getGoal());
-        sprint.setSprintType(createSprintDto.getSprintType());
-        sprint.setSprintStatus(createSprintDto.getSprintStatus());
-        sprint.setBoard(boardRepository.findById(createSprintDto.getBoardId())
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + createSprintDto.getBoardId())));
-        return sprintConverter.convertToDto(sprint);
+    public void createSprint(SprintDto sprintDto) {
+        sprintRepository.save(sprintConverter.convertToEntity(sprintDto));
     }
 
     @Override
@@ -66,7 +57,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public SprintDto updateTableList(Long sprintId, SprintDto sprintDtoNew) {
+    public SprintDto updateSprint(Long sprintId, SprintDto sprintDtoNew) {
         SprintDto sprintDtoOld = sprintConverter.convertToDto(sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + sprintId)));
         sprintDtoOld.setLabel(sprintDtoNew.getLabel());

@@ -15,13 +15,11 @@ public class SprintConverterImpl implements SprintConverter {
 
     @Override
     public Sprint convertToEntity(SprintDto dto) {
-        Sprint sprint = modelMapper.map(dto, Sprint.class);
-        return sprint;
+        return modelMapper.map(dto, Sprint.class);
     }
 
     @Override
     public SprintDto convertToDto(Sprint entity) {
-        SprintDto sprintDto = modelMapper.map(entity, SprintDto.class);
-        return sprintDto;
+        return modelMapper.map(entity, SprintDto.class);
     }
 }
