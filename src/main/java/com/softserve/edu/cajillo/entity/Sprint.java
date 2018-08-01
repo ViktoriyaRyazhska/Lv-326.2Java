@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.entity;
 
+import com.softserve.edu.cajillo.entity.enums.SprintStatus;
 import com.softserve.edu.cajillo.entity.enums.SprintType;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import java.time.Instant;
 @Table(name = "sprints")
 public class Sprint extends DateAudit{
 
-    @Column(name = "label", nullable = false)
+    @Column(name = "label", nullable = false, length = 150)
     private String label;
 
     @Column(name = "start_date")
@@ -30,4 +31,8 @@ public class Sprint extends DateAudit{
     @Enumerated(EnumType.STRING)
     @Column(name = "sprint_type", nullable = false)
     private SprintType sprintType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sprint_status", nullable = false)
+    private SprintStatus sprintStatus;
 }
