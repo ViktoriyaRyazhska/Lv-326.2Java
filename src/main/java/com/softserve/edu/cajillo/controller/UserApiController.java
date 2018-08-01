@@ -33,16 +33,9 @@ public class UserApiController {
         return userConverter.convertToDto(userService.getUser(currentUser.getId()));
     }
 
-    @PutMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void updateUser(@RequestBody UpdateUserDto userDto) {
-        userService.updateUser(userConverter.convertToEntity(userDto), userDto.getOldPassword(),
-                userDto.getNewPassword(), userDto.getRepeatPassword());
+    @PutMapping("/user/me")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateCurrentUser(@CurrentUser UserPrincipal currentUser, @RequestBody UpdateUserDto userDto) {
+        userService.updateUser(currentUser.getId(), userDto);
     }
-
-    @PostMapping("/register")
-    public void registrationSubmit(@ModelAttribute @Valid User registration) {
-        userService.save(registration);
-    }
-
 }

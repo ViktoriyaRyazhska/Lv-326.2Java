@@ -1,10 +1,13 @@
 package com.softserve.edu.cajillo.service.impl;
 
+import com.softserve.edu.cajillo.dto.UpdateUserDto;
 import com.softserve.edu.cajillo.entity.User;
+import com.softserve.edu.cajillo.exception.PasswordMismatchException;
 import com.softserve.edu.cajillo.exception.UserNotFoundException;
 import com.softserve.edu.cajillo.repository.UserRepository;
 import com.softserve.edu.cajillo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,9 +15,13 @@ public class UserServiceImpl implements UserService {
 
     private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id=";
     private static final String USER_USERNAME_NOT_FOUND_MESSAGE = "Could not find user with name=";
+    private static final String USER_PASSWORD_MISMATCH_MESSAGE = "Password mismatch";
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public User getUser(Long id) {
@@ -27,19 +34,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(User user, String oldPassword, String newPassword, String repeatPassword) {
-        User currentUser = userRepository.findByUsername(user.getUsername()).orElseThrow(() ->
-                new UserNotFoundException(USER_USERNAME_NOT_FOUND_MESSAGE + user.getUsername()));
-        if ((oldPassword != null) && (newPassword != null) && (repeatPassword != null)) {
-            if (newPassword.equals(repeatPassword) && currentUser.getPassword().equals(oldPassword)) {
-                user.setPassword(newPassword);
+    public void updateUser(Long userId, UpdateUserDto userDto) {
+        User currentUser = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException(USER_USERNAME_NOT_FOUND_MESSAGE + userId));
+        String oldPassword = userDto.getOldPassword();
+        String newPassword = userDto.getNewPassword();
+        String repeatPassword = userDto.getRepeatPassword();
+        if (oldPassword != null) {
+            if ((newPassword != null) && newPassword.equals(repeatPassword)
+                    && passwordEncoder.matches(oldPassword, currentUser.getPassword())) { ///TODO Fix password verification
+                currentUser.setPassword(passwordEncoder.encode(newPassword));
             } else {
-                user.setPassword(currentUser.getPassword());
+                throw new PasswordMismatchException(USER_PASSWORD_MISMATCH_MESSAGE);
             }
         }
-        user.setId(currentUser.getId());
-        user.setCreateTime(currentUser.getCreateTime());
-        user.setAvatar(currentUser.getAvatar());
-        userRepository.save(user);
+        currentUser.setFirstName(userDto.getFirstName());
+        currentUser.setLastName(userDto.getLastName());
+        userRepository.save(currentUser);
     }
 }
