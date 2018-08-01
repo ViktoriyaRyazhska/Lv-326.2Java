@@ -38,7 +38,7 @@ public class User extends DateAudit {
 
     @NotBlank
     @Size(min = 8, max = 32)
-    @Column(name = "password", nullable = false, length = 32)
+    @Column(name = "password", nullable = false, length = 75)
     private String password;
 
     @Column(name = "first_name", length = 40)
