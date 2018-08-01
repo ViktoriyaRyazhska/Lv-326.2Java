@@ -1,9 +1,7 @@
 package com.softserve.edu.cajillo.entity;
 
-import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.TicketIssueType;
 
-import com.softserve.edu.cajillo.entity.enums.TicketTypeByBoard;
 import lombok.*;
 
 import javax.persistence.*;
@@ -49,10 +47,6 @@ public class Ticket extends DateAudit {
             cascade = CascadeType.ALL)
     @JoinColumn(name = "board_id", referencedColumnName = "id", nullable = false)
     private Board board;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ticket_type_by_board", nullable = false)
-    private TicketTypeByBoard ticketTypeByBoard;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
