@@ -49,16 +49,10 @@ public class TableListServiceImpl implements TableListService {
     }
 
     public TableListDto updateTableList(Long listId, Long boardId, TableList tableList) {
-        tableList.setId(listId);
-        Instant createTimeById = tableListRepository.findCreateTimeById(listId);
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("Board id = %d not found", boardId)));
-        tableList.setBoard(board);
-        tableListRepository.save(tableList);
-        TableList resultTableList = tableListRepository.findById(listId)
+        TableList existingList = tableListRepository.findById(listId)
                 .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId)));
-        resultTableList.setCreateTime(createTimeById);
-        return tableListConverter.convertToDto(resultTableList);
+        existingList.setName(tableList.getName());
+        return tableListConverter.convertToDto(tableListRepository.save(existingList));
     }
 
     public List<TableListDto> getAllTableLists(Long boardId) {
