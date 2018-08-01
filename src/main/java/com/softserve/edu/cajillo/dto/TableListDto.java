@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,4 +19,8 @@ public class TableListDto extends BaseDto {
     private Instant createTime;
 
     private Instant updateTime;
+
+    private Integer sequenceNumber;
+
+    private Long boardId;
 }

@@ -26,9 +26,10 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public BoardDto updateBoard(Long id, Board board) {
-        board.setId(id);
-        Board savedBoard = boardRepository.save(board);
-        return boardConverter.convertToDto(savedBoard);
+        Board existedBoard = boardRepository.findById(id)
+                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
+        existedBoard.setName(board.getName());
+        return boardConverter.convertToDto(boardRepository.save(existedBoard));
     }
 
     public BoardDto getBoard(Long id) {

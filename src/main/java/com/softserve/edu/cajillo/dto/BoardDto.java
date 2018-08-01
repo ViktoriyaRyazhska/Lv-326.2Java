@@ -2,8 +2,12 @@ package com.softserve.edu.cajillo.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class BoardDto extends BaseDto {
-    private Long boardId;
+    private Long id;
     private String name;
+    private String boardType;
+    private List<TableListDto> tableListDtoList;
 }
