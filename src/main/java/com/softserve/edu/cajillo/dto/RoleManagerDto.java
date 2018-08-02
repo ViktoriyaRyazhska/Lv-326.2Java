@@ -1,8 +1,5 @@
 package com.softserve.edu.cajillo.dto;
 
-import com.softserve.edu.cajillo.entity.Board;
-import com.softserve.edu.cajillo.entity.Team;
-import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.entity.enums.RoleName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RoleManagerDto extends BaseDto {
 
-    private Board board;
+    private Long board_id;
 
-    private User user;
+    private Long user_id;
 
     private RoleName roleName;
 
-    private Team team;
+    private Long team_id;
 }
