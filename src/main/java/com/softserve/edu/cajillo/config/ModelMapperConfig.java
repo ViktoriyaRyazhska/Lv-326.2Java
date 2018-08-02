@@ -18,8 +18,6 @@ public class ModelMapperConfig {
         return modelMapper;
     }
 
-    BoardRepository boardRepository;
-
     private void mapEntitiesToDto(ModelMapper modelMapper) {
     }
 
