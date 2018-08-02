@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.config;
 
+import com.softserve.edu.cajillo.repository.BoardRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,8 @@ public class ModelMapperConfig {
         mapDtoToEntities(modelMapper);
         return modelMapper;
     }
+
+    BoardRepository boardRepository;
 
     private void mapEntitiesToDto(ModelMapper modelMapper) {
     }

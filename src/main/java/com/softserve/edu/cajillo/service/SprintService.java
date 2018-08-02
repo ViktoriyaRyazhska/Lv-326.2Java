@@ -7,13 +7,15 @@ import java.util.List;
 
 public interface SprintService {
 
+    Sprint getSprint(Long id);
+
     void createSprint(SprintDto sprintDto);
 
-    SprintDto getSprint(Long id);
+    void createSprintBacklog(SprintDto sprintDto);
 
-    List<SprintDto> getAllSprints(Long boardId);
+    List<Sprint> getAllSprintsByBoard(Long boardId);
 
-    SprintDto updateSprint(Long boardId, SprintDto sprintDto);
+    void updateSprint(Long boardId, SprintDto sprintDto);
 
     void deleteSprint(Long listId);
 
