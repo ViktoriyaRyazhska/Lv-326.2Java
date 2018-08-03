@@ -13,4 +13,6 @@ public interface RoleManagerRepository extends JpaRepository<RoleManager, Long> 
     Optional<RoleManager> findById(Long aLong);
 
     Optional<List<RoleManager>> findAllByUserId(Long id);
+
+    List<RoleManager> findAllByTeamId(Long id);
 }

@@ -2,10 +2,13 @@ package com.softserve.edu.cajillo.service;
 
 import com.softserve.edu.cajillo.dto.TeamDto;
 import com.softserve.edu.cajillo.entity.Team;
+import com.softserve.edu.cajillo.security.UserPrincipal;
 
 public interface TeamService {
 
     Team getTeam(Long id);
 
-    Team createTeam(TeamDto teamDto);
+    void createTeam(TeamDto teamDto, UserPrincipal currentUser);
+
+    TeamDto updateTeam(Long id, Team team);
 }
