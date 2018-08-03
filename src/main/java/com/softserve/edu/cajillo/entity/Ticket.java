@@ -36,7 +36,7 @@ public class Ticket extends DateAudit {
     private User createdBy;
 
     @Column(name = "expiration_date")
-    private Instant expirationDate;//
+    private Instant expirationDate;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
