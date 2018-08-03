@@ -45,9 +45,21 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public List<Sprint> getAllSprintsByBoard(Long boardId) {
+    public List<Sprint> getAllSprintsByBoardId(Long boardId) {
         return sprintRepository.getAllByBoardId(boardId)
                         .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + boardId));
+    }
+
+    @Override
+    public List<Sprint> getAllSprintsByBoardAndStatusInProgress(Long boardId, SprintStatus sprintStatus) {
+        return sprintRepository.getAllByBoardAndSprintStatus(boardId, SprintStatus.IN_PROGRESS)
+                .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + boardId));
+    }
+
+    @Override
+    public List<Sprint> getAllSprintsByBoardAndStatusCompleted(Long boardId, SprintStatus sprintStatus) {
+        return sprintRepository.getAllByBoardAndSprintStatus(boardId, SprintStatus.COMPLETED)
+                .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + boardId));
     }
 
     @Override
@@ -60,7 +72,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public void updateSprint(Long sprintId, SprintDto updatedSprintDto) {
         Sprint currentSprint = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + sprintId));
+                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
         Sprint updatedSprint = sprintConverter.convertToEntity(updatedSprintDto);
         currentSprint.setLabel(updatedSprint.getLabel());
         currentSprint.setStartDate(updatedSprint.getStartDate());
@@ -69,6 +81,13 @@ public class SprintServiceImpl implements SprintService {
         currentSprint.setBoard(updatedSprint.getBoard());
         currentSprint.setSprintType(updatedSprint.getSprintType());
         currentSprint.setSprintStatus(updatedSprint.getSprintStatus());
+        sprintRepository.save(currentSprint);
+    }
+
+    public void archiveSprint(Long sprintId){
+        Sprint currentSprint = sprintRepository.findById(sprintId)
+                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
+        currentSprint.setSprintStatus(SprintStatus.IN_ARCHIVE);
         sprintRepository.save(currentSprint);
     }
 }

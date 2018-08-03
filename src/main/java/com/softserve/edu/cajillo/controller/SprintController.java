@@ -20,29 +20,34 @@ public class SprintController {
         return sprintService.getSprint(sprintId);
     }
 
-    @PostMapping("create/sprint")
+    @PostMapping("/sprint")
     public void createSprint(@RequestBody SprintDto sprintDto) {
         sprintService.createSprint(sprintDto);
     }
 
-    @PostMapping("create/backlog")
+    @PostMapping("/backlog")
     public void createSprintBacklog(@RequestBody SprintDto sprintDto) {
         sprintService.createSprintBacklog(sprintDto);
     }
 
-    @DeleteMapping("/delete/{sprintId}")
+    @DeleteMapping("/{sprintId}")
     public void deleteSprint(@PathVariable("sprintId") Long sprintId) {
         sprintService.deleteSprint(sprintId);
     }
 
-    @PutMapping("/update/{sprintId}")
+    @PutMapping("/{sprintId}")
     public void updateSprint(@PathVariable("sprintId") Long sprintId, @RequestBody SprintDto sprintDto) {
         sprintService.updateSprint(sprintId, sprintDto);
     }
 
+    @PutMapping("/archive/{sprintId}")
+    public void archiveSprint(@PathVariable("sprintId") Long sprintId) {
+        sprintService.archiveSprint(sprintId);
+    }
+
     @GetMapping("/board/{boardId}")
     public List<Sprint> getAllSprintsByBoard(@PathVariable("boardId") Long boardId) {
-        return sprintService.getAllSprintsByBoard(boardId);
+        return sprintService.getAllSprintsByBoardId(boardId);
     }
 
 }

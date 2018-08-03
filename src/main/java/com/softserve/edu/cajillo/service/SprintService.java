@@ -2,6 +2,7 @@ package com.softserve.edu.cajillo.service;
 
 import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.entity.Sprint;
+import com.softserve.edu.cajillo.entity.enums.SprintStatus;
 
 import java.util.List;
 
@@ -13,10 +14,16 @@ public interface SprintService {
 
     void createSprintBacklog(SprintDto sprintDto);
 
-    List<Sprint> getAllSprintsByBoard(Long boardId);
+    List<Sprint> getAllSprintsByBoardId(Long boardId);
+
+    List<Sprint> getAllSprintsByBoardAndStatusInProgress(Long boardId, SprintStatus sprintStatus);
+
+    List<Sprint> getAllSprintsByBoardAndStatusCompleted(Long boardId, SprintStatus sprintStatus);
 
     void updateSprint(Long boardId, SprintDto sprintDto);
 
-    void deleteSprint(Long listId);
+    void deleteSprint(Long sprintId);
+
+    void archiveSprint(Long sprintId);
 
 }
