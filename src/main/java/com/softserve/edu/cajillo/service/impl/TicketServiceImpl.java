@@ -62,6 +62,7 @@ public class TicketServiceImpl implements TicketService {
         ticket.setBoard(boardRepository.findById(createTicketRequest.getBoardId()).orElseThrow(RuntimeException::new));
         ticket.setName(createTicketRequest.getName());
         ticket.setTableList(tableListRepository.findById(createTicketRequest.getTableListId()).orElseThrow(RuntimeException::new));
+        System.out.println(userPrincipal);
         ticket.setCreatedBy(userService.getUser(userPrincipal.getId()));
         Ticket result = ticketRepository.save(ticket);
         return result;
