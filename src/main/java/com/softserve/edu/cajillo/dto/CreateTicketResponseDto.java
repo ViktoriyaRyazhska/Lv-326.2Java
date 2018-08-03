@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTicketResponseDto {
+public class CreateTicketResponseDto extends BaseDto {
 
     @NotBlank
     private Long ticketId;
