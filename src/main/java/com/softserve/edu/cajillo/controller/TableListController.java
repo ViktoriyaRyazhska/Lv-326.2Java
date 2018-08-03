@@ -20,7 +20,7 @@ public class TableListController {
         return tableListService.createTableList(boardId, tableList);
     }
 
-    @DeleteMapping("/api/boards/{boardId}/lists/{listId}")
+    @DeleteMapping("/api/lists/{listId}")
     public void deleteTableList(@PathVariable("listId") Long listId) {
         tableListService.deleteTableList(listId);
     }
