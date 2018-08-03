@@ -18,7 +18,7 @@ public class ApiExceptionHandlerController {
             httpStatus = HttpStatus.CONFLICT;
         } else if (e instanceof BadRequestException
                 || e instanceof UnsupportedMimeTypesException
-                || e instanceof RequestEntiryToLargeException
+                || e instanceof RequestEntityToLargeException
                 || e instanceof TokenExpiredException) {
             httpStatus = HttpStatus.BAD_REQUEST;
         } else {

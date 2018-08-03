@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
         List<String> mimeTypes = Arrays.asList("image/jpeg", "image/pjpeg", "image/png");
         if (avatar.getSize() > (256 * 1024)) {
-            throw new RequestEntiryToLargeException(REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE);
+            throw new RequestEntityToLargeException(REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE);
         }
         System.out.println(avatar.getSize());
         if (!mimeTypes.contains(avatar.getContentType())) {
