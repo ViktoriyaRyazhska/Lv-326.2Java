@@ -51,4 +51,14 @@ public class TeamServiceImpl implements TeamService {
                 )
         ));
     }
+
+    @Override
+    public TeamDto updateTeam(Long id, Team team) {
+        Team existedTeam = teamRepository.findById(id)
+                .orElseThrow(() -> new TeamNotFoundException(TEAM_ID_NOT_FOUND_MESSAGE + id));
+        existedTeam.setName(team.getName());
+        existedTeam.setDescription(team.getDescription());
+        existedTeam.setAvatar(team.getAvatar());
+        return teamConverter.convertToDto(teamRepository.save(existedTeam));
+    }
 }

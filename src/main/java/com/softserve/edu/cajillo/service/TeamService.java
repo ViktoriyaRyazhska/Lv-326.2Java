@@ -9,4 +9,6 @@ public interface TeamService {
     Team getTeam(Long id);
 
     void createTeam(TeamDto teamDto, UserPrincipal currentUser);
+
+    TeamDto updateTeam(Long id, Team team);
 }
