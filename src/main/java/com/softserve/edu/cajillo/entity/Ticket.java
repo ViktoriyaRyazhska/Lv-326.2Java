@@ -32,7 +32,7 @@ public class Ticket extends DateAudit {
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JoinColumn(name = "created_user_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "created_user_id", referencedColumnName = "id", updatable = false, nullable = false)
     private User createdBy;
 
     @Column(name = "expiration_date")
