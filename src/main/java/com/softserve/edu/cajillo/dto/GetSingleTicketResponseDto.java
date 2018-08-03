@@ -27,9 +27,9 @@ public class GetSingleTicketResponseDto extends BaseDto {
 
     private String priority;
 
-    private Long assignedTo;
+    private Long assignedToId;
 
-    private Long createdBy;
+    private Long createdById;
 
     private Long boardId;
 
@@ -37,5 +37,5 @@ public class GetSingleTicketResponseDto extends BaseDto {
 
     private Long tableListId;
 
-    private List<Comment> comments;
+    private List<CommentResponseDto> comments;
 }
