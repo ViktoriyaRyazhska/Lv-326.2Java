@@ -66,4 +66,18 @@ public class TicketServiceImpl implements TicketService {
         Ticket result = ticketRepository.save(ticket);
         return result;
     }
+
+    public void deleteTicketsByTableListId(Long listId) {
+        List<Ticket> allByTableListId = ticketRepository.findAllByTableListId(listId);
+        for (Ticket ticket : allByTableListId) {
+            //todo: dokopatusia to vitalii why ticket dont have status
+        }
+    }
+
+    public void recoverTicketsByListId(Long listId) {
+        List<Ticket> tickets = ticketRepository.findAllByTableListId(listId);
+        for (Ticket ticket : tickets) {
+            //todo: dokopatusia to vitalii why ticket dont have status
+        }
+    }
 }
