@@ -28,4 +28,9 @@ public class TeamController {
     public void createTeam(@RequestBody TeamDto teamDto, @CurrentUser UserPrincipal currentUser) {
         teamService.createTeam(teamDto, currentUser);
     }
+
+    @PutMapping("/updateTeam/{id}")
+    public TeamDto updateTeam(@PathVariable Long id, @RequestBody Team team) {
+        return teamService.updateTeam(id, team);
+    }
 }
