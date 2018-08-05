@@ -2,12 +2,17 @@ package com.softserve.edu.cajillo.service.impl;
 
 import com.softserve.edu.cajillo.converter.impl.BoardConverterImpl;
 import com.softserve.edu.cajillo.dto.BoardDto;
+import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
+import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
+import com.softserve.edu.cajillo.entity.enums.SprintStatus;
+import com.softserve.edu.cajillo.entity.enums.SprintType;
 import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.service.BoardService;
+import com.softserve.edu.cajillo.service.SprintService;
 import com.softserve.edu.cajillo.service.TableListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +29,24 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private TableListService tableListService;
 
+    @Autowired
+    private SprintService sprintService;
+
     public BoardDto createBoard(Board board) {
         board.setStatus(ItemsStatus.OPENED);
         Board save = boardRepository.save(board);
+        if (board.getBoardType() == BoardType.SCRUM) {
+            SprintDto sprintDto = generateBacklog(save);
+            sprintService.createSprintBacklog(sprintDto);
+        }
         return boardConverter.convertToDto(save);
+    }
+
+    public SprintDto generateBacklog(Board board) {
+        SprintDto sprintDto = new SprintDto();
+        sprintDto.setLabel("Backlog");
+        sprintDto.setBoardId(board.getId());
+        return sprintDto;
     }
 
     public BoardDto updateBoard(Long id, Board board) {
@@ -39,10 +58,17 @@ public class BoardServiceImpl implements BoardService {
 
     public BoardDto getBoard(Long id) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED);
-        if(board == null)
+        if (board == null)
             throw new UnsatisfiedException(String.format("Board with id %d not found", id));
         return boardConverter.convertToDto(board);
-}
+    }
+
+    public Board getBoardEntity(Long id) {
+        Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED);
+        if (board == null)
+            throw new UnsatisfiedException(String.format("Board with id %d not found", id));
+        return board;
+    }
 
     public void deleteBoard(Long id) {
         Board board = boardRepository.findById(id)

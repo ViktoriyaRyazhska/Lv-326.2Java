@@ -10,4 +10,5 @@ public class BoardDto extends BaseDto {
     private String name;
     private String boardType;
     private List<TableListDto> tableListDtoList;
+    private List<SprintDto> sprintDtos;
 }

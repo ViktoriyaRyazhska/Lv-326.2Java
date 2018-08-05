@@ -6,6 +6,7 @@ import com.softserve.edu.cajillo.dto.CreateTicketRequestDto;
 import com.softserve.edu.cajillo.dto.GetSingleTicketResponseDto;
 import com.softserve.edu.cajillo.dto.TicketForBoardResponseDto;
 import com.softserve.edu.cajillo.entity.Ticket;
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.exception.TicketNotFoundException;
 import com.softserve.edu.cajillo.repository.*;
 import com.softserve.edu.cajillo.security.CurrentUser;
@@ -51,7 +52,8 @@ public class TicketServiceImpl implements TicketService {
 
     // Method for Vova, do not ask why
     public List<TicketForBoardResponseDto> getTicketsByListId(Long tableListId) {
-        return ticketToBoardResponseDtoConverter.convertToDto(ticketRepository.findAllByTableListId(tableListId));
+        return ticketToBoardResponseDtoConverter
+                .convertToDto(ticketRepository.findAllByTableListIdAndStatus(tableListId, ItemsStatus.OPENED));
     }
 
     @Override
@@ -63,21 +65,24 @@ public class TicketServiceImpl implements TicketService {
         ticket.setName(createTicketRequest.getName());
         ticket.setTableList(tableListRepository.findById(createTicketRequest.getTableListId()).orElseThrow(RuntimeException::new));
         ticket.setCreatedBy(userService.getUser(userPrincipal.getId()));
+        ticket.setStatus(ItemsStatus.OPENED);
         Ticket result = ticketRepository.save(ticket);
         return result;
     }
 
     public void deleteTicketsByTableListId(Long listId) {
-        List<Ticket> allByTableListId = ticketRepository.findAllByTableListId(listId);
+        List<Ticket> allByTableListId = ticketRepository.findAllByTableListIdAndStatus(listId, ItemsStatus.OPENED);
         for (Ticket ticket : allByTableListId) {
-            //todo: dokopatusia to vitalii why ticket dont have status
+            ticket.setStatus(ItemsStatus.DELETED);
+            ticketRepository.save(ticket);
         }
     }
 
     public void recoverTicketsByListId(Long listId) {
-        List<Ticket> tickets = ticketRepository.findAllByTableListId(listId);
+        List<Ticket> tickets = ticketRepository.findAllByTableListIdAndStatus(listId, ItemsStatus.DELETED);
         for (Ticket ticket : tickets) {
-            //todo: dokopatusia to vitalii why ticket dont have status
+            ticket.setStatus(ItemsStatus.OPENED);
+            ticketRepository.save(ticket);
         }
     }
 }

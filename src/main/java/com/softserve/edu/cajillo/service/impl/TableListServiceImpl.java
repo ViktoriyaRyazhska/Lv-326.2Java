@@ -62,7 +62,7 @@ public class TableListServiceImpl implements TableListService {
         for (TableList list : lists) {
             list.setStatus(ItemsStatus.OPENED);
             tableListRepository.save(list);
-//            ticketService.recoverTicketsByListId(list.getId());
+            ticketService.recoverTicketsByListId(list.getId());
         }
     }
 

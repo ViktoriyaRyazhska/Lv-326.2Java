@@ -26,7 +26,7 @@ public class TableListConverterImpl implements TableListConverter {
     public TableListDto convertToDto(TableList entity) {
         TableListDto result = modelMapper.map(entity, TableListDto.class);
         result.setBoardId(entity.getBoard().getId());
-
+        result.setTicketForBoardResponseDtos(ticketService.getTicketsByListId(entity.getId()));
         return result;
     }
 }
