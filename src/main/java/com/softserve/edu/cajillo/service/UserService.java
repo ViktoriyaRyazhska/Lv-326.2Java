@@ -11,4 +11,6 @@ public interface UserService {
 
     void updateUser(Long userId, UpdateUserDto userDto);
 //            User user, String oldPassword, String newPassword, String repeatPassword);
+
+    User getUserByEmail(String email);
 }

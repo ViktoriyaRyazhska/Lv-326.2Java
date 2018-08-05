@@ -15,6 +15,7 @@ public class UserServiceImpl implements UserService {
 
     private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id=";
     private static final String USER_USERNAME_NOT_FOUND_MESSAGE = "Could not find user with name=";
+    private static final String USER_USERNAME_NOT_FOUND_MESSAGE_BY_EMAIL = "Could not find user with email=";
     private static final String USER_PASSWORD_MISMATCH_MESSAGE = "Password mismatch";
 
     @Autowired
@@ -51,5 +52,11 @@ public class UserServiceImpl implements UserService {
         currentUser.setFirstName(userDto.getFirstName());
         currentUser.setLastName(userDto.getLastName());
         userRepository.save(currentUser);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException(USER_USERNAME_NOT_FOUND_MESSAGE_BY_EMAIL + email));
     }
 }
