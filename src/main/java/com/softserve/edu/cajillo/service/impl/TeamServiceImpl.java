@@ -12,6 +12,7 @@ import com.softserve.edu.cajillo.entity.enums.RoleName;
 import com.softserve.edu.cajillo.exception.TeamNotFoundException;
 import com.softserve.edu.cajillo.repository.RoleManagerRepository;
 import com.softserve.edu.cajillo.repository.TeamRepository;
+import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.BoardService;
 import com.softserve.edu.cajillo.service.TeamService;
@@ -24,6 +25,7 @@ import java.util.List;
 @Service
 public class TeamServiceImpl implements TeamService {
 
+    private static final Long DEFAULT_BOARD_ID = 0L;
     private static final String TEAM_ID_NOT_FOUND_MESSAGE = "Could not find team with id=";
 
     @Autowired
@@ -56,7 +58,7 @@ public class TeamServiceImpl implements TeamService {
         Team saveTeam = teamRepository.save(teamConverter.convertToEntity(teamDto));
         roleManagerRepository.save(roleManagerConverter.convertToEntity(
                 new RoleManagerDto(
-                        0L, //TODO default value
+                        DEFAULT_BOARD_ID,
                         currentUser.getId(),
                         RoleName.ADMIN,
                         saveTeam.getId()
@@ -75,6 +77,10 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public void deleteTeam(Long id) {
+    }
+
+    @Override
     public void addUserToTeam(UserDto userDto, Long teamId) {
         User newTeamMember = userService.getUserByEmail(userDto.getEmail());
         List<Board> allBoardsForCurrentTeam = boardService.getAllBoardsByTeamId(teamId);
@@ -90,5 +96,9 @@ public class TeamServiceImpl implements TeamService {
                 ));
             }
         }
+    }
+
+    @Override
+    public void deleteUserFromTeam(UserDto userDto, Long teamId) {
     }
 }
