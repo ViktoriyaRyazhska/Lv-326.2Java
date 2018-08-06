@@ -13,7 +13,7 @@ import java.util.List;
 public class SprintController {
 
     @Autowired
-    SprintService sprintService;
+    private SprintService sprintService;
 
     @GetMapping("/{id}")
     public Sprint getSprint(@PathVariable("id") Long sprintId) {

@@ -1,6 +1,5 @@
 package com.softserve.edu.cajillo.dto;
 
-import com.softserve.edu.cajillo.entity.enums.TicketPriority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

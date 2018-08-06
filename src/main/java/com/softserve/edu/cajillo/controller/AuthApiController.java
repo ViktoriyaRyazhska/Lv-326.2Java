@@ -16,7 +16,7 @@ import javax.validation.Valid;
 public class AuthApiController {
 
     @Autowired
-    AuthenticationService authenticationService;
+    private AuthenticationService authenticationService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestHeader("authorization") String authorization) {

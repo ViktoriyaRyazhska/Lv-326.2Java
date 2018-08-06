@@ -20,13 +20,13 @@ public class RoleManagerServiceImpl implements RoleManagerService {
 
     @Override
     public RoleManager getRoleManagerService(Long id) {
-        return roleManagerRepository.findById(id)
-                .orElseThrow(() -> new RoleManagerServiceException(ROLEMANAGERSERVICE_ID_NOT_FOUND_MESSAGE + id));
+        return roleManagerRepository.findById(id).orElseThrow(
+                () -> new RoleManagerServiceException(ROLEMANAGERSERVICE_ID_NOT_FOUND_MESSAGE + id));
     }
 
     @Override
     public List<RoleManager> getAllRoleManagerServicesByUserId(Long id) {
-        return roleManagerRepository.findAllByUserId(id)
-                .orElseThrow(() -> new RoleManagerServiceException(ROLEMANAGERSERVICE_USER_ID_NOT_FOUND_MESSAGE + id));
+        return roleManagerRepository.findAllByUserId(id).orElseThrow(
+                () -> new RoleManagerServiceException(ROLEMANAGERSERVICE_USER_ID_NOT_FOUND_MESSAGE + id));
     }
 }

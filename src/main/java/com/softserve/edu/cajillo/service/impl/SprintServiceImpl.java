@@ -23,7 +23,7 @@ public class SprintServiceImpl implements SprintService {
     private SprintRepository sprintRepository;
 
     @Autowired
-    SprintConverterImpl sprintConverter;
+    private SprintConverterImpl sprintConverter;
 
     @Override
     public Sprint getSprint(Long sprintId) {
