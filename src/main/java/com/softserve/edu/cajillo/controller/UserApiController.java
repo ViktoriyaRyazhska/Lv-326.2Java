@@ -65,7 +65,7 @@ public class UserApiController {
 
     @DeleteMapping("/avatar")
     @PreAuthorize("hasRole('ACTIVE')")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public void deleteCurrentUserAvatar(@CurrentUser UserPrincipal currentUser) {
         userService.deleteUserAvatar(currentUser.getId());
     }
