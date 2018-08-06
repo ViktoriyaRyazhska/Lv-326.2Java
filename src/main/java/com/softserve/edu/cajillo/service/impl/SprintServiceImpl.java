@@ -4,6 +4,7 @@ import com.softserve.edu.cajillo.converter.impl.SprintConverterImpl;
 import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.entity.Sprint;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.SprintStatus;
 import com.softserve.edu.cajillo.entity.enums.SprintType;
 import com.softserve.edu.cajillo.exception.BacklogModificationException;
@@ -25,6 +26,7 @@ public class SprintServiceImpl implements SprintService {
     private static final String BACKLOG_DELETE_IS_PROHIBITED = "Prohibited to delete sprint backlog";
     private static final String BACKLOG_UPDATE_IS_PROHIBITED = "Prohibited to modificate sprint backlog";
     private static final String BACKLOG_RECOVERY_IS_PROHIBITED = "Prohibited to recover sprint backlog";
+    private static final String SPRINT_RECOVERY_IS_PROHIBITED = "Prohibited to recover sprint with board in archive with id=";
 
     @Autowired
     private SprintRepository sprintRepository;
@@ -73,19 +75,25 @@ public class SprintServiceImpl implements SprintService {
                 (boardId, SprintStatus.IN_ARCHIVE));
     }
 
+    /*
+    methods for getting sprints in statuses: Created, In Progress, Completed
+    */
     @Override
     public List<SprintDto> getAllSprintsByBoardAndStatusCreated(Long boardId) {
-        return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.CREATED));
+        return sprintConverter.convertToDto(
+                sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.CREATED));
     }
 
     @Override
     public List<SprintDto> getAllSprintsByBoardAndStatusInProgress(Long boardId) {
-        return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.IN_PROGRESS));
+        return sprintConverter.convertToDto(
+                sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.IN_PROGRESS));
     }
 
     @Override
     public List<SprintDto> getAllSprintsByBoardAndStatusCompleted(Long boardId) {
-        return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.COMPLETED));
+        return sprintConverter.convertToDto(
+                sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.COMPLETED));
     }
 
     @Override
@@ -107,6 +115,19 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
+    public void deleteSprint(Long sprintId) {
+        Sprint currentSprint = sprintRepository.findById(sprintId)
+                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
+        if(currentSprint.getSprintType().equals(SprintType.BACKLOG)){
+            throw new BacklogModificationException(BACKLOG_DELETE_IS_PROHIBITED);
+        }
+        sprintRepository.delete(currentSprint);
+    }
+
+    /*
+    methods for archive function and recovery
+    */
+    @Override
     public void archiveSprint(Long sprintId){
         Sprint currentSprint = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
@@ -124,6 +145,9 @@ public class SprintServiceImpl implements SprintService {
         if(currentSprint.getSprintType().equals(SprintType.BACKLOG)){
             throw new BacklogModificationException(BACKLOG_RECOVERY_IS_PROHIBITED);
         }
+        if(currentSprint.getBoard().getStatus().equals(ItemsStatus.DELETED)){
+            throw new BacklogModificationException(SPRINT_RECOVERY_IS_PROHIBITED + currentSprint.getBoard().getId());
+        }
         currentSprint.setSprintStatus(SprintStatus.CREATED);
         sprintRepository.save(currentSprint);
         return sprintConverter.convertToDto(currentSprint);
@@ -140,22 +164,13 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public void recoverAllSprintsByBoard(Long boardId){
+    public  List<SprintDto> recoverAllSprintsByBoard(Long boardId){
         List<Sprint> sprintList = sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.IN_ARCHIVE);
         for(Sprint item: sprintList){
             item.setSprintStatus(SprintStatus.CREATED);
             sprintRepository.save(item);
         }
-    }
-
-    @Override
-    public void deleteSprint(Long sprintId) {
-        Sprint currentSprint = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
-        if(currentSprint.getSprintType().equals(SprintType.BACKLOG)){
-            throw new BacklogModificationException(BACKLOG_DELETE_IS_PROHIBITED);
-        }
-        sprintRepository.delete(currentSprint);
+        return sprintConverter.convertToDto(sprintList);
     }
 
 }

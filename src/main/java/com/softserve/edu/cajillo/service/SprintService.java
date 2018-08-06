@@ -12,8 +12,7 @@ public interface SprintService {
 
     void createSprintBacklog(Long boardId);
 
-    List<SprintDto> getAllSprintsByBoardIdNotInArchive
-            (Long boardId);
+    List<SprintDto> getAllSprintsByBoardIdNotInArchive(Long boardId);
 
     List<SprintDto> getAllSprintsByBoardAndStatusCreated(Long boardId);
 
@@ -29,7 +28,7 @@ public interface SprintService {
 
     void archiveAllSprintsByBoard(Long boardId);
 
-    void recoverAllSprintsByBoard(Long boardId);
+    List<SprintDto> recoverAllSprintsByBoard(Long boardId);
 
     void deleteSprint(Long sprintId);
 
