@@ -5,6 +5,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -49,4 +50,8 @@ public class User extends DateAudit {
 
     @Column(name = "avatar", columnDefinition = "TEXT")
     private String avatar;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_status")
+    private UserAccountStatus accountStatus;
 }

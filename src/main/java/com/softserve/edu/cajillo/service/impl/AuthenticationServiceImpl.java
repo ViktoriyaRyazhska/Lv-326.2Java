@@ -6,6 +6,7 @@ import com.softserve.edu.cajillo.dto.RegisterRequestDto;
 import com.softserve.edu.cajillo.dto.ResetPasswordDto;
 import com.softserve.edu.cajillo.entity.PasswordResetToken;
 import com.softserve.edu.cajillo.entity.User;
+import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
 import com.softserve.edu.cajillo.exception.*;
 import com.softserve.edu.cajillo.repository.PasswordResetTokenRepository;
 import com.softserve.edu.cajillo.repository.UserRepository;
@@ -75,6 +76,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setUsername(registerRequestDto.getUsername());
             user.setEmail(registerRequestDto.getEmail());
             user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
+            user.setAccountStatus(UserAccountStatus.ACTIVE);
             userRepository.save(user);
             emailService.sendEmail(user.getEmail(), "You successfully registered Cajillo project.",
                     "Dear " + user.getUsername() + ",\n" +

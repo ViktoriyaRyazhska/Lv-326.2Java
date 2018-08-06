@@ -3,6 +3,7 @@ package com.softserve.edu.cajillo.service.impl;
 import com.softserve.edu.cajillo.dto.AvatarDto;
 import com.softserve.edu.cajillo.dto.UpdateUserDto;
 import com.softserve.edu.cajillo.entity.User;
+import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
 import com.softserve.edu.cajillo.exception.*;
 import com.softserve.edu.cajillo.repository.UserRepository;
 import com.softserve.edu.cajillo.service.UserService;
@@ -20,6 +21,8 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
 
     private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id=";
+    private static final String USER_USERNAME_TAKEN = "Username is already taken";
+    private static final String USER_EMAIL_TAKEN = "Email is already taken";
 
     private static final String USER_PASSWORD_MISMATCH_MESSAGE = "Password mismatch";
     private static final String UNSUPPORTED_MIME_TYPES_ERROR_MESSAGE = "Unsupported media type";
@@ -58,6 +61,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
+        user.setAccountStatus(UserAccountStatus.DELETED);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void restoreUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
+        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        userRepository.save(user);
+    }
+
+    @Override
     public void uploadAvatar(Long userId, MultipartFile avatar) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
         List<String> mimeTypes = Arrays.asList("image/jpeg", "image/pjpeg", "image/png");
@@ -81,5 +100,23 @@ public class UserServiceImpl implements UserService {
     public AvatarDto getUserAvatar(Long userId) {
         return new AvatarDto(userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE)).getAvatar());
+    }
+
+    @Override
+    public void deleteUserAvatar(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
+        user.setAvatar(null);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void isAvailableUsernameAndEmail(String username, String email) {
+        if ((username != null) && userRepository.existsByUsername(username)) {
+            throw new UserAlreadyExistsException(USER_USERNAME_TAKEN);
+        }
+        if ((email != null) && userRepository.existsByEmail(email)) {
+            throw new UserAlreadyExistsException(USER_EMAIL_TAKEN);
+        }
     }
 }

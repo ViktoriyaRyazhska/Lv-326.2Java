@@ -11,7 +11,15 @@ public interface UserService {
 
     void updateUser(Long userId, UpdateUserDto userDto);
 
+    void restoreUser(Long id);
+
     void uploadAvatar(Long userId, MultipartFile avatar);
 
     AvatarDto getUserAvatar(Long userId);
+
+    void isAvailableUsernameAndEmail(String username, String email);
+
+    void deleteUserAvatar(Long id);
+
+    void deleteUser(Long id);
 }
