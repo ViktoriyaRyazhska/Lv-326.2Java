@@ -5,17 +5,22 @@ import com.softserve.edu.cajillo.dto.BoardDto;
 import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
+import com.softserve.edu.cajillo.entity.RoleManager;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.SprintStatus;
 import com.softserve.edu.cajillo.entity.enums.SprintType;
 import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
+import com.softserve.edu.cajillo.repository.RoleManagerRepository;
 import com.softserve.edu.cajillo.service.BoardService;
 import com.softserve.edu.cajillo.service.SprintService;
 import com.softserve.edu.cajillo.service.TableListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -26,6 +31,9 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private RoleManagerRepository roleManagerRepository;
+  
     @Autowired
     private TableListService tableListService;
 
@@ -92,5 +100,20 @@ public class BoardServiceImpl implements BoardService {
 
     private void recoverAllInternalItems(Long boardId) {
         tableListService.recoverTableListsByBoardId(boardId);
+    }
+
+    public List<Board> getAllBoardsByTeamId(Long teamId){
+
+        List<Board> allBoardsForCurrentTeam = new ArrayList<>();
+
+        List<RoleManager> allManagers = roleManagerRepository.findAllByTeamId(teamId);
+
+        if (allManagers != null){
+            for (RoleManager manager : allManagers) {
+                allBoardsForCurrentTeam.add(manager.getBoard());
+            }
+        }
+
+        return allBoardsForCurrentTeam;
     }
 }
