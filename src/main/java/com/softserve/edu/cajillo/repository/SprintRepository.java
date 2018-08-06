@@ -14,9 +14,9 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
     @Override
     Optional<Sprint> findById(Long sprintId);
 
-    Optional<List<Sprint>> getAllByBoardIdAndSprintStatusNot
+    List<Sprint> getAllByBoardIdAndSprintStatusNot
             (Long boardId, SprintStatus sprintStatus);
 
-    Optional<List<Sprint>> getAllByBoardIdAndSprintStatus(Long boardId, SprintStatus sprintStatus);
+    List<Sprint> getAllByBoardIdAndSprintStatus(Long boardId, SprintStatus sprintStatus);
 
 }

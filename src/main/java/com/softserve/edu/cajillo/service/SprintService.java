@@ -8,7 +8,7 @@ public interface SprintService {
 
     SprintDto getSprint(Long id);
 
-    void createSprint(SprintDto sprintDto);
+    void createSprint(SprintDto sprintDto, Long boardid);
 
     void createSprintBacklog(Long boardId);
 

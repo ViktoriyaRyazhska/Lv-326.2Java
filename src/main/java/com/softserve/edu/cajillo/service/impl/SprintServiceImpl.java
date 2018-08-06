@@ -20,8 +20,7 @@ import java.util.List;
 public class SprintServiceImpl implements SprintService {
 
     private static final String SPRINT_ID_NOT_FOUND_MESSAGE = "Could not find sprint with id=";
-    private static final String SPRINTS_NOT_FOUND_MESSAGE = "Could not find sprints by board with id=";
-    private static final String SPRINT_ID_FOUND_IN_ARCHIVE = "Find in archive sprint with id=";
+    private static final String SPRINT_ID_FOUND_IN_ARCHIVE = "Find in archive sprint or backlog with id=";
     private static final String SPRINT_FOR_CUSTOM_BOARD_MISMATCH = "Could not create sprint for custom board with id=";
     private static final String BACKLOG_DELETE_IS_PROHIBITED = "Prohibited to delete sprint backlog";
     private static final String BACKLOG_UPDATE_IS_PROHIBITED = "Prohibited to modificate sprint backlog";
@@ -37,10 +36,7 @@ public class SprintServiceImpl implements SprintService {
     public SprintDto getSprint(Long sprintId) {
         Sprint foundSprint = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
-        if(foundSprint.getSprintType().equals(SprintType.BACKLOG)){
-            throw new BacklogModificationException(BACKLOG_RECOVERY_IS_PROHIBITED);
-        }
-        else if(foundSprint.getSprintStatus().equals(SprintStatus.IN_ARCHIVE)){
+        if(foundSprint.getSprintStatus().equals(SprintStatus.IN_ARCHIVE)){
             throw new SprintNotFoundException(SPRINT_ID_FOUND_IN_ARCHIVE + sprintId);
         } else {
             return sprintConverter.convertToDto(foundSprint);
@@ -48,7 +44,8 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public void createSprint(SprintDto sprintDto) {
+    public void createSprint(SprintDto sprintDto, Long boardId) {
+        sprintDto.setBoardId(boardId);
         if(sprintConverter.convertToEntity(sprintDto).getBoard().getBoardType()
                 .equals(BoardType.CUSTOM)){
             throw new BoardTypeMismatchException(SPRINT_FOR_CUSTOM_BOARD_MISMATCH +sprintDto.getBoardId());
@@ -73,26 +70,22 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public List<SprintDto> getAllSprintsByBoardIdNotInArchive(Long boardId) {
         return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatusNot
-                (boardId, SprintStatus.IN_ARCHIVE)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + boardId)));
+                (boardId, SprintStatus.IN_ARCHIVE));
     }
 
     @Override
     public List<SprintDto> getAllSprintsByBoardAndStatusCreated(Long boardId) {
-        return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.CREATED)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + boardId)));
+        return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.CREATED));
     }
 
     @Override
     public List<SprintDto> getAllSprintsByBoardAndStatusInProgress(Long boardId) {
-        return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.IN_PROGRESS)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + boardId)));
+        return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.IN_PROGRESS));
     }
 
     @Override
     public List<SprintDto> getAllSprintsByBoardAndStatusCompleted(Long boardId) {
-        return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.COMPLETED)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + boardId)));
+        return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.COMPLETED));
     }
 
     @Override
@@ -139,8 +132,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public void archiveAllSprintsByBoard(Long boardId){
         List<Sprint> sprintList = sprintRepository.getAllByBoardIdAndSprintStatusNot
-                (boardId, SprintStatus.IN_ARCHIVE)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + boardId));
+                (boardId, SprintStatus.IN_ARCHIVE);
         for(Sprint item: sprintList){
             item.setSprintStatus(SprintStatus.IN_ARCHIVE);
             sprintRepository.save(item);
@@ -149,8 +141,7 @@ public class SprintServiceImpl implements SprintService {
 
     @Override
     public void recoverAllSprintsByBoard(Long boardId){
-        List<Sprint> sprintList = sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.IN_ARCHIVE)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINTS_NOT_FOUND_MESSAGE + boardId));
+        List<Sprint> sprintList = sprintRepository.getAllByBoardIdAndSprintStatus(boardId, SprintStatus.IN_ARCHIVE);
         for(Sprint item: sprintList){
             item.setSprintStatus(SprintStatus.CREATED);
             sprintRepository.save(item);
@@ -166,6 +157,5 @@ public class SprintServiceImpl implements SprintService {
         }
         sprintRepository.delete(currentSprint);
     }
-
 
 }

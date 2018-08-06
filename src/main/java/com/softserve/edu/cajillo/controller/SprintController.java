@@ -13,9 +13,9 @@ public class SprintController {
     @Autowired
     SprintService sprintService;
 
-    @PostMapping
-    public void createSprint(@RequestBody SprintDto sprintDto) {
-        sprintService.createSprint(sprintDto);
+    @PostMapping("/{boardId}")
+    public void createSprint(@PathVariable("boardId") Long boardId, @RequestBody SprintDto sprintDto) {
+        sprintService.createSprint(sprintDto, boardId);
     }
 
     @GetMapping("/{sprintId}")
@@ -38,7 +38,7 @@ public class SprintController {
         sprintService.archiveSprint(sprintId);
     }
 
-    @PostMapping("/{sprintId}")
+    @PostMapping("/recover/{sprintId}")
     public SprintDto recoverSprint(@PathVariable("sprintId") Long sprintId) {
         return sprintService.recoverSprint(sprintId);
     }
