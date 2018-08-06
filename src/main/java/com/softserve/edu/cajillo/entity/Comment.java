@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.entity;
 
+import com.softserve.edu.cajillo.entity.enums.CommentStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,4 +24,8 @@ public class Comment extends DateAudit {
             cascade = CascadeType.ALL)
     @JoinColumn(name = "ticket_id", referencedColumnName = "id", nullable = false)
     private Ticket ticket;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "comment_status", nullable = false)
+    private CommentStatus commentStatus;
 }

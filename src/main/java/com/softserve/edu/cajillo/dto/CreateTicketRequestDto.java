@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTicketRequestDto {
+public class CreateTicketRequestDto extends BaseDto {
 
     @NotBlank
     private String name;
@@ -17,4 +17,6 @@ public class CreateTicketRequestDto {
 
     @NotBlank
     private Long boardId;
+
+    private Long createdById ;
 }
