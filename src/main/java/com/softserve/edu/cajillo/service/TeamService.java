@@ -17,5 +17,5 @@ public interface TeamService {
 
     void addUserToTeam(UserDto userDto, Long teamId);
 
-    void deleteUserFromTeam(UserDto userDto, Long teamId);
+    void deleteUserFromTeam(Long userId, Long teamId);
 }

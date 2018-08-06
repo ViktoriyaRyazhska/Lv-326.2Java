@@ -15,7 +15,7 @@ public class RoleManager extends BaseEntity<Long> {
     @JoinColumn(name = "board_id", referencedColumnName = "id")
     private Board board;
 
-    @ManyToOne(cascade = CascadeType.ALL,
+    @ManyToOne(cascade = CascadeType.MERGE,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;

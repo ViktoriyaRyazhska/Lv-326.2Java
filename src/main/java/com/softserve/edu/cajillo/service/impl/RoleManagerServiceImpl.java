@@ -18,6 +18,7 @@ public class RoleManagerServiceImpl implements RoleManagerService {
     @Autowired
     private RoleManagerRepository roleManagerRepository;
 
+
     @Override
     public RoleManager getRoleManagerService(Long id) {
         return roleManagerRepository.findById(id).orElseThrow(() -> new RoleManagerServiceNotFoundException(ROLEMANAGERSERVICE_ID_NOT_FOUND_MESSAGE + id));
