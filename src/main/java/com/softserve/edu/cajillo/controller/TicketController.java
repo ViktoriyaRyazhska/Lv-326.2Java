@@ -5,6 +5,7 @@ import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,13 +20,19 @@ public class TicketController {
         return ticketService.getTicket(id);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    void deleteTicket(@PathVariable("id") Long id) {
+        ticketService.deleteTicket(id);
+    }
+
     @PutMapping
     public TicketDto updateTicket(@RequestBody TicketDto ticketDto) {
         return ticketService.updateTicket(ticketDto);
     }
 
     @PostMapping
-    public CreateTicketResponseDto createTicket(/*@Valid*/ @RequestBody CreateTicketRequestDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
+    public CreateTicketDto createTicket(/*@Valid*/ @RequestBody CreateTicketDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
         return ticketService.createTicket(createTicketRequest, userPrincipal);
     }
 }

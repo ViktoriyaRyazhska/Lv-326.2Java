@@ -2,17 +2,14 @@ package com.softserve.edu.cajillo.converter.impl.ticketConverterImpl;
 
 import com.softserve.edu.cajillo.converter.CommentConverter;
 import com.softserve.edu.cajillo.converter.ticketConverter.TicketConverter;
-import com.softserve.edu.cajillo.dto.CommentDto;
 import com.softserve.edu.cajillo.dto.TicketDto;
 import com.softserve.edu.cajillo.entity.Ticket;
-import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.entity.enums.TicketPriority;
+import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class TicketConverterImpl implements TicketConverter {
@@ -41,19 +38,23 @@ public class TicketConverterImpl implements TicketConverter {
     @Override
     public Ticket convertToEntity(TicketDto dto) {
         Ticket ticket = modelMapper.map(dto, Ticket.class);
-        ticket.setAssignedTo(userRepository.findById(dto.getAssignedToId()).get());
-        ticket.setCreatedBy(userRepository.findById(dto.getCreatedById()).get());
+        ticket.setAssignedTo(userRepository.findById(dto.getAssignedToId()).orElseThrow(() ->
+                new UnsatisfiedException(String.format("User with id %d not found", dto.getAssignedToId()))));
+        ticket.setCreatedBy(userRepository.findById(dto.getCreatedById()).orElseThrow(() ->
+                new UnsatisfiedException(String.format("User with id %d not found", dto.getCreatedById()))));
         ticket.setTicketPriority(TicketPriority.valueOf(dto.getTicketPriority()));
-        ticket.setTableList(tableListRepository.findById(dto.getTableListId()).get());
-        ticket.setBoard(boardRepository.findById(dto.getBoardId()).get());
-        ticket.setSprint(sprintRepository.findById(dto.getSprintId()).get());
+        ticket.setTableList(tableListRepository.findById(dto.getTableListId()).orElseThrow(() ->
+                new UnsatisfiedException(String.format("TableList with id %d not found", dto.getTableListId()))));
+        ticket.setBoard(boardRepository.findById(dto.getBoardId()).orElseThrow(() ->
+                new UnsatisfiedException(String.format("Board with id %d not found", dto.getBoardId()))));
+        ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
+                new UnsatisfiedException(String.format("Sprint with id %d not found", dto.getSprintId()))));
         return ticket;
     }
 
     @Override
     public TicketDto convertToDto(Ticket entity) {
-        TicketDto ticketDto
-         = modelMapper.map(entity, TicketDto.class);
+        TicketDto ticketDto = modelMapper.map(entity, TicketDto.class);
         if (entity.getAssignedTo() != null)
         ticketDto.setAssignedToId(entity.getAssignedTo().getId());
         ticketDto.setCreatedById(entity.getCreatedBy().getId());
@@ -61,10 +62,7 @@ public class TicketConverterImpl implements TicketConverter {
         if (entity.getSprint() != null)
         ticketDto.setSprintId(entity.getSprint().getId());
         ticketDto.setTableListId(entity.getTableList().getId());
-
-        List<CommentDto> commentDtos = commentConverter.convertToDto(commentRepository.findAllByTicketId(entity.getId()));
-
-        ticketDto.setComments(commentDtos);
+        ticketDto.setComments(commentConverter.convertToDto(commentRepository.findAllByTicketId(entity.getId())));
         return ticketDto;
     }
 }
