@@ -65,14 +65,16 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public BoardDto getBoard(Long id) {
-        Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED);
+        Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
+                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
         if (board == null)
             throw new UnsatisfiedException(String.format("Board with id %d not found", id));
         return boardConverter.convertToDto(board);
     }
 
     public Board getBoardEntity(Long id) {
-        Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED);
+        Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
+                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
         if (board == null)
             throw new UnsatisfiedException(String.format("Board with id %d not found", id));
         return board;
@@ -91,7 +93,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public BoardDto recoverBoard(Long boardId) {
-        Board board = boardRepository.findByIdAndStatus(boardId, ItemsStatus.DELETED);
+        Board board = boardRepository.findByIdAndStatus(boardId, ItemsStatus.DELETED)
+                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", boardId)));
         board.setStatus(ItemsStatus.OPENED);
         recoverAllInternalItems(boardId);
         boardRepository.save(board);
