@@ -57,7 +57,9 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public CreateTicketDto createTicket(CreateTicketDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
         createTicketRequest.setCreatedById(userPrincipal.getId());
-        return ticketToCreateTicketDtoConverter.convertToDto(ticketRepository.save(ticketToCreateTicketDtoConverter.convertToEntity(createTicketRequest)));
+        Ticket ticket = ticketToCreateTicketDtoConverter.convertToEntity(createTicketRequest);
+        ticket.setStatus(ItemsStatus.OPENED);
+        return ticketToCreateTicketDtoConverter.convertToDto(ticketRepository.save(ticket));
     }
 
     public void deleteTicketsByTableListId(Long listId) {

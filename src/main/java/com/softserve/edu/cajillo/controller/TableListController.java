@@ -40,7 +40,7 @@ public class TableListController {
         return tableListService.getTableList(listId);
     }
 
-    @GetMapping("/api/boards/lists/{listId1}/{listId2}")
+    @PutMapping("/api/boards/lists/{listId1}/{listId2}")
     public List<TableListDto> swapSequenceNumbers(@PathVariable Long listId1, @PathVariable Long listId2) {
         return tableListService.swapSequenceNumbers(listId1, listId2);
     }
