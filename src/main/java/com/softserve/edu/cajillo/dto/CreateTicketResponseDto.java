@@ -20,4 +20,7 @@ public class CreateTicketResponseDto extends BaseDto {
 
     @NotBlank
     private Long boardId;
+
+    @NotBlank
+    private String name;
 }

@@ -39,6 +39,7 @@ public class TicketController {
     public ResponseEntity<?> createTicket(/*@Valid*/ @RequestBody CreateTicketRequestDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
         Ticket ticket = ticketService.createTicket(createTicketRequest, userPrincipal);
         return ResponseEntity.ok()
-                .body(new CreateTicketResponseDto(ticket.getId(), ticket.getTableList().getId(), ticket.getBoard().getId()));
+                .body(new CreateTicketResponseDto(ticket.getId(), ticket.getTableList().getId(),
+                        ticket.getBoard().getId(), ticket.getName()));
     }
 }
