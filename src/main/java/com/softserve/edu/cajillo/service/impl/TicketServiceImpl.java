@@ -5,6 +5,7 @@ import com.softserve.edu.cajillo.dto.*;
 import com.softserve.edu.cajillo.entity.Ticket;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.exception.TicketNotFoundException;
+import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.*;
 import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
@@ -27,7 +28,7 @@ public class TicketServiceImpl implements TicketService {
     private TicketToBoardResponseDtoConverter ticketToBoardResponseDtoConverter;
 
     @Autowired
-    private TicketToCreateTicketRequestDtoConverter ticketToCreateTicketRequestDtoConverter;
+    private TicketToCreateTicketDtoConverter ticketToCreateTicketDtoConverter;
 
     @Autowired
     private TicketConverter ticketConverter;
@@ -37,23 +38,26 @@ public class TicketServiceImpl implements TicketService {
         return ticketConverter.convertToDto(ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + id)));
     }
 
-    // Method for Vova, do not ask why
     public List<TicketForBoardResponseDto> getTicketsByListId(Long tableListId) {
         return ticketToBoardResponseDtoConverter
                 .convertToDto(ticketRepository.findAllByTableListIdAndStatus(tableListId, ItemsStatus.OPENED));
     }
 
+    public void deleteTicket(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() ->
+                new UnsatisfiedException(String.format("Ticket with id %d not found", ticketId)));
+        ticket.setStatus(ItemsStatus.DELETED);
+        ticketRepository.save(ticket);
+    }
+
     public TicketDto updateTicket(TicketDto ticketDto) {
-        Ticket ticket = ticketConverter.convertToEntity(ticketDto);
-        Ticket ticket1 = ticketRepository.save(ticket);
-        return ticketConverter.convertToDto(ticket1);
+        return ticketConverter.convertToDto(ticketRepository.save(ticketConverter.convertToEntity(ticketDto)));
     }
 
     @Override
-    public CreateTicketResponseDto createTicket(CreateTicketRequestDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
+    public CreateTicketDto createTicket(CreateTicketDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
         createTicketRequest.setCreatedById(userPrincipal.getId());
-        Ticket ticket = ticketRepository.save(ticketToCreateTicketRequestDtoConverter.convertToEntity(createTicketRequest));
-        return new CreateTicketResponseDto(ticket.getName(), ticket.getId(), ticket.getTableList().getId(), ticket.getBoard().getId());
+        return ticketToCreateTicketDtoConverter.convertToDto(ticketRepository.save(ticketToCreateTicketDtoConverter.convertToEntity(createTicketRequest)));
     }
 
     public void deleteTicketsByTableListId(Long listId) {

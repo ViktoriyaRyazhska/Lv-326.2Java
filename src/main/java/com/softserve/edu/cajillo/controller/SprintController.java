@@ -1,38 +1,26 @@
 package com.softserve.edu.cajillo.controller;
 
 import com.softserve.edu.cajillo.dto.SprintDto;
-import com.softserve.edu.cajillo.entity.Sprint;
 import com.softserve.edu.cajillo.service.SprintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/sprints")
 public class SprintController {
 
     @Autowired
-    SprintService sprintService;
+    private SprintService sprintService;
 
-    @GetMapping("/{id}")
-    public Sprint getSprint(@PathVariable("id") Long sprintId) {
+    @PostMapping("/{boardId}")
+    public void createSprint(@PathVariable("boardId") Long boardId, @RequestBody SprintDto sprintDto) {
+        sprintService.createSprint(sprintDto, boardId);
+    }
+
+    @GetMapping("/{sprintId}")
+    public SprintDto getSprint(@PathVariable("sprintId") Long sprintId) {
         return sprintService.getSprint(sprintId);
-    }
-
-    @PostMapping("/sprint")
-    public void createSprint(@RequestBody SprintDto sprintDto) {
-        sprintService.createSprint(sprintDto);
-    }
-
-    @PostMapping("/backlog")
-    public void createSprintBacklog(@RequestBody SprintDto sprintDto) {
-        sprintService.createSprintBacklog(sprintDto);
-    }
-
-    @DeleteMapping("/{sprintId}")
-    public void deleteSprint(@PathVariable("sprintId") Long sprintId) {
-        sprintService.deleteSprint(sprintId);
     }
 
     @PutMapping("/{sprintId}")
@@ -45,9 +33,13 @@ public class SprintController {
         sprintService.archiveSprint(sprintId);
     }
 
-    @GetMapping("/board/{boardId}")
-    public List<Sprint> getAllSprintsByBoard(@PathVariable("boardId") Long boardId) {
-        return sprintService.getAllSprintsByBoardId(boardId);
+    @PutMapping("/recover/{sprintId}")
+    public SprintDto recoverSprint(@PathVariable("sprintId") Long sprintId) {
+        return sprintService.recoverSprint(sprintId);
     }
 
+    @DeleteMapping("/{sprintId}")
+    public void deleteSprint(@PathVariable("sprintId") Long sprintId) {
+        sprintService.deleteSprint(sprintId);
+    }
 }

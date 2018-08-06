@@ -2,14 +2,10 @@ package com.softserve.edu.cajillo.service.impl;
 
 import com.softserve.edu.cajillo.converter.impl.BoardConverterImpl;
 import com.softserve.edu.cajillo.dto.BoardDto;
-import com.softserve.edu.cajillo.dto.SprintDto;
-import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.RoleManager;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
-import com.softserve.edu.cajillo.entity.enums.SprintStatus;
-import com.softserve.edu.cajillo.entity.enums.SprintType;
 import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.RoleManagerRepository;
@@ -33,7 +29,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private RoleManagerRepository roleManagerRepository;
-  
+
     @Autowired
     private TableListService tableListService;
 
@@ -44,19 +40,10 @@ public class BoardServiceImpl implements BoardService {
         board.setStatus(ItemsStatus.OPENED);
         Board save = boardRepository.save(board);
         if (board.getBoardType() == BoardType.SCRUM) {
-            SprintDto sprintDto = generateBacklog(save);
-            sprintService.createSprintBacklog(sprintDto);
+            sprintService.createSprintBacklog(board.getId());
         }
         return boardConverter.convertToDto(save);
     }
-
-    public SprintDto generateBacklog(Board board) {
-        SprintDto sprintDto = new SprintDto();
-        sprintDto.setLabel("Backlog");
-        sprintDto.setBoardId(board.getId());
-        return sprintDto;
-    }
-
     public BoardDto updateBoard(Long id, Board board) {
         Board existedBoard = boardRepository.findById(id)
                 .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
@@ -83,13 +70,15 @@ public class BoardServiceImpl implements BoardService {
     public void deleteBoard(Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
+        deleteAllInternalBoardItems(id);
         board.setStatus(ItemsStatus.DELETED);
         boardRepository.save(board);
-        deleteAllInternalBoardItems(id);
     }
 
     private void deleteAllInternalBoardItems(Long boardId) {
         tableListService.deleteTableListsByBoardId(boardId);
+        sprintService.archiveAllSprintsByBoard(boardId);
+
     }
 
     public BoardDto recoverBoard(Long boardId) {
@@ -103,20 +92,17 @@ public class BoardServiceImpl implements BoardService {
 
     private void recoverAllInternalItems(Long boardId) {
         tableListService.recoverTableListsByBoardId(boardId);
+        sprintService.recoverAllSprintsByBoard(boardId);
     }
 
     public List<Board> getAllBoardsByTeamId(Long teamId){
-
         List<Board> allBoardsForCurrentTeam = new ArrayList<>();
-
         List<RoleManager> allManagers = roleManagerRepository.findAllByTeamId(teamId);
-
         if (allManagers != null){
             for (RoleManager manager : allManagers) {
                 allBoardsForCurrentTeam.add(manager.getBoard());
             }
         }
-
         return allBoardsForCurrentTeam;
     }
 }

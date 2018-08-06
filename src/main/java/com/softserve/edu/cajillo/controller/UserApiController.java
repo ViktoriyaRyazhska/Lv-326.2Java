@@ -8,8 +8,8 @@ import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,24 +28,50 @@ public class UserApiController {
         return userConverter.convertToDto(userService.getUser(id));
     }
 
-    @GetMapping("/")
+    @GetMapping
+    @PreAuthorize("hasRole('ACTIVE')")
     public UserDto getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         return userConverter.convertToDto(userService.getUser(currentUser.getId()));
     }
 
-    @PutMapping("/")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ACTIVE')")
+    public void deleteCurrentUser(@CurrentUser UserPrincipal currentUser) {
+        userService.deleteUser(currentUser.getId());
+    }
+
+    @PostMapping("/restore")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('DELETED')")
+    public void restoreCurrentUser(@CurrentUser UserPrincipal currentUser) {
+        userService.restoreUser(currentUser.getId());
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ACTIVE')")
     public void updateCurrentUser(@CurrentUser UserPrincipal currentUser, @RequestBody UpdateUserDto userDto) {
         userService.updateUser(currentUser.getId(), userDto);
     }
 
     @PostMapping("/avatar")
+    @PreAuthorize("hasRole('ACTIVE')")
     @ResponseStatus(HttpStatus.CREATED)
-    public void uploadCurrentUserAvatar(@CurrentUser UserPrincipal currentUser, @RequestParam("file") MultipartFile avatar) {//} @ModelAttribute UserAvatarUploadModel model) {
+    public void uploadCurrentUserAvatar(@CurrentUser UserPrincipal currentUser,
+                                        @RequestParam("file") MultipartFile avatar) {
         userService.uploadAvatar(currentUser.getId(), avatar);
     }
 
+    @DeleteMapping("/avatar")
+    @PreAuthorize("hasRole('ACTIVE')")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteCurrentUserAvatar(@CurrentUser UserPrincipal currentUser) {
+        userService.deleteUserAvatar(currentUser.getId());
+    }
+
     @GetMapping("/avatar")
+    @PreAuthorize("hasRole('ACTIVE')")
     public AvatarDto getCurrentUserAvatar(@CurrentUser UserPrincipal currentUser) {
         return userService.getUserAvatar(currentUser.getId());
     }
@@ -53,5 +79,11 @@ public class UserApiController {
     @GetMapping("/{id}/avatar")
     public AvatarDto getUserAvatar(@PathVariable("id") Long id) {
         return userService.getUserAvatar(id);
+    }
+
+    @GetMapping("/available")
+    public void checkIfUserEmailOrUsernameAvailable(@RequestParam(required = false, name = "email") String email,
+                                                    @RequestParam(required = false, name = "username") String username) {
+        userService.isAvailableUsernameAndEmail(username, email);
     }
 }

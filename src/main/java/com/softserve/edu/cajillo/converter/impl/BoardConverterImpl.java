@@ -3,6 +3,7 @@ package com.softserve.edu.cajillo.converter.impl;
 import com.softserve.edu.cajillo.converter.BoardConverter;
 import com.softserve.edu.cajillo.converter.SprintConverter;
 import com.softserve.edu.cajillo.dto.BoardDto;
+import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.Sprint;
@@ -47,8 +48,8 @@ public class BoardConverterImpl implements BoardConverter {
         }
         BoardDto dto = modelMapper.map(entity, BoardDto.class);
         if(entity.getBoardType() == BoardType.SCRUM) {
-            List<Sprint> allSprintsByBoardId = sprintService.getAllSprintsByBoardId(dto.getId());
-            dto.setSprintDtos(sprintConverter.convertToDto(allSprintsByBoardId));
+            List<SprintDto> allSprintsByBoardId = sprintService.getAllSprintsByBoardIdNotInArchive(dto.getId());
+            dto.setSprintDtos(allSprintsByBoardId);
         }
         dto.setTableListDtoList(allTableLists);
         return dto;

@@ -4,7 +4,6 @@ import com.softserve.edu.cajillo.converter.SprintConverter;
 import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.entity.Sprint;
 import com.softserve.edu.cajillo.service.BoardService;
-import com.softserve.edu.cajillo.service.impl.SprintServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,9 +13,6 @@ public class SprintConverterImpl implements SprintConverter {
 
     @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private SprintServiceImpl sprintService;
 
     @Autowired
     private BoardService boardService;
@@ -35,4 +31,3 @@ public class SprintConverterImpl implements SprintConverter {
         return sprintDto;
     }
 }
-
