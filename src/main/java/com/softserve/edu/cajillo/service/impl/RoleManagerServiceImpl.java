@@ -1,7 +1,7 @@
 package com.softserve.edu.cajillo.service.impl;
 
 import com.softserve.edu.cajillo.entity.RoleManager;
-import com.softserve.edu.cajillo.exception.RoleManagerServiceNotFoundException;
+import com.softserve.edu.cajillo.exception.RoleManagerServiceException;
 import com.softserve.edu.cajillo.repository.RoleManagerRepository;
 import com.softserve.edu.cajillo.service.RoleManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +18,15 @@ public class RoleManagerServiceImpl implements RoleManagerService {
     @Autowired
     private RoleManagerRepository roleManagerRepository;
 
-
     @Override
     public RoleManager getRoleManagerService(Long id) {
-        return roleManagerRepository.findById(id).orElseThrow(() -> new RoleManagerServiceNotFoundException(ROLEMANAGERSERVICE_ID_NOT_FOUND_MESSAGE + id));
+        return roleManagerRepository.findById(id)
+                .orElseThrow(() -> new RoleManagerServiceException(ROLEMANAGERSERVICE_ID_NOT_FOUND_MESSAGE + id));
     }
 
     @Override
     public List<RoleManager> getAllRoleManagerServicesByUserId(Long id) {
         return roleManagerRepository.findAllByUserId(id)
-                .orElseThrow(() -> new RoleManagerServiceNotFoundException(ROLEMANAGERSERVICE_USER_ID_NOT_FOUND_MESSAGE + id));
+                .orElseThrow(() -> new RoleManagerServiceException(ROLEMANAGERSERVICE_USER_ID_NOT_FOUND_MESSAGE + id));
     }
 }

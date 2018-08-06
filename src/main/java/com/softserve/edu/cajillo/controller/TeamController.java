@@ -48,7 +48,7 @@ public class TeamController {
     @DeleteMapping("/deleteTeam/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTeam(@PathVariable Long id) {
-
+        teamService.deleteTeam(id);
     }
 
     @PostMapping("/{teamId}/addUser")
