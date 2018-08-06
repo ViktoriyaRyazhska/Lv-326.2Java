@@ -3,6 +3,7 @@ package com.softserve.edu.cajillo.entity;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.TicketIssueType;
 
+import com.softserve.edu.cajillo.entity.enums.TicketPriority;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,8 +21,9 @@ public class Ticket extends DateAudit {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "priority")
-    private String priority;
+    private TicketPriority ticketPriority;
 
     @Column(name = "ticket_issue_type")
     private TicketIssueType ticketIssueType;

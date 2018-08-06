@@ -1,10 +1,7 @@
 package com.softserve.edu.cajillo.service.impl;
 
-import com.softserve.edu.cajillo.converter.ticketConverter.TicketConverter;
-import com.softserve.edu.cajillo.converter.ticketConverter.TicketToBoardResponseDtoConverter;
-import com.softserve.edu.cajillo.dto.CreateTicketRequestDto;
-import com.softserve.edu.cajillo.dto.GetSingleTicketResponseDto;
-import com.softserve.edu.cajillo.dto.TicketForBoardResponseDto;
+import com.softserve.edu.cajillo.converter.ticketConverter.*;
+import com.softserve.edu.cajillo.dto.*;
 import com.softserve.edu.cajillo.entity.Ticket;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.exception.TicketNotFoundException;
@@ -12,7 +9,6 @@ import com.softserve.edu.cajillo.repository.*;
 import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.TicketService;
-import com.softserve.edu.cajillo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,22 +27,13 @@ public class TicketServiceImpl implements TicketService {
     private TicketToBoardResponseDtoConverter ticketToBoardResponseDtoConverter;
 
     @Autowired
-    private CommentRepository commentRepository;
-
-    @Autowired
-    private TableListRepository tableListRepository;
-
-    @Autowired
-    private BoardRepository boardRepository;
+    private TicketToCreateTicketRequestDtoConverter ticketToCreateTicketRequestDtoConverter;
 
     @Autowired
     private TicketConverter ticketConverter;
 
-    @Autowired
-    private UserService userService;
-
     @Override
-    public GetSingleTicketResponseDto getTicket(Long id) {
+    public TicketDto getTicket(Long id) {
         return ticketConverter.convertToDto(ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + id)));
     }
 
@@ -56,18 +43,17 @@ public class TicketServiceImpl implements TicketService {
                 .convertToDto(ticketRepository.findAllByTableListIdAndStatus(tableListId, ItemsStatus.OPENED));
     }
 
-    @Override
-    public Ticket createTicket(CreateTicketRequestDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
+    public TicketDto updateTicket(TicketDto ticketDto) {
+        Ticket ticket = ticketConverter.convertToEntity(ticketDto);
+        Ticket ticket1 = ticketRepository.save(ticket);
+        return ticketConverter.convertToDto(ticket1);
+    }
 
-//        ticketConverter.convertToDto(ticket)
-        Ticket ticket = new Ticket();
-        ticket.setBoard(boardRepository.findById(createTicketRequest.getBoardId()).orElseThrow(RuntimeException::new));
-        ticket.setName(createTicketRequest.getName());
-        ticket.setTableList(tableListRepository.findById(createTicketRequest.getTableListId()).orElseThrow(RuntimeException::new));
-        ticket.setCreatedBy(userService.getUser(userPrincipal.getId()));
-        ticket.setStatus(ItemsStatus.OPENED);
-        Ticket result = ticketRepository.save(ticket);
-        return result;
+    @Override
+    public CreateTicketResponseDto createTicket(CreateTicketRequestDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
+        createTicketRequest.setCreatedById(userPrincipal.getId());
+        Ticket ticket = ticketRepository.save(ticketToCreateTicketRequestDtoConverter.convertToEntity(createTicketRequest));
+        return new CreateTicketResponseDto(ticket.getName(), ticket.getId(), ticket.getTableList().getId(), ticket.getBoard().getId());
     }
 
     public void deleteTicketsByTableListId(Long listId) {

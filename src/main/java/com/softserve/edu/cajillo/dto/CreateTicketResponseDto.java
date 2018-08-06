@@ -12,6 +12,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class CreateTicketResponseDto extends BaseDto {
 
+    private String name;
+
     @NotBlank
     private Long ticketId;
 
@@ -21,6 +23,4 @@ public class CreateTicketResponseDto extends BaseDto {
     @NotBlank
     private Long boardId;
 
-    @NotBlank
-    private String name;
 }
