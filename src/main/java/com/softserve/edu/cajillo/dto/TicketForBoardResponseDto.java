@@ -1,11 +1,11 @@
 package com.softserve.edu.cajillo.dto;
 
-import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.entity.enums.TicketIssueType;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.Instant;
+
 @Data
 public class TicketForBoardResponseDto extends BaseDto implements Serializable {
 

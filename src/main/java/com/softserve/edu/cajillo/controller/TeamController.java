@@ -18,16 +18,16 @@ import org.springframework.web.bind.annotation.*;
 public class TeamController {
 
     @Autowired
-    TeamService teamService;
+    private TeamService teamService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    TeamConverter teamConverter;
+    private TeamConverter teamConverter;
 
     @Autowired
-    RoleManagerService roleManagerService;
+    private RoleManagerService roleManagerService;
 
     @GetMapping("/{id}")
     public TeamDto getTeam(@PathVariable Long id) {

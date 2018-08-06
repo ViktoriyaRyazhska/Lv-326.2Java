@@ -3,13 +3,10 @@ package com.softserve.edu.cajillo.service.impl;
 import com.softserve.edu.cajillo.converter.impl.BoardConverterImpl;
 import com.softserve.edu.cajillo.dto.BoardDto;
 import com.softserve.edu.cajillo.dto.SprintDto;
-import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.RoleManager;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
-import com.softserve.edu.cajillo.entity.enums.SprintStatus;
-import com.softserve.edu.cajillo.entity.enums.SprintType;
 import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.RoleManagerRepository;
@@ -50,7 +47,7 @@ public class BoardServiceImpl implements BoardService {
         return boardConverter.convertToDto(save);
     }
 
-    public SprintDto generateBacklog(Board board) {
+    private SprintDto generateBacklog(Board board) {
         SprintDto sprintDto = new SprintDto();
         sprintDto.setLabel("Backlog");
         sprintDto.setBoardId(board.getId());

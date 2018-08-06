@@ -15,7 +15,4 @@ public class ResetPasswordDto {
 
     @NotBlank
     private String password;
-
-    @NotBlank
-    private String repeatPassword;
 }

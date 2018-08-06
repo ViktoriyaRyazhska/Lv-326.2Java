@@ -7,32 +7,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/boards")
 public class BoardController {
 
     @Autowired
-    BoardService boardService;
+    private BoardService boardService;
 
-    @PostMapping("/api/boards")
+    @PostMapping
     public BoardDto createBoard(@RequestBody Board board) {
         return boardService.createBoard(board);
     }
 
-    @PutMapping("/api/boards/{id}")
+    @PutMapping("/{id}")
     public BoardDto updateBoard(@PathVariable Long id, @RequestBody Board board) {
         return boardService.updateBoard(id, board);
     }
 
-    @GetMapping("/api/boards/{id}")
+    @GetMapping("/{id}")
     public BoardDto getBoard(@PathVariable Long id) {
         return boardService.getBoard(id);
     }
 
-    @DeleteMapping("/api/boards/{id}")
+    @DeleteMapping("/{id}")
     public void deleteBoard(@PathVariable Long id) {
         boardService.deleteBoard(id);
     }
 
-    @PostMapping("/api/boards/{boardId}")
+    @PostMapping("/{boardId}")
     public BoardDto recoverBoard(@PathVariable("boardId") Long boardId) {
         return boardService.recoverBoard(boardId);
     }

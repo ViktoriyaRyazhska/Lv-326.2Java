@@ -16,11 +16,10 @@ public class ApiExceptionHandlerController {
             httpStatus = HttpStatus.NOT_FOUND;
         } else if (e instanceof ConflictException) {
             httpStatus = HttpStatus.CONFLICT;
-        } else if (e instanceof BadRequestException
-                || e instanceof UnsupportedMimeTypesException
-                || e instanceof RequestEntityToLargeException
-                || e instanceof TokenExpiredException) {
-            httpStatus = HttpStatus.BAD_REQUEST;
+        } else if (e instanceof UnsupportedMimeTypesException) {
+            httpStatus = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+        } else if (e instanceof TokenExpiredException) {
+            httpStatus = HttpStatus.UNAUTHORIZED;
         } else {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }

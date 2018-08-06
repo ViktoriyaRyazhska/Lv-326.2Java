@@ -3,7 +3,6 @@ package com.softserve.edu.cajillo.controller;
 import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.service.TableListService;
-import com.softserve.edu.cajillo.service.impl.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +12,7 @@ import java.util.List;
 public class TableListController {
 
     @Autowired
-    TableListService tableListService;
+    private TableListService tableListService;
 
     @PostMapping("/api/boards/{boardId}/lists")
     public TableListDto createTableList(@PathVariable Long boardId, @RequestBody TableList tableList) {
