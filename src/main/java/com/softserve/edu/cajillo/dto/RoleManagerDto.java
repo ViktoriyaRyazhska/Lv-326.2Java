@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RoleManagerDto extends BaseDto {
 
-    private Long board_id;
+    private Long boardId;
 
-    private Long user_id;
+    private Long userId;
 
     private RoleName roleName;
 
-    private Long team_id;
+    private Long teamId;
 }

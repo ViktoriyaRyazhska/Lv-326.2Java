@@ -36,17 +36,21 @@ public class RoleManagerConverterImpl implements RoleManagerConverter {
     @Override
     public RoleManager convertToEntity(RoleManagerDto dto) {
         RoleManager entity = modelMapper.map(dto, RoleManager.class);
-        entity.setBoard(boardConverter.convertToEntity(boardService.getBoard(dto.getBoard_id())));
-        entity.setTeam(teamConverter.convertToEntity(teamService.getTeam(dto.getTeam_id())));
-        entity.setUser(userService.getUser(dto.getUser_id()));
+        if (dto.getBoardId() != null){
+            entity.setBoard(boardConverter.convertToEntity(boardService.getBoard(dto.getBoardId())));
+        }
+        if (dto.getTeamId() != null) {
+            entity.setTeam(teamConverter.convertToEntity(teamService.getTeam(dto.getTeamId())));
+        }
+        entity.setUser(userService.getUser(dto.getUserId()));
         return entity;
     }
 
     @Override
     public RoleManagerDto convertToDto(RoleManager entity) {
         RoleManagerDto dto = modelMapper.map(entity, RoleManagerDto.class);
-        dto.setTeam_id(entity.getTeam().getId());
-        dto.setUser_id(entity.getUser().getId());
+        dto.setTeamId(entity.getTeam().getId());
+        dto.setUserId(entity.getUser().getId());
         return dto;
     }
 }

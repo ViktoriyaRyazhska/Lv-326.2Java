@@ -93,17 +93,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public List<Board> getAllBoardsByTeamId(Long teamId){
-
         List<Board> allBoardsForCurrentTeam = new ArrayList<>();
-
         List<RoleManager> allManagers = roleManagerRepository.findAllByTeamId(teamId);
-
         if (allManagers != null){
             for (RoleManager manager : allManagers) {
                 allBoardsForCurrentTeam.add(manager.getBoard());
             }
         }
-
         return allBoardsForCurrentTeam;
     }
 }
