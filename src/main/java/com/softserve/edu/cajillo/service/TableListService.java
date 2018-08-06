@@ -22,4 +22,8 @@ public interface TableListService {
     List<TableListDto> swapSequenceNumbers(Long listId1, Long listId2);
 
     void swapNumbers(TableList tableList1, TableList tableList2);
+
+    void deleteTableListsByBoardId(Long boardId);
+
+    void recoverTableListsByBoardId(Long boardId);
 }

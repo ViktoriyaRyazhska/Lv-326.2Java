@@ -25,6 +25,11 @@ import lombok.NoArgsConstructor;
 })
 public class User extends DateAudit {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true)
+    private Long id;
+
     @NotBlank
     @Size(min = 3, max = 20)
     @Column(name = "username", nullable = false, unique = true, length = 20)

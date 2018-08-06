@@ -1,9 +1,6 @@
 package com.softserve.edu.cajillo.converter.impl.ticketConverterImpl;
 
 import com.softserve.edu.cajillo.converter.ticketConverter.TicketToBoardResponseDtoConverter;
-import com.softserve.edu.cajillo.converter.ticketConverter.TicketToCreateTicketResponseDtoConverter;
-import com.softserve.edu.cajillo.dto.BaseDto;
-import com.softserve.edu.cajillo.dto.CreateTicketResponseDto;
 import com.softserve.edu.cajillo.dto.TicketForBoardResponseDto;
 import com.softserve.edu.cajillo.entity.Ticket;
 import org.modelmapper.ModelMapper;
@@ -24,7 +21,9 @@ public class TicketToBoardResponseDtoConverterImpl implements TicketToBoardRespo
     @Override
     public TicketForBoardResponseDto convertToDto(Ticket entity) {
         TicketForBoardResponseDto result = modelMapper.map(entity, TicketForBoardResponseDto.class);
-        result.setAssignedTo(entity.getAssignedTo().getUsername());
+        if(entity.getAssignedTo() != null) {
+            result.setAssignedTo(entity.getAssignedTo().getUsername());
+        }
         result.setTicketIssueType(entity.getTicketIssueType());
 
         return result;

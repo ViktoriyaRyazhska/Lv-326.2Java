@@ -1,6 +1,5 @@
 package com.softserve.edu.cajillo.entity.enums;
 
-public enum  SprintType {
-    BACKLOG,
-    SPRINT
+public enum TicketPriority {
+    HIGH, MEDIUM, LOW
 }

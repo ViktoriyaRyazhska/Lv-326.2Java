@@ -16,4 +16,9 @@ public interface BoardService {
     void deleteBoard(Long id);
 
     List<Board> getAllBoardsByTeamId(Long teamId);
+  
+    BoardDto recoverBoard(Long boardId);
+
+    Board getBoardEntity(Long id);
+
 }
