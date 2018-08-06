@@ -31,30 +31,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private static final String USER_EMAIL_NOT_FOUND_MESSAGE = "Could not find user with email='%s'";
     private static final String USER_ALREADY_EXISTS_MESSAGE = "Username or email is already taken";
-    private static final String USER_PASSWORD_MISMATCH_MESSAGE = "Password mismatch";
     private static final String RESET_TOKEN_IS_NOT_VALID = "reset password token is invalid";
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    EmailService emailService;
+    private EmailService emailService;
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    PasswordResetTokenRepository passwordResetTokenRepository;
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Autowired
-    JwtTokenProvider tokenProvider;
+    private JwtTokenProvider tokenProvider;
 
     @Override
     public JwtAuthenticationResponseDto authenticateUser(@Valid @RequestBody LoginRequestDto loginRequest) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
@@ -71,21 +69,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 || userRepository.existsByEmail(registerRequestDto.getEmail())) {
             throw new UserAlreadyExistsException(USER_ALREADY_EXISTS_MESSAGE);
         }
-        if (registerRequestDto.getPassword().equals(registerRequestDto.getRepeatPassword())) {
-            User user = new User();
-            user.setUsername(registerRequestDto.getUsername());
-            user.setEmail(registerRequestDto.getEmail());
-            user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
-            user.setAccountStatus(UserAccountStatus.ACTIVE);
-            userRepository.save(user);
-            emailService.sendEmail(user.getEmail(), "You successfully registered Cajillo project.",
-                    "Dear " + user.getUsername() + ",\n" +
-                            "Thank you for joining Cajillo. \n" +
-                            "RUN FOR YOUR LIFE!!!\n\n" +
-                            "Best regards\nCajillo Team");
-        } else {
-            throw new PasswordMismatchException(USER_PASSWORD_MISMATCH_MESSAGE);
-        }
+        User user = new User();
+        user.setUsername(registerRequestDto.getUsername());
+        user.setEmail(registerRequestDto.getEmail());
+        user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
+        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        userRepository.save(user);
+        emailService.sendEmail(user.getEmail(), "You successfully registered Cajillo project.",
+                "Dear " + user.getUsername() + ",\n" +
+                        "Thank you for joining Cajillo. \n" +
+                        "RUN FOR YOUR LIFE!!!\n\n" +
+                        "Best regards\nCajillo Team");
     }
 
     @Override
@@ -94,15 +88,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new TokenNotFoundException(RESET_TOKEN_IS_NOT_VALID));
         if (validatePasswordResetToken(token, resetPasswordDto.getUserId())) {
             User user = token.getUser();
-            String newPassword = resetPasswordDto.getPassword();
-            String repeatPassword = resetPasswordDto.getRepeatPassword();
-            if ((newPassword != null) && newPassword.equals(repeatPassword)) {
-                user.setPassword(passwordEncoder.encode(resetPasswordDto.getPassword()));
-                userRepository.save(user);
-                passwordResetTokenRepository.delete(token);
-            } else {
-                throw new PasswordMismatchException(USER_PASSWORD_MISMATCH_MESSAGE);
-            }
+            user.setPassword(passwordEncoder.encode(resetPasswordDto.getPassword()));
+            userRepository.save(user);
+            passwordResetTokenRepository.delete(token);
         } else {
             passwordResetTokenRepository.delete(token);
             throw new TokenExpiredException(RESET_TOKEN_IS_NOT_VALID);

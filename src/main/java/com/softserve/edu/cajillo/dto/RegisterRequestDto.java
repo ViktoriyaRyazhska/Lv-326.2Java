@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class RegisterRequestDto extends BaseDto {
+
     @NotBlank
     private String username;
 
@@ -14,7 +15,4 @@ public class RegisterRequestDto extends BaseDto {
 
     @NotBlank
     private String password;
-
-    @NotBlank
-    private String repeatPassword;
 }

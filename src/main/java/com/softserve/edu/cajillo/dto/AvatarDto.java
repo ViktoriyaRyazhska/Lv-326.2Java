@@ -9,5 +9,5 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class AvatarDto extends BaseDto {
     @NotBlank
-    String avatar;
+    private String avatar;
 }
