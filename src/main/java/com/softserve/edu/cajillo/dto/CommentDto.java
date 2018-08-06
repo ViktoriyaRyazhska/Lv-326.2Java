@@ -12,7 +12,7 @@ import java.time.Instant;
 @NoArgsConstructor
 public class CommentDto extends BaseDto {
 
-    private Long commentId;
+    private Long id;
 
     private String message;
 
