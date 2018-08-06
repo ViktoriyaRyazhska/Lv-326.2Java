@@ -4,7 +4,6 @@ import com.softserve.edu.cajillo.converter.UserConverter;
 import com.softserve.edu.cajillo.dto.AvatarDto;
 import com.softserve.edu.cajillo.dto.UpdateUserDto;
 import com.softserve.edu.cajillo.dto.UserDto;
-import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
 import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.UserService;
@@ -13,8 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/users")
@@ -31,13 +28,13 @@ public class UserApiController {
         return userConverter.convertToDto(userService.getUser(id));
     }
 
-    @GetMapping("/")
+    @GetMapping
     @PreAuthorize("hasRole('ACTIVE')")
     public UserDto getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         return userConverter.convertToDto(userService.getUser(currentUser.getId()));
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ACTIVE')")
     public void deleteCurrentUser(@CurrentUser UserPrincipal currentUser) {
@@ -51,7 +48,7 @@ public class UserApiController {
         userService.restoreUser(currentUser.getId());
     }
 
-    @PutMapping("/")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ACTIVE')")
     public void updateCurrentUser(@CurrentUser UserPrincipal currentUser, @RequestBody UpdateUserDto userDto) {
@@ -68,7 +65,7 @@ public class UserApiController {
 
     @DeleteMapping("/avatar")
     @PreAuthorize("hasRole('ACTIVE')")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public void deleteCurrentUserAvatar(@CurrentUser UserPrincipal currentUser) {
         userService.deleteUserAvatar(currentUser.getId());
     }
@@ -87,7 +84,6 @@ public class UserApiController {
     @GetMapping("/available")
     public void checkIfUserEmailOrUsernameAvailable(@RequestParam(required = false, name = "email") String email,
                                                     @RequestParam(required = false, name = "username") String username) {
-        Arrays.stream(UserAccountStatus.values()).forEach(System.out::println);
         userService.isAvailableUsernameAndEmail(username, email);
     }
 }

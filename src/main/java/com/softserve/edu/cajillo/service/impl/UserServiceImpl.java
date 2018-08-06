@@ -25,10 +25,9 @@ public class UserServiceImpl implements UserService {
 
     private static final String USER_EMAIL_TAKEN = "Email is already taken";
     private static final String USER_USERNAME_TAKEN = "Username is already taken";
-    private static final String USER_PASSWORD_MISMATCH_MESSAGE = "Password mismatch";
     private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id=";
     private static final String UNSUPPORTED_MIME_TYPES_ERROR_MESSAGE = "Unsupported media type";
-    private static final String REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE = "Request Entity Too Large";
+    private static final String REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE = "Avatar size is too large. Maximum size is 256 KiB";
     private static final String FILES_SAVE_ERROR_MESSAGE = "Could not save file for user with id=%s";
     private static final String USER_USERNAME_NOT_FOUND_MESSAGE_BY_EMAIL = "Could not find user with email=";
 
@@ -36,7 +35,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User getUser(Long id) {
@@ -49,14 +48,9 @@ public class UserServiceImpl implements UserService {
                 new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + userId));
         String oldPassword = userDto.getOldPassword();
         String newPassword = userDto.getNewPassword();
-        String repeatPassword = userDto.getRepeatPassword();
-        if (oldPassword != null) {
-            if ((newPassword != null) && newPassword.equals(repeatPassword)
-                    && passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
-                currentUser.setPassword(passwordEncoder.encode(newPassword));
-            } else {
-                throw new PasswordMismatchException(USER_PASSWORD_MISMATCH_MESSAGE);
-            }
+        if ((oldPassword != null) && (newPassword != null)
+                && passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
+            currentUser.setPassword(passwordEncoder.encode(newPassword));
         }
         currentUser.setFirstName(userDto.getFirstName());
         currentUser.setLastName(userDto.getLastName());
@@ -68,6 +62,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
         user.setAccountStatus(UserAccountStatus.DELETED);
+        System.out.println(user);
         userRepository.save(user);
     }
 
@@ -86,15 +81,12 @@ public class UserServiceImpl implements UserService {
     }
 
     public void uploadAvatar(Long userId, MultipartFile avatar) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
-        List<String> mimeTypes = Arrays.asList("image/jpeg", "image/pjpeg", "image/png");
         if (avatar.getSize() > (256 * 1024)) {
-            throw new RequestEntityToLargeException(REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE);
-        }
-        System.out.println(avatar.getSize());
-        if (!mimeTypes.contains(avatar.getContentType())) {
+            throw new UnsupportedOperationException(REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE);
+        } else if (!Arrays.asList("image/jpeg", "image/pjpeg", "image/png").contains(avatar.getContentType())) {
             throw new UnsupportedOperationException(UNSUPPORTED_MIME_TYPES_ERROR_MESSAGE);
         }
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
         try {
             user.setAvatar(Base64.getMimeEncoder().encodeToString(avatar.getBytes()));
             userRepository.save(user);

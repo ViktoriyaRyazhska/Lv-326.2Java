@@ -13,31 +13,29 @@ import com.softserve.edu.cajillo.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.List;
 
 @Component
 public class TableListServiceImpl implements TableListService {
 
     @Autowired
-    TableListRepository tableListRepository;
+    private TableListRepository tableListRepository;
 
     @Autowired
-    BoardRepository boardRepository;
+    private BoardRepository boardRepository;
 
     @Autowired
-    TableListConverterImpl tableListConverter;
+    private TableListConverterImpl tableListConverter;
 
     @Autowired
-    TicketService ticketService;
+    private TicketService ticketService;
 
     public TableListDto createTableList(Long id, TableList tableList) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED);
         tableList.setBoard(board);
         tableList.setStatus(ItemsStatus.OPENED);
         Long maxSequenceValue = tableListRepository.getMaxSequenceValue(id);
-        Long nextSequenceNumber = (maxSequenceValue == null) ? 1 : ++maxSequenceValue;
-        tableList.setSequenceNumber(Math.toIntExact(nextSequenceNumber));
+        tableList.setSequenceNumber(Math.toIntExact((maxSequenceValue == null) ? 1 : ++maxSequenceValue));
         tableListRepository.save(tableList);
         return tableListConverter.convertToDto(tableList);
     }
@@ -84,8 +82,7 @@ public class TableListServiceImpl implements TableListService {
 
     public List<TableListDto> getAllTableLists(Long boardId) {
         List<TableList> allByBoardId = tableListRepository.findAllByBoardIdAndStatus(boardId, ItemsStatus.OPENED);
-        List<TableListDto> tableListDtos = tableListConverter.convertToDto(allByBoardId);
-        return tableListDtos;
+        return tableListConverter.convertToDto(allByBoardId);
     }
 
     public TableListDto getTableList(Long listId) {

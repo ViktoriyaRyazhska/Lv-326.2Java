@@ -32,7 +32,7 @@ public class SprintServiceImpl implements SprintService {
     private SprintRepository sprintRepository;
 
     @Autowired
-    SprintConverterImpl sprintConverter;
+    private SprintConverterImpl sprintConverter;
 
     @Override
     public SprintDto getSprint(Long sprintId) {

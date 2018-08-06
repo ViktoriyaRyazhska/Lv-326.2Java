@@ -2,10 +2,8 @@ package com.softserve.edu.cajillo.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.softserve.edu.cajillo.entity.User;
-import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -70,10 +68,5 @@ public class UserPrincipal implements UserDetails {
         if (o == null || getClass() != o.getClass()) return false;
         UserPrincipal that = (UserPrincipal) o;
         return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

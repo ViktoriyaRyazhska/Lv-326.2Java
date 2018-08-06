@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class SprintController {
 
     @Autowired
-    SprintService sprintService;
+    private SprintService sprintService;
 
     @PostMapping("/{boardId}")
     public void createSprint(@PathVariable("boardId") Long boardId, @RequestBody SprintDto sprintDto) {
