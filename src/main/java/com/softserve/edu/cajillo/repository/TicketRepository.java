@@ -1,7 +1,7 @@
 package com.softserve.edu.cajillo.repository;
 
-import com.softserve.edu.cajillo.dto.GetSingleTicketResponseDto;
 import com.softserve.edu.cajillo.entity.Ticket;
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +13,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     Optional<Ticket> findById(Long aLong);
 
-    List<Ticket> findAllByTableListId(Long tableListId);
+    List<Ticket> findAllByTableListIdAndStatus(Long tableListId, ItemsStatus status);
 }

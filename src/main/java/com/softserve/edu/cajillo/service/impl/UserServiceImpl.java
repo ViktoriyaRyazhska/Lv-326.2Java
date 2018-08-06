@@ -1,33 +1,36 @@
 package com.softserve.edu.cajillo.service.impl;
 
+
+import lombok.extern.slf4j.Slf4j;
+import com.softserve.edu.cajillo.exception.*;
+import com.softserve.edu.cajillo.entity.User;
+import org.springframework.stereotype.Service;
 import com.softserve.edu.cajillo.dto.AvatarDto;
 import com.softserve.edu.cajillo.dto.UpdateUserDto;
-import com.softserve.edu.cajillo.entity.User;
-import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
-import com.softserve.edu.cajillo.exception.*;
-import com.softserve.edu.cajillo.repository.UserRepository;
 import com.softserve.edu.cajillo.service.UserService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.softserve.edu.cajillo.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id=";
-    private static final String USER_USERNAME_TAKEN = "Username is already taken";
     private static final String USER_EMAIL_TAKEN = "Email is already taken";
-
+    private static final String USER_USERNAME_TAKEN = "Username is already taken";
     private static final String USER_PASSWORD_MISMATCH_MESSAGE = "Password mismatch";
+    private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id=";
     private static final String UNSUPPORTED_MIME_TYPES_ERROR_MESSAGE = "Unsupported media type";
-    private static final String FILES_SAVE_ERROR_MESSAGE = "Could not save file for user with id=%s";
     private static final String REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE = "Request Entity Too Large";
+    private static final String FILES_SAVE_ERROR_MESSAGE = "Could not save file for user with id=%s";
+    private static final String USER_USERNAME_NOT_FOUND_MESSAGE_BY_EMAIL = "Could not find user with email=";
 
     @Autowired
     private UserRepository userRepository;
@@ -77,6 +80,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findUserByEmail(email).orElseThrow(() ->
+                new UserNotFoundException(USER_USERNAME_NOT_FOUND_MESSAGE_BY_EMAIL + email));
+    }
+
     public void uploadAvatar(Long userId, MultipartFile avatar) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
         List<String> mimeTypes = Arrays.asList("image/jpeg", "image/pjpeg", "image/png");

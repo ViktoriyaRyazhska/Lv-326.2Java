@@ -3,7 +3,6 @@ package com.softserve.edu.cajillo.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 
@@ -11,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateTicketResponseDto extends BaseDto {
+
+    private String name;
 
     @NotBlank
     private Long ticketId;
@@ -20,4 +21,5 @@ public class CreateTicketResponseDto extends BaseDto {
 
     @NotBlank
     private Long boardId;
+
 }
