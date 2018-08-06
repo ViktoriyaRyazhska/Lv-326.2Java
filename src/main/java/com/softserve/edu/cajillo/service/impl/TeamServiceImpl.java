@@ -6,9 +6,11 @@ import com.softserve.edu.cajillo.dto.RoleManagerDto;
 import com.softserve.edu.cajillo.dto.TeamDto;
 import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
+import com.softserve.edu.cajillo.entity.RoleManager;
 import com.softserve.edu.cajillo.entity.Team;
 import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.entity.enums.RoleName;
+import com.softserve.edu.cajillo.exception.RoleManagerServiceNotFoundException;
 import com.softserve.edu.cajillo.exception.TeamNotFoundException;
 import com.softserve.edu.cajillo.repository.RoleManagerRepository;
 import com.softserve.edu.cajillo.repository.TeamRepository;
@@ -19,12 +21,15 @@ import com.softserve.edu.cajillo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TeamServiceImpl implements TeamService {
 
+    private static final Long DEFAULT_BOARD_ID = 0L;
     private static final String TEAM_ID_NOT_FOUND_MESSAGE = "Could not find team with id=";
+    private static final String CAN_NOT_DELETE = "You can't delete this user, he is admin";
 
     @Autowired
     private TeamConverter teamConverter;
@@ -53,13 +58,13 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void createTeam(TeamDto teamDto, UserPrincipal currentUser) {
-        Team saveTeam = teamRepository.save(teamConverter.convertToEntity(teamDto));
+        Team savedTeam = teamRepository.save(teamConverter.convertToEntity(teamDto));
         roleManagerRepository.save(roleManagerConverter.convertToEntity(
                 new RoleManagerDto(
-                        0L, //TODO default value
+                        DEFAULT_BOARD_ID,
                         currentUser.getId(),
                         RoleName.ADMIN,
-                        saveTeam.getId()
+                        savedTeam.getId()
                 )
         ));
     }
@@ -72,6 +77,10 @@ public class TeamServiceImpl implements TeamService {
         existedTeam.setDescription(team.getDescription());
         existedTeam.setAvatar(team.getAvatar());
         return teamConverter.convertToDto(teamRepository.save(existedTeam));
+    }
+
+    @Override
+    public void deleteTeam(Long id) {
     }
 
     @Override
@@ -89,6 +98,21 @@ public class TeamServiceImpl implements TeamService {
                         )
                 ));
             }
+        }
+    }
+
+    @Override
+    public void deleteUserFromTeam(Long userId, Long teamId) {
+        List<RoleManager> allByTeamId = roleManagerRepository.findAllByTeamId(teamId);
+        for (RoleManager manager : allByTeamId) {
+            List<RoleManager> toDelete = new ArrayList<>();
+            if (manager.getUser().getId().equals(userId)) {
+                if (manager.getRoleName().equals(RoleName.USER)) {
+                    toDelete.add(manager);
+                    System.out.println("DELETED");
+                } else throw new RoleManagerServiceNotFoundException(CAN_NOT_DELETE);
+            }
+            roleManagerRepository.deleteAll(toDelete);
         }
     }
 }

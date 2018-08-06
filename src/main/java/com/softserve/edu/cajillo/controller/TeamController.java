@@ -45,9 +45,21 @@ public class TeamController {
         return teamService.updateTeam(id, team);
     }
 
+    @DeleteMapping("/deleteTeam/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTeam(@PathVariable Long id) {
+
+    }
+
     @PostMapping("/{teamId}/addUser")
     @ResponseStatus(HttpStatus.OK)
     public void addUserToTeam(@RequestBody UserDto userDto, @PathVariable Long teamId) {
         teamService.addUserToTeam(userDto, teamId);
+    }
+
+    @DeleteMapping("{teamId}/{userId}/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUserFromTeam(@PathVariable Long teamId, @PathVariable Long userId) {
+        teamService.deleteUserFromTeam(userId, teamId);
     }
 }
