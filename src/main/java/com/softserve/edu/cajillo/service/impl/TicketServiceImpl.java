@@ -51,6 +51,6 @@ public class TicketServiceImpl implements TicketService {
     public CreateTicketResponseDto createTicket(CreateTicketRequestDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
         createTicketRequest.setCreatedById(userPrincipal.getId());
         Ticket ticket = ticketRepository.save(ticketToCreateTicketRequestDtoConverter.convertToEntity(createTicketRequest));
-        return new CreateTicketResponseDto(ticket.getId(), ticket.getTableList().getId(), ticket.getBoard().getId());
+        return new CreateTicketResponseDto(ticket.getName(), ticket.getId(), ticket.getTableList().getId(), ticket.getBoard().getId());
     }
 }
