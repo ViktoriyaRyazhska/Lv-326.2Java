@@ -5,11 +5,15 @@ import com.softserve.edu.cajillo.entity.Board;
 
 public interface BoardService {
 
-    public BoardDto createBoard(Board board);
+    BoardDto createBoard(Board board);
 
-    public BoardDto updateBoard(Long id, Board board);
+    BoardDto updateBoard(Long id, Board board);
 
-    public BoardDto getBoard(Long id);
+    BoardDto getBoard(Long id);
 
-    public void deleteBoard(Long id);
+    void deleteBoard(Long id);
+
+    BoardDto recoverBoard(Long boardId);
+
+    Board getBoardEntity(Long id);
 }

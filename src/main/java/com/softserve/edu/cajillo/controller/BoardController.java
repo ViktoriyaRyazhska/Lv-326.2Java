@@ -31,4 +31,9 @@ public class BoardController {
     public void deleteBoard(@PathVariable Long id) {
         boardService.deleteBoard(id);
     }
+
+    @PostMapping("/api/boards/{boardId}")
+    public BoardDto recoverBoard(@PathVariable("boardId") Long boardId) {
+        return boardService.recoverBoard(boardId);
+    }
 }

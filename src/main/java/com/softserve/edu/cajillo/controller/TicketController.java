@@ -19,9 +19,6 @@ public class TicketController {
         return ticketService.getTicket(id);
     }
 
-    @DeleteMapping
-
-
     @PutMapping
     public TicketDto updateTicket(@RequestBody TicketDto ticketDto) {
         return ticketService.updateTicket(ticketDto);

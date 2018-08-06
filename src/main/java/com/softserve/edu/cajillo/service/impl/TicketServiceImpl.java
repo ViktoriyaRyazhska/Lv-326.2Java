@@ -3,6 +3,7 @@ package com.softserve.edu.cajillo.service.impl;
 import com.softserve.edu.cajillo.converter.ticketConverter.*;
 import com.softserve.edu.cajillo.dto.*;
 import com.softserve.edu.cajillo.entity.Ticket;
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.exception.TicketNotFoundException;
 import com.softserve.edu.cajillo.repository.*;
 import com.softserve.edu.cajillo.security.CurrentUser;
@@ -38,7 +39,8 @@ public class TicketServiceImpl implements TicketService {
 
     // Method for Vova, do not ask why
     public List<TicketForBoardResponseDto> getTicketsByListId(Long tableListId) {
-        return ticketToBoardResponseDtoConverter.convertToDto(ticketRepository.findAllByTableListId(tableListId));
+        return ticketToBoardResponseDtoConverter
+                .convertToDto(ticketRepository.findAllByTableListIdAndStatus(tableListId, ItemsStatus.OPENED));
     }
 
     public TicketDto updateTicket(TicketDto ticketDto) {
@@ -52,5 +54,21 @@ public class TicketServiceImpl implements TicketService {
         createTicketRequest.setCreatedById(userPrincipal.getId());
         Ticket ticket = ticketRepository.save(ticketToCreateTicketRequestDtoConverter.convertToEntity(createTicketRequest));
         return new CreateTicketResponseDto(ticket.getName(), ticket.getId(), ticket.getTableList().getId(), ticket.getBoard().getId());
+    }
+
+    public void deleteTicketsByTableListId(Long listId) {
+        List<Ticket> allByTableListId = ticketRepository.findAllByTableListIdAndStatus(listId, ItemsStatus.OPENED);
+        for (Ticket ticket : allByTableListId) {
+            ticket.setStatus(ItemsStatus.DELETED);
+            ticketRepository.save(ticket);
+        }
+    }
+
+    public void recoverTicketsByListId(Long listId) {
+        List<Ticket> tickets = ticketRepository.findAllByTableListIdAndStatus(listId, ItemsStatus.DELETED);
+        for (Ticket ticket : tickets) {
+            ticket.setStatus(ItemsStatus.OPENED);
+            ticketRepository.save(ticket);
+        }
     }
 }

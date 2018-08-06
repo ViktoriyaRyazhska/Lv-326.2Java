@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.entity;
 
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.TicketIssueType;
 
 import com.softserve.edu.cajillo.entity.enums.TicketPriority;
@@ -36,6 +37,9 @@ public class Ticket extends DateAudit {
             cascade = CascadeType.ALL)
     @JoinColumn(name = "created_user_id", referencedColumnName = "id", updatable = false, nullable = false)
     private User createdBy;
+
+    @Enumerated(EnumType.STRING)
+    private ItemsStatus status;
 
     @Column(name = "expiration_date")
     private Instant expirationDate;

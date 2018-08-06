@@ -21,7 +21,9 @@ public class TicketToBoardResponseDtoConverterImpl implements TicketToBoardRespo
     @Override
     public TicketForBoardResponseDto convertToDto(Ticket entity) {
         TicketForBoardResponseDto result = modelMapper.map(entity, TicketForBoardResponseDto.class);
-        result.setAssignedTo(entity.getAssignedTo().getUsername());
+        if(entity.getAssignedTo() != null) {
+            result.setAssignedTo(entity.getAssignedTo().getUsername());
+        }
         result.setTicketIssueType(entity.getTicketIssueType());
 
         return result;
