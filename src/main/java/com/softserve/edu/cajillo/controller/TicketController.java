@@ -15,8 +15,16 @@ public class TicketController {
     private TicketService ticketService;
 
     @GetMapping("/{id}")
-    public GetSingleTicketResponseDto getTicket(@PathVariable("id") Long id) {
+    public TicketDto getTicket(@PathVariable("id") Long id) {
         return ticketService.getTicket(id);
+    }
+
+    @DeleteMapping
+
+
+    @PutMapping
+    public TicketDto updateTicket(@RequestBody TicketDto ticketDto) {
+        return ticketService.updateTicket(ticketDto);
     }
 
     @PostMapping

@@ -29,12 +29,9 @@ public class TicketToCreateTicketRequestDtoConverterImpl implements TicketToCrea
     @Override
     public Ticket convertToEntity(CreateTicketRequestDto dto) {
         Ticket ticket = modelMapper.map(dto, Ticket.class);
-
         ticket.setBoard(boardRepository.findById(dto.getBoardId()).orElseThrow(RuntimeException::new));
         ticket.setTableList(tableListRepository.findById(dto.getTableListId()).orElseThrow(RuntimeException::new));
         ticket.setCreatedBy(userService.getUser(dto.getCreatedById()));
-        System.out.println(ticket.toString());
-
         return ticket;
     }
 

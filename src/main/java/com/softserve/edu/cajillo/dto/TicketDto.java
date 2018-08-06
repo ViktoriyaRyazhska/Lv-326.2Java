@@ -1,6 +1,6 @@
 package com.softserve.edu.cajillo.dto;
 
-import com.softserve.edu.cajillo.entity.Comment;
+import com.softserve.edu.cajillo.entity.enums.TicketPriority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetSingleTicketResponseDto extends BaseDto {
+public class TicketDto extends BaseDto {
 
     private Long id;
 
@@ -25,7 +25,7 @@ public class GetSingleTicketResponseDto extends BaseDto {
 
     private String name;
 
-    private String priority;
+    private String ticketPriority;
 
     private Long assignedToId;
 
@@ -37,5 +37,5 @@ public class GetSingleTicketResponseDto extends BaseDto {
 
     private Long tableListId;
 
-    private List<CommentResponseDto> comments;
+    private List<CommentDto> comments;
 }

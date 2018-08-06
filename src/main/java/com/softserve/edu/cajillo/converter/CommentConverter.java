@@ -1,11 +1,11 @@
 package com.softserve.edu.cajillo.converter;
 
-import com.softserve.edu.cajillo.dto.CommentResponseDto;
+import com.softserve.edu.cajillo.dto.CommentDto;
 import com.softserve.edu.cajillo.entity.Comment;
 
-public interface CommentConverter extends GenericConverter<CommentResponseDto, Comment> {
+public interface CommentConverter extends GenericConverter<CommentDto, Comment> {
 
-    Comment convertToEntity(CommentResponseDto dto);
+    Comment convertToEntity(CommentDto dto);
 
-    CommentResponseDto convertToDto(Comment entity);
+    CommentDto convertToDto(Comment entity);
 }

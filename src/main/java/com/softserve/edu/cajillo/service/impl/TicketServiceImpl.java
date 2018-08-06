@@ -32,13 +32,19 @@ public class TicketServiceImpl implements TicketService {
     private TicketConverter ticketConverter;
 
     @Override
-    public GetSingleTicketResponseDto getTicket(Long id) {
+    public TicketDto getTicket(Long id) {
         return ticketConverter.convertToDto(ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + id)));
     }
 
     // Method for Vova, do not ask why
     public List<TicketForBoardResponseDto> getTicketsByListId(Long tableListId) {
         return ticketToBoardResponseDtoConverter.convertToDto(ticketRepository.findAllByTableListId(tableListId));
+    }
+
+    public TicketDto updateTicket(TicketDto ticketDto) {
+        Ticket ticket = ticketConverter.convertToEntity(ticketDto);
+        Ticket ticket1 = ticketRepository.save(ticket);
+        return ticketConverter.convertToDto(ticket1);
     }
 
     @Override
