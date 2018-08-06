@@ -3,6 +3,7 @@ package com.softserve.edu.cajillo.converter.impl;
 import com.softserve.edu.cajillo.converter.SprintConverter;
 import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.entity.Sprint;
+import com.softserve.edu.cajillo.service.BoardService;
 import com.softserve.edu.cajillo.service.impl.SprintServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,12 @@ public class SprintConverterImpl implements SprintConverter {
     private ModelMapper modelMapper;
 
     @Autowired
-    private SprintServiceImpl sprintService;
+    private BoardService boardService;
 
     @Override
     public Sprint convertToEntity(SprintDto sprintDto) {
         Sprint sprint = modelMapper.map(sprintDto, Sprint.class);
-        sprint.setBoard(sprintService.getSprint(sprintDto.getBoardId()).getBoard());
+        sprint.setBoard(boardService.getBoardEntity(sprintDto.getBoardId()));
         return sprint;
     }
 
@@ -31,4 +32,3 @@ public class SprintConverterImpl implements SprintConverter {
         return sprintDto;
     }
 }
-
