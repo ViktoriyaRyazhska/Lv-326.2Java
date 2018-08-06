@@ -31,7 +31,8 @@ public class TableListServiceImpl implements TableListService {
     private TicketService ticketService;
 
     public TableListDto createTableList(Long id, TableList tableList) {
-        Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED);
+        Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
+                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
         tableList.setBoard(board);
         tableList.setStatus(ItemsStatus.OPENED);
         Long maxSequenceValue = tableListRepository.getMaxSequenceValue(id);
