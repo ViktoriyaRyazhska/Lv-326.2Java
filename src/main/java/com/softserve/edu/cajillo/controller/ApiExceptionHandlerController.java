@@ -1,9 +1,6 @@
 package com.softserve.edu.cajillo.controller;
 
-import com.softserve.edu.cajillo.exception.BadRequestException;
-import com.softserve.edu.cajillo.exception.ConflictException;
-import com.softserve.edu.cajillo.exception.DatabaseItemNotFoundException;
-import com.softserve.edu.cajillo.exception.ServiceException;
+import com.softserve.edu.cajillo.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +16,10 @@ public class ApiExceptionHandlerController {
             httpStatus = HttpStatus.NOT_FOUND;
         } else if (e instanceof ConflictException) {
             httpStatus = HttpStatus.CONFLICT;
-        } else if (e instanceof BadRequestException) {
+        } else if (e instanceof BadRequestException
+                || e instanceof UnsupportedMimeTypesException
+                || e instanceof RequestEntityToLargeException
+                || e instanceof TokenExpiredException) {
             httpStatus = HttpStatus.BAD_REQUEST;
         } else {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;

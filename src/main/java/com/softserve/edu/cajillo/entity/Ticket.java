@@ -1,7 +1,9 @@
 package com.softserve.edu.cajillo.entity;
 
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.TicketIssueType;
 
+import com.softserve.edu.cajillo.entity.enums.TicketPriority;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,8 +21,9 @@ public class Ticket extends DateAudit {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "priority")
-    private String priority;
+    private TicketPriority ticketPriority;
 
     @Column(name = "ticket_issue_type")
     private TicketIssueType ticketIssueType;
@@ -32,8 +35,11 @@ public class Ticket extends DateAudit {
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JoinColumn(name = "created_user_id", referencedColumnName = "id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "created_user_id", referencedColumnName = "id", updatable = false, nullable = false)
     private User createdBy;
+
+    @Enumerated(EnumType.STRING)
+    private ItemsStatus status;
 
     @Column(name = "expiration_date")
     private Instant expirationDate;

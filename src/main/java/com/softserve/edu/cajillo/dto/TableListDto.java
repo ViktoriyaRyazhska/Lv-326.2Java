@@ -23,4 +23,6 @@ public class TableListDto extends BaseDto {
     private Integer sequenceNumber;
 
     private Long boardId;
+
+    private List<TicketForBoardResponseDto> ticketForBoardResponseDtos;
 }

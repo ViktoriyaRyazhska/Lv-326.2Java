@@ -3,6 +3,7 @@ package com.softserve.edu.cajillo.controller;
 import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.service.TableListService;
+import com.softserve.edu.cajillo.service.impl.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class TableListController {
         return tableListService.createTableList(boardId, tableList);
     }
 
-    @DeleteMapping("/api/boards/{boardId}/lists/{listId}")
+    @DeleteMapping("/api/lists/{listId}")
     public void deleteTableList(@PathVariable("listId") Long listId) {
         tableListService.deleteTableList(listId);
     }
@@ -35,12 +36,12 @@ public class TableListController {
         return tableListService.getAllTableLists(boardId);
     }
 
-    @GetMapping("/api/boards/{boardId}/lists/{listId}")
+    @GetMapping("/api/boards/lists/{listId}")
     public TableListDto getTableList(@PathVariable("listId") Long listId) {
         return tableListService.getTableList(listId);
     }
 
-    @GetMapping("/api/boards/{boardId}/lists/{listId1}/{listId2}")
+    @GetMapping("/api/boards/lists/{listId1}/{listId2}")
     public List<TableListDto> swapSequenceNumbers(@PathVariable Long listId1, @PathVariable Long listId2) {
         return tableListService.swapSequenceNumbers(listId1, listId2);
     }

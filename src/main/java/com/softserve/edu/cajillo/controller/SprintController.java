@@ -1,12 +1,10 @@
 package com.softserve.edu.cajillo.controller;
 
 import com.softserve.edu.cajillo.dto.SprintDto;
-import com.softserve.edu.cajillo.entity.Sprint;
 import com.softserve.edu.cajillo.service.SprintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/sprints")

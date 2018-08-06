@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Data
 public class RoleManager extends BaseEntity<Long> {
 
-    @ManyToOne(cascade = CascadeType.ALL,
+    @ManyToOne(cascade = CascadeType.MERGE,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", referencedColumnName = "id")
     private Board board;

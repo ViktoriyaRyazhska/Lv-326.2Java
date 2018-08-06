@@ -1,10 +1,11 @@
 package com.softserve.edu.cajillo.controller;
 
-import com.softserve.edu.cajillo.converter.TicketConverter;
 import com.softserve.edu.cajillo.dto.*;
-import com.softserve.edu.cajillo.entity.Ticket;
+import com.softserve.edu.cajillo.security.CurrentUser;
+import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,12 +15,24 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @Autowired
-    private TicketConverter ticketConverter;
-
     @GetMapping("/{id}")
-    public GetSingleTicketResponseDto getTicket(@PathVariable("id") Long id) {
-        Ticket ticket = ticketService.getTicket(id);
-        return (ticketConverter.convertToDto(ticket));
+    public TicketDto getTicket(@PathVariable("id") Long id) {
+        return ticketService.getTicket(id);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    void deleteTicket(@PathVariable("id") Long id) {
+        ticketService.deleteTicket(id);
+    }
+
+    @PutMapping
+    public TicketDto updateTicket(@RequestBody TicketDto ticketDto) {
+        return ticketService.updateTicket(ticketDto);
+    }
+
+    @PostMapping
+    public CreateTicketDto createTicket(/*@Valid*/ @RequestBody CreateTicketDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
+        return ticketService.createTicket(createTicketRequest, userPrincipal);
     }
 }

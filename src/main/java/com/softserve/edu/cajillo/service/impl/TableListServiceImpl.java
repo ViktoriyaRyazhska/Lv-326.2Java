@@ -9,6 +9,7 @@ import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.TableListRepository;
 import com.softserve.edu.cajillo.service.TableListService;
+import com.softserve.edu.cajillo.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +28,11 @@ public class TableListServiceImpl implements TableListService {
     @Autowired
     TableListConverterImpl tableListConverter;
 
+    @Autowired
+    TicketService ticketService;
+
     public TableListDto createTableList(Long id, TableList tableList) {
-        Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("Board id = %d not found", id)));
+        Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED);
         tableList.setBoard(board);
         tableList.setStatus(ItemsStatus.OPENED);
         Long maxSequenceValue = tableListRepository.getMaxSequenceValue(id);
@@ -46,6 +49,30 @@ public class TableListServiceImpl implements TableListService {
         tableList.setSequenceNumber(null);
         tableList.setStatus(ItemsStatus.DELETED);
         tableListRepository.save(tableList);
+        deleteAllInternalTickets(listId);
+    }
+
+    private void deleteAllInternalTickets(Long listId) {
+        ticketService.deleteTicketsByTableListId(listId);
+    }
+
+    public void recoverTableListsByBoardId(Long boardId) {
+        List<TableList> lists = tableListRepository.findAllByBoardIdAndStatus(boardId, ItemsStatus.DELETED);
+        for (TableList list : lists) {
+            list.setStatus(ItemsStatus.OPENED);
+            tableListRepository.save(list);
+            ticketService.recoverTicketsByListId(list.getId());
+        }
+    }
+
+    public void deleteTableListsByBoardId(Long boardId) {
+        List<TableList> allByBoardIdAndStatus = tableListRepository
+                .findAllByBoardIdAndStatus(boardId, ItemsStatus.OPENED);
+        for (TableList tableList : allByBoardIdAndStatus) {
+            tableList.setStatus(ItemsStatus.DELETED);
+            tableListRepository.save(tableList);
+            ticketService.deleteTicketsByTableListId(tableList.getId());
+        }
     }
 
     public TableListDto updateTableList(Long listId, Long boardId, TableList tableList) {

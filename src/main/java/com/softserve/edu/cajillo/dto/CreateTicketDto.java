@@ -1,20 +1,26 @@
 package com.softserve.edu.cajillo.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTicketRequestDto {
+public class CreateTicketDto extends BaseDto {
+
+    private String name;
 
     @NotBlank
-    private String name;
+    private Long id;
 
     @NotBlank
     private Long tableListId;
 
     @NotBlank
     private Long boardId;
+
+    private Long createdById ;
 }
