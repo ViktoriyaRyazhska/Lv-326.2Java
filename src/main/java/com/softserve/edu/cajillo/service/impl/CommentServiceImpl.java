@@ -22,20 +22,18 @@ public class CommentServiceImpl implements CommentService {
     private CommentConverter commentConverter;
 
     public CommentDto updateComment(CommentDto commentDto) {
-        Comment comment = commentRepository.findById(commentDto.getCommentId())
-                .orElseThrow(() -> new UnsatisfiedException(String.format("Comment with id %d not found", commentDto.getCommentId())));
+        Comment comment = commentRepository.findById(commentDto.getId())
+                .orElseThrow(() -> new UnsatisfiedException(String.format("Comment with id %d not found", commentDto.getId())));
         if (commentDto.getMessage() != null)
             comment.setMessage(commentDto.getMessage());
         comment.setCommentStatus(CommentStatus.UPDATED);
         return commentConverter.convertToDto(commentRepository.save(comment));
     }
 
-    //Method for getting all comments when user clicked on ticket to see all info about it
     public List<Comment> getCommentsByTicketId(Long ticketId) {
         return commentRepository.findAllByTicketId(ticketId);
     }
 
-    // Method for deleting comment by comment ID (changing status to "DELETED" in db)
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new UnsatisfiedException(String.format("Comment with id %d not found", commentId)));
         comment.setCommentStatus(CommentStatus.DELETED);
@@ -47,5 +45,4 @@ public class CommentServiceImpl implements CommentService {
         commentDto.setCommentStatus(CommentStatus.CREATED);
         return commentConverter.convertToDto(commentRepository.save(commentConverter.convertToEntity(commentDto)));
     }
-
 }

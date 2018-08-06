@@ -25,7 +25,6 @@ public class TicketToBoardResponseDtoConverterImpl implements TicketToBoardRespo
             result.setAssignedTo(entity.getAssignedTo().getUsername());
         }
         result.setTicketIssueType(entity.getTicketIssueType());
-
         return result;
     }
 }
