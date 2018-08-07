@@ -29,7 +29,7 @@ public class CommentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentDto createComment(/*@Valid*/ @RequestBody CommentDto commentDto, @CurrentUser UserPrincipal userPrincipal) {
+    public CommentDto createComment(@RequestBody CommentDto commentDto, @CurrentUser UserPrincipal userPrincipal) {
         commentDto.setUserId(userPrincipal.getId());
         return commentService.createComment(commentDto);
     }
