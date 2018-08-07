@@ -22,7 +22,7 @@ public class TicketController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    void deleteTicket(@PathVariable("id") Long id) {
+    public void deleteTicket(@PathVariable("id") Long id) {
         ticketService.deleteTicket(id);
     }
 
@@ -32,7 +32,8 @@ public class TicketController {
     }
 
     @PostMapping
-    public CreateTicketDto createTicket(/*@Valid*/ @RequestBody CreateTicketDto createTicketRequest, @CurrentUser UserPrincipal userPrincipal) {
+    public CreateTicketDto createTicket(@RequestBody CreateTicketDto createTicketRequest,
+                                        @CurrentUser UserPrincipal userPrincipal) {
         return ticketService.createTicket(createTicketRequest, userPrincipal);
     }
 }
