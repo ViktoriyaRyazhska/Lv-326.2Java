@@ -32,8 +32,6 @@ public class BoardConverterImpl implements BoardConverter {
     @Autowired
     private SprintService sprintService;
 
-    @Autowired
-    private SprintConverter sprintConverter;
 
     @Override
     public Board convertToEntity(BoardDto dto) {
@@ -44,14 +42,14 @@ public class BoardConverterImpl implements BoardConverter {
     public BoardDto convertToDto(Board entity) {
         List<TableListDto> allTableLists = tableListService.getAllTableLists(entity.getId());
         for (TableListDto listDto : allTableLists) {
-            listDto.setTicketForBoardResponseDtos(ticketService.getTicketsByListId(listDto.getId()));
+            listDto.setTicketsForBoardResponse(ticketService.getTicketsByListId(listDto.getId()));
         }
         BoardDto dto = modelMapper.map(entity, BoardDto.class);
         if(entity.getBoardType() == BoardType.SCRUM) {
             List<SprintDto> allSprintsByBoardId = sprintService.getAllSprintsByBoardIdNotInArchive(dto.getId());
-            dto.setSprintDtos(allSprintsByBoardId);
+            dto.setSprints(allSprintsByBoardId);
         }
-        dto.setTableListDtoList(allTableLists);
+        dto.setTableLists(allTableLists);
         return dto;
     }
 }
