@@ -24,5 +24,5 @@ public class TableListDto extends BaseDto {
 
     private Long boardId;
 
-    private List<TicketForBoardResponseDto> ticketForBoardResponseDtos;
+    private List<TicketForBoardResponseDto> ticketsForBoardResponse;
 }

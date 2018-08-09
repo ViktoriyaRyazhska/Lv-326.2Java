@@ -81,4 +81,22 @@ public class TicketServiceImpl implements TicketService {
             ticketRepository.save(ticket);
         }
     }
+
+    @Override
+    public void recoverTicketsBySprintId(Long sprintId) {
+        List<Ticket> tickets = ticketRepository.findAllBySprintId(sprintId);
+        for (Ticket ticket : tickets) {
+            ticket.setStatus(ItemsStatus.OPENED);
+            ticketRepository.save(ticket);
+        }
+    }
+
+    @Override
+    public void archiveTicketsBySprintId(Long sprintId) {
+        List<Ticket> tickets = ticketRepository.findAllBySprintId(sprintId);
+        for (Ticket ticket : tickets) {
+            ticket.setStatus(ItemsStatus.DELETED);
+            ticketRepository.save(ticket);
+        }
+    }
 }
