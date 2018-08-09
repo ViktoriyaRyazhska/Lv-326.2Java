@@ -13,6 +13,7 @@ import com.softserve.edu.cajillo.repository.UserRepository;
 import com.softserve.edu.cajillo.security.JwtTokenProvider;
 import com.softserve.edu.cajillo.service.AuthenticationService;
 import com.softserve.edu.cajillo.service.EmailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +27,7 @@ import javax.validation.Valid;
 import java.time.Instant;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -65,8 +67,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public void registerUser(RegisterRequestDto registerRequestDto) {
+        log.info("Registering new user with email = " + registerRequestDto.getEmail()
+                + " and username = " + registerRequestDto.getUsername());
         if (userRepository.existsByUsername(registerRequestDto.getUsername())
                 || userRepository.existsByEmail(registerRequestDto.getEmail())) {
+            log.error("User credentials are already taken");
             throw new UserAlreadyExistsException(USER_ALREADY_EXISTS_MESSAGE);
         }
         User user = new User();
@@ -74,6 +79,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setEmail(registerRequestDto.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
         user.setAccountStatus(UserAccountStatus.ACTIVE);
+        log.info("Creating new user: " + user);
         userRepository.save(user);
         emailService.sendEmail(user.getEmail(), "You successfully registered Cajillo project.",
                 "Dear " + user.getUsername() + ",\n" +
@@ -84,14 +90,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void resetUserPasswordConfirm(ResetPasswordDto resetPasswordDto) {
+        log.info("Confirming password reset for user with id = " + resetPasswordDto.getUserId());
         PasswordResetToken token = passwordResetTokenRepository.findByToken(resetPasswordDto.getToken())
                 .orElseThrow(() -> new TokenNotFoundException(RESET_TOKEN_IS_NOT_VALID));
         if (validatePasswordResetToken(token, resetPasswordDto.getUserId())) {
+            log.info("Token is valid. Setting new password and saving user.");
             User user = token.getUser();
             user.setPassword(passwordEncoder.encode(resetPasswordDto.getPassword()));
             userRepository.save(user);
             passwordResetTokenRepository.delete(token);
         } else {
+            log.error("Password reset token is invalid");
             passwordResetTokenRepository.delete(token);
             throw new TokenExpiredException(RESET_TOKEN_IS_NOT_VALID);
         }
@@ -99,6 +108,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void resetUserPasswordRequest(String email) {
+        log.info("Resetting password for user  with email " + email);
         User user = userRepository.findUserByEmail(email).orElseThrow(() ->
                 new UserNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MESSAGE, email)));
         String token = UUID.randomUUID().toString();

@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService {
         }
         currentUser.setFirstName(userDto.getFirstName());
         currentUser.setLastName(userDto.getLastName());
+        log.info("Updating user " + currentUser);
         userRepository.save(currentUser);
     }
 
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
         user.setAccountStatus(UserAccountStatus.DELETED);
-        System.out.println(user);
+        log.info("Deleting user " + user);
         userRepository.save(user);
     }
 
@@ -71,19 +72,24 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
         user.setAccountStatus(UserAccountStatus.ACTIVE);
+        log.info("Restoring user " + user);
         userRepository.save(user);
     }
 
     @Override
     public User getUserByEmail(String email) {
+        log.info("Getting user by email: " + email);
         return userRepository.findUserByEmail(email).orElseThrow(() ->
                 new UserNotFoundException(USER_USERNAME_NOT_FOUND_MESSAGE_BY_EMAIL + email));
     }
 
     public void uploadAvatar(Long userId, MultipartFile avatar) {
+        log.info("Uploading avatar for user with id: " + userId);
         if (avatar.getSize() > (256 * 1024)) {
+            log.error("Avatar file is to large. Size = " + avatar.getSize() + ", max size is " + (256 * 1024));
             throw new UnsupportedOperationException(REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE);
         } else if (!Arrays.asList("image/jpeg", "image/pjpeg", "image/png").contains(avatar.getContentType())) {
+            log.error(avatar.getContentType() + " is not supported");
             throw new UnsupportedOperationException(UNSUPPORTED_MIME_TYPES_ERROR_MESSAGE);
         }
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
@@ -98,13 +104,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AvatarDto getUserAvatar(Long userId) {
+        log.info("Getting avatar for user with id: " + userId);
         return new AvatarDto(userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE)).getAvatar());
     }
 
     @Override
-    public void deleteUserAvatar(Long id) {
-        User user = userRepository.findById(id)
+    public void deleteUserAvatar(Long userId) {
+        log.info("Deleting avatar for user with id: " + userId);
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
         user.setAvatar(null);
         userRepository.save(user);

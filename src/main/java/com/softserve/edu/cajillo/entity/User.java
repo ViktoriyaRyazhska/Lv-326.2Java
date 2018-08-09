@@ -6,10 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -44,6 +41,7 @@ public class User extends DateAudit {
 
     @NotBlank
     @Size(min = 8, max = 32)
+    @ToString.Exclude
     @Column(name = "password", nullable = false, length = 75)
     private String password;
 
