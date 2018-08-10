@@ -20,6 +20,10 @@ public interface TicketService {
 
     void recoverTicketsByListId(Long listId);
 
+    void recoverTicketsBySprintId(Long sprintId);
+
+    void archiveTicketsBySprintId(Long sprintId);
+
     TicketDto updateTicket(TicketDto ticketDto);
 
     void deleteTicket(Long ticketId);

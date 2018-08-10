@@ -23,4 +23,6 @@ public class CreateTicketDto extends BaseDto {
     private Long boardId;
 
     private Long createdById ;
+
+    private Long sprintId ;
 }
