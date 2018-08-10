@@ -19,6 +19,7 @@ public class TicketConverterImpl implements TicketConverter {
     private static final String BOARD_ID_NOT_FOUND_MESSAGE = "Could not find board with id = ";
     private static final String TABLE_LIST_ID_NOT_FOUND_MESSAGE = "Could not find table list with id = ";
     private static final String SPRINT_ID_NOT_FOUND_MESSAGE = "Could not find sprint with id = ";
+    private static final String TICKET_ID_NOT_FOUND_MESSAGE = "Could not find ticket with id = ";
 
     @Autowired
     private ModelMapper modelMapper;
@@ -41,6 +42,9 @@ public class TicketConverterImpl implements TicketConverter {
     @Autowired
     private CommentConverter commentConverter;
 
+    @Autowired
+    private TicketRepository ticketRepository;
+
     @Override
     public Ticket convertToEntity(TicketDto dto) {
         Ticket ticket = modelMapper.map(dto, Ticket.class);
@@ -54,6 +58,9 @@ public class TicketConverterImpl implements TicketConverter {
                 new BoardNotFoundException(BOARD_ID_NOT_FOUND_MESSAGE + dto.getBoardId())));
         ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
                 new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + dto.getSprintId())));
+        if (dto.getParentTicketId() != null)
+            ticket.setParentTicket(ticketRepository.findById(dto.getParentTicketId()).orElseThrow(() ->
+                    new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + dto.getParentTicketId())));
         return ticket;
     }
 
@@ -67,6 +74,8 @@ public class TicketConverterImpl implements TicketConverter {
         if (entity.getSprint() != null)
             ticketDto.setSprintId(entity.getSprint().getId());
         ticketDto.setTableListId(entity.getTableList().getId());
+        if (entity.getParentTicket() != null)
+            ticketDto.setParentTicketId(entity.getParentTicket().getId());
         ticketDto.setComments(commentConverter.convertToDto(commentRepository.findAllByTicketId(entity.getId())));
         return ticketDto;
     }

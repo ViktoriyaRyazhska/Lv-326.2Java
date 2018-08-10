@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class CreateTicketDto extends BaseDto {
 
+    @NotBlank
     private String name;
 
     @NotBlank
@@ -24,5 +25,8 @@ public class CreateTicketDto extends BaseDto {
 
     private Long createdById ;
 
-    private Long sprintId ;
+    private Long sprintId;
+
+    @NotBlank
+    private Long parentTicketId;
 }
