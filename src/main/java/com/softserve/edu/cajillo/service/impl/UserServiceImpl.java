@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
         user.setAccountStatus(UserAccountStatus.DELETED);
-        System.out.println(user);
         userRepository.save(user);
     }
 

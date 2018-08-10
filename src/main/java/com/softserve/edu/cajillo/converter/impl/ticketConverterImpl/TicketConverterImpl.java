@@ -46,7 +46,8 @@ public class TicketConverterImpl implements TicketConverter {
                 new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getAssignedToId())));
         ticket.setCreatedBy(userRepository.findById(dto.getCreatedById()).orElseThrow(() ->
                 new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getCreatedById())));
-        ticket.setTicketPriority(TicketPriority.valueOf(dto.getTicketPriority()));
+        if(dto.getTicketPriority() != null)
+          ticket.setTicketPriority(TicketPriority.valueOf(dto.getTicketPriority()));
         ticket.setTableList(tableListRepository.findById(dto.getTableListId()).orElseThrow(() ->
                 new TableListNotFoundException(TABLE_LIST_ID_NOT_FOUND_MESSAGE + dto.getTableListId())));
         ticket.setBoard(boardRepository.findById(dto.getBoardId()).orElseThrow(() ->
