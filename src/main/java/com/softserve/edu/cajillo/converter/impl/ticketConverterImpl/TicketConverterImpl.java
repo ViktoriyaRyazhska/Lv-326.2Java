@@ -11,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.html.parser.Entity;
+
 @Component
 public class TicketConverterImpl implements TicketConverter {
     private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id = ";
@@ -46,7 +48,6 @@ public class TicketConverterImpl implements TicketConverter {
                 new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getAssignedToId())));
         ticket.setCreatedBy(userRepository.findById(dto.getCreatedById()).orElseThrow(() ->
                 new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getCreatedById())));
-        ticket.setTicketPriority(TicketPriority.valueOf(dto.getTicketPriority()));
         ticket.setTableList(tableListRepository.findById(dto.getTableListId()).orElseThrow(() ->
                 new TableListNotFoundException(TABLE_LIST_ID_NOT_FOUND_MESSAGE + dto.getTableListId())));
         ticket.setBoard(boardRepository.findById(dto.getBoardId()).orElseThrow(() ->
