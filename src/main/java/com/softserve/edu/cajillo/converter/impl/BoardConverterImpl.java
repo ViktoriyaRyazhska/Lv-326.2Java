@@ -8,6 +8,7 @@ import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.Sprint;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
+import com.softserve.edu.cajillo.service.HistoryLogsService;
 import com.softserve.edu.cajillo.service.SprintService;
 import com.softserve.edu.cajillo.service.TicketService;
 import com.softserve.edu.cajillo.service.impl.TableListServiceImpl;
@@ -32,6 +33,9 @@ public class BoardConverterImpl implements BoardConverter {
     @Autowired
     private SprintService sprintService;
 
+    @Autowired
+    private HistoryLogsService historyLogsService;
+
 
     @Override
     public Board convertToEntity(BoardDto dto) {
@@ -50,6 +54,7 @@ public class BoardConverterImpl implements BoardConverter {
             dto.setSprints(allSprintsByBoardId);
         }
         dto.setTableLists(allTableLists);
+        dto.setLogs(historyLogsService.getAllLogsByBoardId(dto.getId()));
         return dto;
     }
 }
