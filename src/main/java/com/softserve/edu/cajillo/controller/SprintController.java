@@ -7,38 +7,38 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/sprints")
+@RequestMapping("/api")
 public class SprintController {
 
     @Autowired
     private SprintService sprintService;
 
-    @PostMapping("/{boardId}")
+    @PostMapping("/sprint/{boardId}")
     public void createSprint(@PathVariable("boardId") Long boardId, @RequestBody SprintDto sprintDto) {
         sprintService.createSprint(sprintDto, boardId);
     }
 
-    @GetMapping("/{sprintId}")
+    @GetMapping("/sprint/{sprintId}")
     public SprintDto getSprint(@PathVariable("sprintId") Long sprintId) {
         return sprintService.getSprint(sprintId);
     }
 
-    @PutMapping("/{sprintId}")
+    @PutMapping("/sprint/{sprintId}")
     public void updateSprint(@PathVariable("sprintId") Long sprintId, @RequestBody SprintDto sprintDto) {
         sprintService.updateSprint(sprintId, sprintDto);
     }
 
-    @PutMapping("/archive/{sprintId}")
+    @PutMapping("/sprint/archive/{sprintId}")
     public void archiveSprint(@PathVariable("sprintId") Long sprintId) {
         sprintService.archiveSprint(sprintId);
     }
 
-    @PutMapping("/recover/{sprintId}")
+    @PutMapping("sprint/recover/{sprintId}")
     public SprintDto recoverSprint(@PathVariable("sprintId") Long sprintId) {
         return sprintService.recoverSprint(sprintId);
     }
 
-    @DeleteMapping("/{sprintId}")
+    @DeleteMapping("sprint/{sprintId}")
     public void deleteSprint(@PathVariable("sprintId") Long sprintId) {
         sprintService.deleteSprint(sprintId);
     }

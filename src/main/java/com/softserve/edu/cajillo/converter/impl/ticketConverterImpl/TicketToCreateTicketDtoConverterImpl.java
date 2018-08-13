@@ -7,6 +7,7 @@ import com.softserve.edu.cajillo.exception.BoardNotFoundException;
 import com.softserve.edu.cajillo.exception.TableListNotFoundException;
 import com.softserve.edu.cajillo.exception.UserNotFoundException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
+import com.softserve.edu.cajillo.repository.SprintRepository;
 import com.softserve.edu.cajillo.repository.TableListRepository;
 import com.softserve.edu.cajillo.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,7 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
     private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id = ";
     private static final String BOARD_ID_NOT_FOUND_MESSAGE = "Could not find board with id = ";
     private static final String TABLE_LIST_ID_NOT_FOUND_MESSAGE = "Could not find table list with id = ";
+    private static final String SPRINT_ID_NOT_FOUND_MESSAGE = "Could not find sprint with id = ";
 
 
     @Autowired
@@ -33,6 +35,9 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SprintRepository sprintRepository;
+
     @Override
     public Ticket convertToEntity(CreateTicketDto dto) {
         Ticket ticket = modelMapper.map(dto, Ticket.class);
@@ -42,6 +47,8 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
                 new TableListNotFoundException(TABLE_LIST_ID_NOT_FOUND_MESSAGE + dto.getTableListId())));
         ticket.setCreatedBy(userRepository.findById(dto.getCreatedById()).orElseThrow(() ->
                 new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getCreatedById())));
+        ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
+                new UserNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + dto.getSprintId())));
         return ticket;
     }
 
@@ -51,6 +58,7 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
         createTicketDto.setCreatedById(entity.getCreatedBy().getId());
         createTicketDto.setTableListId(entity.getTableList().getId());
         createTicketDto.setBoardId(entity.getBoard().getId());
+        createTicketDto.setSprintId(entity.getSprint().getId());
         return createTicketDto;
     }
 }

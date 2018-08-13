@@ -12,6 +12,7 @@ import com.softserve.edu.cajillo.exception.BoardTypeMismatchException;
 import com.softserve.edu.cajillo.exception.SprintNotFoundException;
 import com.softserve.edu.cajillo.repository.SprintRepository;
 import com.softserve.edu.cajillo.service.SprintService;
+import com.softserve.edu.cajillo.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,9 @@ public class SprintServiceImpl implements SprintService {
 
     @Autowired
     private SprintConverterImpl sprintConverter;
+
+    @Autowired
+    private TicketService ticketService;
 
     @Override
     public SprintDto getSprint(Long sprintId) {
@@ -135,6 +139,7 @@ public class SprintServiceImpl implements SprintService {
             throw new BacklogModificationException(BACKLOG_DELETE_IS_PROHIBITED);
         }
         currentSprint.setSprintStatus(SprintStatus.IN_ARCHIVE);
+        ticketService.archiveTicketsBySprintId(sprintId);
         sprintRepository.save(currentSprint);
     }
 
@@ -150,6 +155,7 @@ public class SprintServiceImpl implements SprintService {
         }
         currentSprint.setSprintStatus(SprintStatus.CREATED);
         sprintRepository.save(currentSprint);
+        ticketService.recoverTicketsBySprintId(sprintId);
         return sprintConverter.convertToDto(currentSprint);
     }
 
