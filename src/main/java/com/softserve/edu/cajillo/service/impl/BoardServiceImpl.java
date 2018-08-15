@@ -1,15 +1,20 @@
 package com.softserve.edu.cajillo.service.impl;
 
+import com.softserve.edu.cajillo.converter.RelationConverter;
 import com.softserve.edu.cajillo.converter.impl.BoardConverterImpl;
 import com.softserve.edu.cajillo.dto.BoardDto;
+import com.softserve.edu.cajillo.dto.RelationDto;
 import com.softserve.edu.cajillo.entity.Board;
-import com.softserve.edu.cajillo.entity.RoleManager;
+import com.softserve.edu.cajillo.entity.Relation;
+import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
+import com.softserve.edu.cajillo.entity.enums.RoleName;
 import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
-import com.softserve.edu.cajillo.repository.RoleManagerRepository;
+import com.softserve.edu.cajillo.repository.RelationRepository;
 import com.softserve.edu.cajillo.service.BoardService;
+import com.softserve.edu.cajillo.service.RelationService;
 import com.softserve.edu.cajillo.service.SprintService;
 import com.softserve.edu.cajillo.service.TableListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -28,8 +34,13 @@ public class BoardServiceImpl implements BoardService {
     private BoardRepository boardRepository;
 
     @Autowired
-    private RoleManagerRepository roleManagerRepository;
+    private RelationRepository relationRepository;
 
+    @Autowired
+    private RelationService relationService;
+
+    @Autowired
+    private RelationConverter relationConverter;
     @Autowired
     private TableListService tableListService;
 
@@ -44,6 +55,7 @@ public class BoardServiceImpl implements BoardService {
         }
         return boardConverter.convertToDto(save);
     }
+
     public BoardDto updateBoard(Long id, Board board) {
         Board existedBoard = boardRepository.findById(id)
                 .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
@@ -95,14 +107,38 @@ public class BoardServiceImpl implements BoardService {
         sprintService.recoverAllSprintsByBoard(boardId);
     }
 
-    public List<Board> getAllBoardsByTeamId(Long teamId){
-        List<Board> allBoardsForCurrentTeam = new ArrayList<>();
-        List<RoleManager> allManagers = roleManagerRepository.findAllByTeamId(teamId);
+    public List<BoardDto> getAllBoardsByTeamId(Long teamId){
+        List<BoardDto> allBoardsForCurrentTeam = new ArrayList<>();
+        List<Relation> allManagers = relationRepository.findAllByTeamId(teamId);
         if (allManagers != null){
-            for (RoleManager manager : allManagers) {
-                allBoardsForCurrentTeam.add(manager.getBoard());
+            for (Relation manager : allManagers) {
+                allBoardsForCurrentTeam.add(boardConverter.convertToDto(manager.getBoard()));
             }
         }
         return allBoardsForCurrentTeam;
+    }
+
+    @Override
+    public BoardDto createNewTeamBoard(Long teamId, Board board) {
+        Map<User, RoleName> allUsersInTeam = relationService.getAllUsersInTeam(teamId);
+        board.setStatus(ItemsStatus.OPENED);
+        Board savedBoard = boardRepository.save(board);
+
+        for (Map.Entry<User, RoleName> entry : allUsersInTeam.entrySet()) {
+            User user = entry.getKey();
+            RoleName role = entry.getValue();
+
+            relationRepository.save(relationConverter.convertToEntity(
+                    new RelationDto(
+                            savedBoard.getId(),
+                            user.getId(),
+                            role,
+                            teamId)
+            ));
+        }
+        if (board.getBoardType().equals(BoardType.SCRUM)) {
+            sprintService.createSprintBacklog(board.getId());
+        }
+        return boardConverter.convertToDto(savedBoard);
     }
 }

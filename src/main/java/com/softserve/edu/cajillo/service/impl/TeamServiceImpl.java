@@ -1,19 +1,18 @@
 package com.softserve.edu.cajillo.service.impl;
 
 import com.softserve.edu.cajillo.converter.BoardConverter;
-import com.softserve.edu.cajillo.converter.RoleManagerConverter;
+import com.softserve.edu.cajillo.converter.RelationConverter;
 import com.softserve.edu.cajillo.converter.TeamConverter;
-import com.softserve.edu.cajillo.dto.RoleManagerDto;
+import com.softserve.edu.cajillo.dto.RelationDto;
 import com.softserve.edu.cajillo.dto.TeamDto;
 import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
-import com.softserve.edu.cajillo.entity.RoleManager;
+import com.softserve.edu.cajillo.entity.Relation;
 import com.softserve.edu.cajillo.entity.Team;
-import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.entity.enums.RoleName;
-import com.softserve.edu.cajillo.exception.RoleManagerServiceException;
+import com.softserve.edu.cajillo.exception.RelationServiceException;
 import com.softserve.edu.cajillo.exception.TeamNotFoundException;
-import com.softserve.edu.cajillo.repository.RoleManagerRepository;
+import com.softserve.edu.cajillo.repository.RelationRepository;
 import com.softserve.edu.cajillo.repository.TeamRepository;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.BoardService;
@@ -39,10 +38,10 @@ public class TeamServiceImpl implements TeamService {
     private TeamRepository teamRepository;
 
     @Autowired
-    private RoleManagerRepository roleManagerRepository;
+    private RelationRepository relationRepository;
 
     @Autowired
-    private RoleManagerConverter roleManagerConverter;
+    private RelationConverter relationConverter;
 
     @Autowired
     private UserService userService;
@@ -62,17 +61,14 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void createTeam(TeamDto teamDto, UserPrincipal currentUser) {
-        RoleManager savedRoleManager = roleManagerRepository.save(roleManagerConverter.convertToEntity(
-                new RoleManagerDto(
+        relationRepository.save(relationConverter.convertToEntity(
+                new RelationDto(
                         null,
                         currentUser.getId(),
                         RoleName.ADMIN,
-                        null
-                )
-        ));
-        Team savedTeam = teamRepository.save(teamConverter.convertToEntity(teamDto));
-        savedRoleManager.setTeam(savedTeam);
-        roleManagerRepository.save(savedRoleManager);
+                        teamRepository.save(teamConverter.convertToEntity(teamDto)).getId()
+                ))
+        );
     }
 
     @Override
@@ -87,13 +83,13 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void deleteTeam(Long id) {
-        List<RoleManager> allByTeamId = roleManagerRepository.findAllByTeamId(id);
-        for (RoleManager manager : allByTeamId) {
+        List<Relation> allByTeamId = relationRepository.findAllByTeamId(id);
+        for (Relation manager : allByTeamId) {
             if (manager.getRoleName().equals(RoleName.ADMIN)) {
                 manager.setTeam(null);
-                roleManagerRepository.save(manager);
+                relationRepository.save(manager);
             } else {
-                roleManagerRepository.deleteById(manager.getId());
+                relationRepository.deleteById(manager.getId());
             }
         }
         teamRepository.deleteById(id);
@@ -101,42 +97,35 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void addUserToTeam(UserDto userDto, Long teamId) {
-        User newTeamMember = userService.getUserByEmail(userDto.getEmail());
-        RoleManager savedRoleManager = roleManagerRepository.save(
-                roleManagerConverter.convertToEntity(
-                        new RoleManagerDto(
-                                null,
-                                newTeamMember.getId(),
-                                RoleName.USER,
-                                null)
-                ));
-        RoleManager roleManager = roleManagerRepository.findById(savedRoleManager.getId())
-                .orElseThrow(() -> new RoleManagerServiceException(ROLE_MANAGER_NOT_FOUND_MESSAGE));
-        roleManager.setTeam(teamRepository.findById(teamId)
-                .orElseThrow(() -> new TeamNotFoundException(TEAM_ID_NOT_FOUND_MESSAGE + teamId)));
-
-        List<Board> allBoardsForCurrentTeam = boardService.getAllBoardsByTeamId(teamId);
+        List<Board> allBoardsForCurrentTeam = boardConverter.convertToEntity(boardService.getAllBoardsByTeamId(teamId));
         if (allBoardsForCurrentTeam != null) {
             for (Board board : allBoardsForCurrentTeam) {
+                Long boardId = null;
                 if (board != null) {
-                    roleManager.setBoard(boardConverter.convertToEntity(boardService.getBoard(board.getId())));
+                    boardId= boardConverter.convertToEntity(boardService.getBoard(board.getId())).getId();
                 }
+                relationRepository.save(relationConverter.convertToEntity(
+                        new RelationDto(
+                                boardId,
+                                userService.getUserByEmail(userDto.getEmail()).getId(),
+                                RoleName.USER,
+                                teamId)
+                ));
             }
         }
-        roleManagerRepository.save(roleManager);
     }
 
     @Override
     public void deleteUserFromTeam(Long userId, Long teamId) {
-        List<RoleManager> allByTeamId = roleManagerRepository.findAllByTeamId(teamId);
-        for (RoleManager manager : allByTeamId) {
-            List<RoleManager> managersToDelete = new ArrayList<>();
+        List<Relation> allByTeamId = relationRepository.findAllByTeamId(teamId);
+        for (Relation manager : allByTeamId) {
+            List<Relation> managersToDelete = new ArrayList<>();
             if (manager.getUser().getId().equals(userId)) {
                 if (manager.getRoleName().equals(RoleName.USER)) {
                     managersToDelete.add(manager);
-                } else throw new RoleManagerServiceException(CAN_NOT_DELETE);
+                } else throw new RelationServiceException(CAN_NOT_DELETE);
             }
-            roleManagerRepository.deleteAll(managersToDelete);
+            relationRepository.deleteAll(managersToDelete);
         }
     }
 }
