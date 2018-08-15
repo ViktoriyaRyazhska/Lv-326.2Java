@@ -42,6 +42,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private RelationConverter relationConverter;
+
     @Autowired
     private TableListService tableListService;
 
@@ -142,4 +143,9 @@ public class BoardServiceImpl implements BoardService {
         }
         return boardConverter.convertToDto(savedBoard);
     }
+//
+//    @Override
+//    public void deleteTeamBoard(Long boardId) {
+//        relationRepository.deleteAllByBoard_Id(boardId);
+//    }
 }

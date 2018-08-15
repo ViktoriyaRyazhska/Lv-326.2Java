@@ -17,9 +17,9 @@ public interface BoardService {
 
     List<BoardDto> getAllBoardsByTeamId(Long teamId);
 
-//    void createNewTeamBoard(Long teamId, Board board);
-
     BoardDto createNewTeamBoard(Long teamId, Board board);
+
+//    void deleteTeamBoard(Long boardId);
   
     BoardDto recoverBoard(Long boardId);
 

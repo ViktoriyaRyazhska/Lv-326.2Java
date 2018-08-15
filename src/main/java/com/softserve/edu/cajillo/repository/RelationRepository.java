@@ -15,4 +15,6 @@ public interface RelationRepository extends JpaRepository<Relation, Long> {
     Optional<List<Relation>> findAllByUserId(Long id);
 
     List<Relation> findAllByTeamId(Long id);
+//
+//    void deleteAllByBoard_Id(Long id);
 }

@@ -1,9 +1,11 @@
 package com.softserve.edu.cajillo.service;
 
+import com.softserve.edu.cajillo.dto.AvatarDto;
 import com.softserve.edu.cajillo.dto.TeamDto;
 import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Team;
 import com.softserve.edu.cajillo.security.UserPrincipal;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface TeamService {
 
@@ -18,4 +20,10 @@ public interface TeamService {
     void addUserToTeam(UserDto userDto, Long teamId);
 
     void deleteUserFromTeam(Long userId, Long teamId);
+
+    void uploadAvatar(Long teamId, MultipartFile avatar);
+
+    AvatarDto getTeamAvatar(Long teamId);
+
+    void deleteTeamAvatar(Long teamId);
 }

@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.controller;
 
+import com.softserve.edu.cajillo.dto.AvatarDto;
 import com.softserve.edu.cajillo.dto.BoardDto;
 import com.softserve.edu.cajillo.dto.TeamDto;
 import com.softserve.edu.cajillo.dto.UserDto;
@@ -11,7 +12,9 @@ import com.softserve.edu.cajillo.service.BoardService;
 import com.softserve.edu.cajillo.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -47,6 +50,24 @@ public class TeamController {
         teamService.deleteTeam(teamId);
     }
 
+    @PostMapping("/{teamId}/avatar")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void uploadTeamAvatar(@PathVariable Long teamId, @RequestParam("file") MultipartFile avatar) {
+        teamService.uploadAvatar(teamId, avatar);
+    }
+
+    @DeleteMapping("/{teamId}/avatar")
+    @PreAuthorize("hasRole('ACTIVE')")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTeamAvatar(@PathVariable Long teamId) {
+        teamService.deleteTeamAvatar(teamId);
+    }
+
+    @GetMapping("/{teamId}/avatar")
+    public AvatarDto getTeamAvatar(@PathVariable Long teamId) {
+        return teamService.getTeamAvatar(teamId);
+    }
+
     @PostMapping("/{teamId}")
     @ResponseStatus(HttpStatus.OK)
     public void addUserToTeam(@RequestBody UserDto userDto, @PathVariable Long teamId) {
@@ -65,10 +86,14 @@ public class TeamController {
     }
 
     @PostMapping("/{teamId}/boards")
-    @ResponseStatus(HttpStatus.OK)
     public BoardDto createNewTeamBoard(@PathVariable Long teamId, @RequestBody Board board) {
         return boardService.createNewTeamBoard(teamId, board);
     }
+//
+//    @DeleteMapping{"/{teamId}/boards/{boardId}"}
+//    public void deleteTeamBoard(@PathVariable ("boardId") Long boardId){
+//        boardService.deleteTeamBoard(boardId);
+//    }
 
 //    @PutMapping("/{teamId}/board")
 //    public Board addBoardToTeam (@PathVariable Long id, ){}
