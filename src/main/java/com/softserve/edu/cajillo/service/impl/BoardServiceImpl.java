@@ -10,6 +10,7 @@ import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.RoleName;
+import com.softserve.edu.cajillo.exception.BoardNotFoundException;
 import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.RelationRepository;
@@ -58,14 +59,14 @@ public class BoardServiceImpl implements BoardService {
 
     public BoardDto updateBoard(Long id, Board board) {
         Board existedBoard = boardRepository.findById(id)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         existedBoard.setName(board.getName());
         return boardConverter.convertToDto(boardRepository.save(existedBoard));
     }
 
     public BoardDto getBoard(Long id) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         if (board == null)
             throw new UnsatisfiedException(String.format("Board with id %d not found", id));
         return boardConverter.convertToDto(board);
@@ -73,7 +74,7 @@ public class BoardServiceImpl implements BoardService {
 
     public Board getBoardEntity(Long id) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         if (board == null)
             throw new UnsatisfiedException(String.format("Board with id %d not found", id));
         return board;
@@ -81,7 +82,7 @@ public class BoardServiceImpl implements BoardService {
 
     public void deleteBoard(Long id) {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         deleteAllInternalBoardItems(id);
         board.setStatus(ItemsStatus.DELETED);
         boardRepository.save(board);
@@ -95,7 +96,7 @@ public class BoardServiceImpl implements BoardService {
 
     public BoardDto recoverBoard(Long boardId) {
         Board board = boardRepository.findByIdAndStatus(boardId, ItemsStatus.DELETED)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", boardId)));
+                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", boardId)));
         board.setStatus(ItemsStatus.OPENED);
         recoverAllInternalItems(boardId);
         boardRepository.save(board);
