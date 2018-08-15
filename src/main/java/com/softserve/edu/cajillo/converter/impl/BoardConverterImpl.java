@@ -54,7 +54,8 @@ public class BoardConverterImpl implements BoardConverter {
             dto.setSprints(allSprintsByBoardId);
         }
         dto.setTableLists(allTableLists);
-        dto.setLogs(historyLogsService.getAllLogsByBoardId(dto.getId()));
+        dto.setLogs(historyLogsService.getTwentyLogsByBoardId(dto.getId(),
+                historyLogsService.getCountLogs() + 1));
         return dto;
     }
 }
