@@ -47,8 +47,10 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
                 new TableListNotFoundException(TABLE_LIST_ID_NOT_FOUND_MESSAGE + dto.getTableListId())));
         ticket.setCreatedBy(userRepository.findById(dto.getCreatedById()).orElseThrow(() ->
                 new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getCreatedById())));
-        ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
-                new UserNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + dto.getSprintId())));
+        if(dto.getSprintId() != null) {
+            ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
+                    new UserNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + dto.getSprintId())));
+        }
         return ticket;
     }
 
@@ -58,7 +60,9 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
         createTicketDto.setCreatedById(entity.getCreatedBy().getId());
         createTicketDto.setTableListId(entity.getTableList().getId());
         createTicketDto.setBoardId(entity.getBoard().getId());
-        createTicketDto.setSprintId(entity.getSprint().getId());
+        if(entity.getSprint() != null) {
+            createTicketDto.setSprintId(entity.getSprint().getId());
+        }
         return createTicketDto;
     }
 }
