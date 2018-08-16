@@ -28,7 +28,6 @@ public class User extends DateAudit {
     @Column(nullable = false, unique = true)
     private Long id;
 
-    @NotBlank
     @Size(min = 3, max = 20)
     @Column(name = "username", nullable = false, unique = true, length = 20)
     private String username;
@@ -39,10 +38,8 @@ public class User extends DateAudit {
     @Column(name = "email", unique = true, nullable = false, length = 40)
     private String email;
 
-    @NotBlank
-    @Size(min = 8, max = 32)
     @ToString.Exclude
-    @Column(name = "password", nullable = false, length = 75)
+    @Column(name = "password", length = 75)
     private String password;
 
     @Column(name = "first_name", length = 40)
