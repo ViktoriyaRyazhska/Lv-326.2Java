@@ -30,6 +30,7 @@ hs_err_pid*
 
 
 src/main/resources/application.properties
+src/main/resources/application-oauth2.properties
 
 logs
 .directory
