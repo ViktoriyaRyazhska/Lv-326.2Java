@@ -89,11 +89,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (verifiedEmail) {
                 Optional<User> userByEmail = userRepository.findUserByEmail(email);
                 if (userByEmail.isPresent()) {
+                    log.error("User credentials are already taken");
                     UserPrincipal userPrincipal = UserPrincipal.create(userByEmail.get());
                     String jwt = tokenProvider.generateToken(userPrincipal);
                     return new JwtAuthenticationResponseDto(jwt);
                 } else {
-                    //TODO Create(register) user if missed
+                    registerUserGoogle(email);
                 }
             }
         } catch (Exception e) {
@@ -101,6 +102,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         return null;
     }
+
+    public void registerUserGoogle(String email) {
+        log.info("Registering new user with email = " + email);
+        User user = new User();
+        user.setUsername(email.substring(0, email.indexOf('@')));
+        user.setEmail(email);
+        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        log.info("Creating new user: " + user);
+        userRepository.save(user);
+        emailSend(user);
+    }
+
 
     public void registerUser(RegisterRequestDto registerRequestDto) {
         log.info("Registering new user with email = " + registerRequestDto.getEmail()
@@ -117,6 +130,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setAccountStatus(UserAccountStatus.ACTIVE);
         log.info("Creating new user: " + user);
         userRepository.save(user);
+        emailSend(user);
+    }
+
+    private void emailSend(User user) {
         emailService.sendEmail(user.getEmail(), "You successfully registered Cajillo project.",
                 "Dear " + user.getUsername() + ",\n" +
                         "Thank you for joining Cajillo. \n" +
