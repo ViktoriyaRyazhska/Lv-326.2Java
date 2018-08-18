@@ -1,5 +1,7 @@
 package com.softserve.edu.cajillo.service.impl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.softserve.edu.cajillo.converter.impl.BoardConverterImpl;
 import com.softserve.edu.cajillo.dto.BoardDto;
 import com.softserve.edu.cajillo.entity.Board;
@@ -14,13 +16,23 @@ import com.softserve.edu.cajillo.service.BoardService;
 import com.softserve.edu.cajillo.service.SprintService;
 import com.softserve.edu.cajillo.service.TableListService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BoardServiceImpl implements BoardService {
+
+    @Value("${CLOUDINARYURL}")
+    private String cloudUrl;
 
     @Autowired
     private BoardConverterImpl boardConverter;
@@ -36,6 +48,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private SprintService sprintService;
+
+    private static final String IMAGE_FILE_ROOT = "D:\\abc.jpg";
 
     public BoardDto createBoard(Board board) {
         board.setStatus(ItemsStatus.OPENED);
@@ -55,16 +69,12 @@ public class BoardServiceImpl implements BoardService {
     public BoardDto getBoard(Long id) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
-        if (board == null)
-            throw new UnsatisfiedException(String.format("Board with id %d not found", id));
         return boardConverter.convertToDto(board);
     }
 
     public Board getBoardEntity(Long id) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
-        if (board == null)
-            throw new UnsatisfiedException(String.format("Board with id %d not found", id));
         return board;
     }
 
@@ -105,5 +115,42 @@ public class BoardServiceImpl implements BoardService {
             }
         }
         return allBoardsForCurrentTeam;
+    }
+
+    public void saveBoardBackground(BoardDto boardDto){
+        byte[] decodedImg = Base64.getDecoder().decode(boardDto.getImage().getBytes(StandardCharsets.UTF_8));
+        File imageFile = new File(IMAGE_FILE_ROOT);
+        decodeIntoFile(imageFile, decodedImg);
+        String cloudImageUrl = uploadImageOnCloud(imageFile, boardDto);
+        setCurrentImageUrlToBoard(cloudImageUrl, boardDto.getId());
+    }
+
+    private void setCurrentImageUrlToBoard(String cloudImageUrl, Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", boardId)));
+        board.setImage(cloudImageUrl);
+        boardRepository.save(board);
+    }
+
+    private String uploadImageOnCloud(File imageFile, BoardDto boardDto) {
+        try {
+            Cloudinary cloudinary = new Cloudinary(cloudUrl);
+            Map params = ObjectUtils.asMap("public_id", "board_images/"
+                    + boardDto.getId() + "/" + boardDto.getImageName());
+            Map uploadResult = cloudinary.uploader().upload(imageFile, params);
+            return uploadResult.get("url").toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void decodeIntoFile(File imageFile, byte[] decodedImg) {
+        try (FileOutputStream fos = new FileOutputStream(imageFile)) {
+            fos.write(decodedImg);
+            fos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
