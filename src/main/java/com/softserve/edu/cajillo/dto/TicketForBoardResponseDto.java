@@ -25,6 +25,8 @@ public class TicketForBoardResponseDto extends BaseDto implements Serializable {
 
     private Instant expirationDate;
 
+    private Long parentTicketId;
+  
     private Long boardId;
 
     private Long tableListId;
