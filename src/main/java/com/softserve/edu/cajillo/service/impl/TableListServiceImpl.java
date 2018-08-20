@@ -38,7 +38,7 @@ public class TableListServiceImpl implements TableListService {
         tableList.setBoard(board);
         tableList.setStatus(ItemsStatus.OPENED);
         Long maxSequenceValue = tableListRepository.getMaxSequenceValue(id);
-        tableList.setSequenceNumber(Math.toIntExact((maxSequenceValue == null) ? 1 : ++maxSequenceValue));
+        tableList.setSequenceNumber(Math.toIntExact((maxSequenceValue == null) ? 0 : ++maxSequenceValue));
         tableListRepository.save(tableList);
         return tableListConverter.convertToDto(tableList);
     }
