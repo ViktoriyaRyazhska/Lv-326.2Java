@@ -1,6 +1,7 @@
 package com.softserve.edu.cajillo.controller;
 
 import com.softserve.edu.cajillo.dto.BoardDto;
+import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
@@ -43,5 +44,13 @@ public class BoardController {
     @PutMapping("/image")
     public void setBoardBackground(@RequestBody BoardDto boardDto) {
         boardService.saveBoardBackground(boardDto);
+    }
+
+    // ??????
+    @PostMapping("/{boardId}/user")
+    public void addUserToBoard(@PathVariable Long boardId,
+                               @RequestBody UserDto userDto,
+                               @CurrentUser UserPrincipal userPrincipal){
+        boardService.addUserToBoard(boardId, userDto, userPrincipal);
     }
 }

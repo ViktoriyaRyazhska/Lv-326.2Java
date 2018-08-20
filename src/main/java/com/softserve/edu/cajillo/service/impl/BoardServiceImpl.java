@@ -7,6 +7,7 @@ import com.cloudinary.utils.ObjectUtils;
 import com.softserve.edu.cajillo.converter.impl.BoardConverterImpl;
 import com.softserve.edu.cajillo.dto.BoardDto;
 import com.softserve.edu.cajillo.dto.RelationDto;
+import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.Relation;
 import com.softserve.edu.cajillo.entity.User;
@@ -65,6 +66,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private SprintService sprintService;
+
+    @Autowired
+    private UserService userService;
 
     private static final String IMAGE_FILE_ROOT = "src/main/resources/temporaryImage.jpg";
 
@@ -210,7 +214,6 @@ public class BoardServiceImpl implements BoardService {
     public void addBoardToTeam(Long teamId, Long boardId) {
         Board currentBoard = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", boardId)));
-        // for existed but deleted board
         if (currentBoard.getStatus().equals(ItemsStatus.DELETED)) {
             currentBoard.setStatus(ItemsStatus.OPENED);
             recoverAllInternalItems(boardId);
@@ -270,6 +273,35 @@ public class BoardServiceImpl implements BoardService {
             fos.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void addUser(User newUserOnBoard, BoardDto currentBoard){
+        relationRepository.save(relationConverter.convertToEntity(
+                new RelationDto(
+                        currentBoard.getId(),
+                        newUserOnBoard.getId(),
+                        RoleName.USER,
+                        null)
+        ));
+    }
+
+    @Override
+    public void addUserToBoard(Long boardId, UserDto userDto, UserPrincipal userPrincipal) {
+        BoardDto currentBoard = getBoard(boardId);
+        User newUserOnBoard = userService.getUserByEmail(userDto.getEmail());
+        List<Relation> allByBoardId = relationRepository.findAllByBoardId(boardId);
+        if (allByBoardId.size() == 0){
+            relationRepository.save(relationConverter.convertToEntity(
+                    new RelationDto(
+                            currentBoard.getId(),
+                            userPrincipal.getId(),
+                            RoleName.ADMIN,
+                            null)
+            ));
+            addUser(newUserOnBoard, currentBoard);
+        } else {
+            addUser(newUserOnBoard, currentBoard);
         }
     }
 }

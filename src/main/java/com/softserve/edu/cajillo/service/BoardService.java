@@ -1,6 +1,7 @@
 package com.softserve.edu.cajillo.service;
 
 import com.softserve.edu.cajillo.dto.BoardDto;
+import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 
@@ -30,4 +31,5 @@ public interface BoardService {
 
     void saveBoardBackground(BoardDto boardDto);
 
+    void addUserToBoard(Long boardId, UserDto userDto, UserPrincipal userPrincipal);
 }
