@@ -44,6 +44,12 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public List<TicketForBoardResponseDto> getTicketsBySprintId(Long sprintId) {
+        return ticketToBoardResponseDtoConverter
+                .convertToDto(ticketRepository.findAllBySprintId(sprintId));
+    }
+
+    @Override
     public void deleteTicket(Long ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() ->
                 new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + ticketId));

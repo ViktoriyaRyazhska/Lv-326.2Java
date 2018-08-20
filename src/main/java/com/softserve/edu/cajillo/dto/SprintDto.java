@@ -13,6 +13,8 @@ import java.time.Instant;
 @NoArgsConstructor
 public class  SprintDto extends BaseDto{
 
+    private Long id;
+
     private String label;
 
     private Instant startDate;

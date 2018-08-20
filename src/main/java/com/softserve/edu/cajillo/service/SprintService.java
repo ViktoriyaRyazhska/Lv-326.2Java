@@ -8,7 +8,9 @@ public interface SprintService {
 
     SprintDto getSprint(Long id);
 
-    void createSprint(SprintDto sprintDto, Long boardid);
+    SprintDto getSprintBacklog(Long sprintId);
+
+    SprintDto createSprint(SprintDto sprintDto, Long boardid);
 
     void createSprintBacklog(Long boardId);
 
@@ -20,9 +22,9 @@ public interface SprintService {
 
     List<SprintDto> getAllSprintsByBoardAndStatusCompleted(Long boardId);
 
-    void updateSprint(Long boardId, SprintDto sprintDto);
+    SprintDto updateSprint(Long boardId, SprintDto sprintDto);
 
-    void archiveSprint(Long sprintId);
+    SprintDto archiveSprint(Long sprintId);
 
     SprintDto recoverSprint(Long sprintId);
 
