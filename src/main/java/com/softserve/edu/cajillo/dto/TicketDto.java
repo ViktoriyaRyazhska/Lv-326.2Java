@@ -36,5 +36,7 @@ public class TicketDto extends BaseDto {
 
     private Long tableListId;
 
+    private Long parentTicketId;
+
     private List<CommentDto> comments;
 }
