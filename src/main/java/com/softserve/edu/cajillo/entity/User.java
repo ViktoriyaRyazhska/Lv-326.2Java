@@ -32,7 +32,6 @@ public class User extends DateAudit {
     @Column(name = "username", nullable = false, unique = true, length = 20)
     private String username;
 
-    @NotBlank
     @Size(max = 40, message = "Email size < 40")
     @Email
     @Column(name = "email", unique = true, nullable = false, length = 40)

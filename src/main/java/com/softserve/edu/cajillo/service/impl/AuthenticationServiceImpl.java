@@ -1,5 +1,7 @@
 package com.softserve.edu.cajillo.service.impl;
 
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.request.GetRequest;
 import com.softserve.edu.cajillo.dto.JwtAuthenticationResponseDto;
 import com.softserve.edu.cajillo.dto.LoginRequestDto;
 import com.softserve.edu.cajillo.dto.RegisterRequestDto;
@@ -42,6 +44,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private static final String USER_ALREADY_EXISTS_MESSAGE = "Username or email is already taken";
     private static final String RESET_TOKEN_IS_NOT_VALID = "reset password token is invalid";
     private static final String GOOGLE_TOKEN_EXCHANGE = "https://www.googleapis.com/oauth2/v2/userinfo?access_token=";
+    private static final String GITHUB_TOKEN_EXCHANGE = "https://api.github.com//user?access_token=";
     private static final String EMAIL = "email";
     private static final String VERIFIED_EMAIL = "verified_email";
 
@@ -67,7 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthenticationResponseDto authenticateUser(@Valid @RequestBody LoginRequestDto loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
+                        loginRequest.getUsernameOrEmail(),
                         loginRequest.getPassword()
                 )
         );
@@ -78,7 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public JwtAuthenticationResponseDto authenticateUser(String accessToken) {
+    public JwtAuthenticationResponseDto authenticateUserGoogle(String accessToken) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             Map<String, Object> payload = restTemplate.getForObject(GOOGLE_TOKEN_EXCHANGE + accessToken, Map.class);
@@ -103,11 +106,48 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
+
+    @Override
+    public JwtAuthenticationResponseDto authenticateUserGithub(String accessToken) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            Map<String, Object> payload = restTemplate.getForObject(GITHUB_TOKEN_EXCHANGE + accessToken, Map.class);
+
+            String username = (String) payload.get("login");
+            if (accessToken != null) {
+                Optional<User> userByUsername = userRepository.findUserByUsername(username);
+                if (userByUsername.isPresent()) {
+                    log.error("User credentials are already taken");
+                    UserPrincipal userPrincipal = UserPrincipal.create(userByUsername.get());
+                    String jwt = tokenProvider.generateToken(userPrincipal);
+                    return new JwtAuthenticationResponseDto(jwt);
+                } else {
+                    registerUserGithub(username);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Cannot authenticate user by github accessToken", e.getMessage());
+        }
+        return null;
+    }
+
+
     public void registerUserGoogle(String email) {
         log.info("Registering new user with email = " + email);
         User user = new User();
         user.setUsername(email.substring(0, email.indexOf('@')));
         user.setEmail(email);
+        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        log.info("Creating new user: " + user);
+        userRepository.save(user);
+        emailSend(user);
+    }
+
+    public void registerUserGithub(String username) {
+        log.info("Registering new user with username = " + username);
+        User user = new User();
+        user.setUsername(username);
+//        user.setEmail(username + "@gmail.com");
         user.setAccountStatus(UserAccountStatus.ACTIVE);
         log.info("Creating new user: " + user);
         userRepository.save(user);
