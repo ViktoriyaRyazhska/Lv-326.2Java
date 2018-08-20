@@ -32,4 +32,6 @@ public interface BoardService {
     void saveBoardBackground(BoardDto boardDto);
 
     void addUserToBoard(Long boardId, UserDto userDto, UserPrincipal userPrincipal);
+
+    void deleteUserFromBoard(Long boardId, Long userId);
 }

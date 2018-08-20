@@ -16,6 +16,7 @@ import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.RoleName;
 import com.softserve.edu.cajillo.exception.BoardNotFoundException;
+import com.softserve.edu.cajillo.exception.RelationServiceException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.RelationRepository;
 import com.softserve.edu.cajillo.security.UserPrincipal;
@@ -36,6 +37,8 @@ import java.util.Map;
 
 @Service
 public class BoardServiceImpl implements BoardService {
+
+    private static final String CAN_NOT_DELETE = "You can't delete this user, he is admin";
 
     @Value("${CLOUDINARYURL}")
     private String cloudUrl;
@@ -276,7 +279,7 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    private void addUser(User newUserOnBoard, BoardDto currentBoard){
+    private void addUser(User newUserOnBoard, BoardDto currentBoard) {
         relationRepository.save(relationConverter.convertToEntity(
                 new RelationDto(
                         currentBoard.getId(),
@@ -291,7 +294,7 @@ public class BoardServiceImpl implements BoardService {
         BoardDto currentBoard = getBoard(boardId);
         User newUserOnBoard = userService.getUserByEmail(userDto.getEmail());
         List<Relation> allByBoardId = relationRepository.findAllByBoardId(boardId);
-        if (allByBoardId.size() == 0){
+        if (allByBoardId.size() == 0) {
             relationRepository.save(relationConverter.convertToEntity(
                     new RelationDto(
                             currentBoard.getId(),
@@ -302,6 +305,18 @@ public class BoardServiceImpl implements BoardService {
             addUser(newUserOnBoard, currentBoard);
         } else {
             addUser(newUserOnBoard, currentBoard);
+        }
+    }
+
+    @Override
+    public void deleteUserFromBoard(Long boardId, Long userId) {
+        List<Relation> allByUserId = relationRepository.findAllByUserId(userId);
+        for (Relation relation : allByUserId) {
+            if (relation.getBoard().getId() == boardId
+                    && relation.getRoleName() == RoleName.USER
+                    && relation.getTeam() == null) {
+                relationRepository.delete(relation);
+            } else throw new RelationServiceException(CAN_NOT_DELETE);
         }
     }
 }

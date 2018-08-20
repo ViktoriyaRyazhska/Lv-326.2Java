@@ -53,4 +53,9 @@ public class BoardController {
                                @CurrentUser UserPrincipal userPrincipal){
         boardService.addUserToBoard(boardId, userDto, userPrincipal);
     }
+
+    @DeleteMapping("/{boardId}/{userId}")
+    public void deleteUserFromBoard(@PathVariable Long boardId, @PathVariable Long userId){
+        boardService.deleteUserFromBoard(boardId, userId);
+    }
 }
