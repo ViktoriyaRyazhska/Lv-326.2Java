@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.controller;
 
+import com.softserve.edu.cajillo.dto.OrderTableListDto;
 import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.service.TableListService;
@@ -41,8 +42,8 @@ public class TableListController {
         return tableListService.getTableList(listId);
     }
 
-    @PutMapping("/{listId1}/{listId2}")
-    public List<TableListDto> swapSequenceNumbers(@PathVariable Long listId1, @PathVariable Long listId2) {
-        return tableListService.swapSequenceNumbers(listId1, listId2);
+    @PutMapping("/order")
+    public void updateListOrdering(@RequestBody OrderTableListDto orderTableListDto) {
+        tableListService.updateListOrdering(orderTableListDto);
     }
 }
