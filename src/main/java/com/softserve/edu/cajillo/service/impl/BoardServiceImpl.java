@@ -45,7 +45,7 @@ public class BoardServiceImpl implements BoardService {
             sprintService.createSprintBacklog(board.getId());
             TableList tableList = new TableList();
             tableList.setName("To Do");
-            tableList.setSequenceNumber(1);
+            tableList.setSequenceNumber(0);
             tableListService.createTableList(board.getId(), tableList);
         }
         return boardConverter.convertToDto(save);
