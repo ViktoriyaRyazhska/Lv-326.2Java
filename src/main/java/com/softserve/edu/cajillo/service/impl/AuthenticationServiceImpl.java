@@ -1,7 +1,5 @@
 package com.softserve.edu.cajillo.service.impl;
 
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.request.GetRequest;
 import com.softserve.edu.cajillo.dto.JwtAuthenticationResponseDto;
 import com.softserve.edu.cajillo.dto.LoginRequestDto;
 import com.softserve.edu.cajillo.dto.RegisterRequestDto;
