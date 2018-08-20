@@ -11,7 +11,6 @@ import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

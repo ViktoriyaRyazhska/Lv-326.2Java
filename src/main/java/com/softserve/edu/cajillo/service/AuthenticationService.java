@@ -19,6 +19,7 @@ public interface AuthenticationService {
 
     JwtAuthenticationResponseDto authenticateUser(@Valid @RequestBody LoginRequestDto loginRequest);
 
-    JwtAuthenticationResponseDto authenticateUser(@RequestParam(value = "access_token") String accessToken);
+    JwtAuthenticationResponseDto authenticateUserGoogle(@RequestParam(value = "access_token") String accessToken);
 
+    JwtAuthenticationResponseDto authenticateUserGithub(@RequestParam(value = "access_token") String accessToken);
 }

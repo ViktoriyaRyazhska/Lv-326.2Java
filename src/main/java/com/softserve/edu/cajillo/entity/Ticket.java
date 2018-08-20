@@ -58,4 +58,9 @@ public class Ticket extends DateAudit {
             cascade = CascadeType.ALL)
     @JoinColumn(name = "sprint_id", referencedColumnName = "id")
     private Sprint sprint;
+
+    @OneToOne(fetch = FetchType.LAZY
+            /*, cascade = CascadeType.ALL*/)
+    @JoinColumn(name = "parent_ticket_id", referencedColumnName = "id")
+    private Ticket parentTicket;
 }
