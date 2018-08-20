@@ -54,4 +54,9 @@ public class SprintController {
     public void deleteSprint(@PathVariable("sprintId") Long sprintId) {
         sprintService.deleteSprint(sprintId);
     }
+
+    @PutMapping("/sprint/{sprintId1}/{sprintId2}")
+    public List<SprintDto> swapSequenceNumbers(@PathVariable Long sprintId1, @PathVariable Long sprintId2) {
+        return sprintService.swapSequenceNumbers(sprintId1, sprintId2);
+    }
 }

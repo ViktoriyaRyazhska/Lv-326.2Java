@@ -29,4 +29,6 @@ public class  SprintDto extends BaseDto{
 
     private SprintStatus sprintStatus;
 
+    private Integer sequenceNumber;
+
 }

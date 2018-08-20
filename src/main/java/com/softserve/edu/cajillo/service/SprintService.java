@@ -34,4 +34,8 @@ public interface SprintService {
 
     void deleteSprint(Long sprintId);
 
+    void decrementNextSprint(Long boardId, Long sprintId);
+
+    List<SprintDto> swapSequenceNumbers(Long sprintId1, Long sprintId2);
+
 }

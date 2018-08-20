@@ -4,6 +4,8 @@ import com.softserve.edu.cajillo.entity.Sprint;
 import com.softserve.edu.cajillo.entity.enums.SprintStatus;
 import com.softserve.edu.cajillo.entity.enums.SprintType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,4 +25,9 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
 
     List<Sprint> getAllByBoardIdAndSprintStatusNotAndSprintType
             (Long boardId, SprintStatus sprintStatus, SprintType sprintType);
+
+    @Query(value = "SELECT max(sequence_number) FROM sprints where board_id = :id", nativeQuery = true)
+    Long getMaxSequenceValue(@Param("id") Long id);
+
+    List<Sprint> findByBoardIdAndSequenceNumberGreaterThan(Long boardId, Integer sequenceNumber);
 }
