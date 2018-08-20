@@ -50,8 +50,6 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private SprintService sprintService;
 
-    private static final String IMAGE_FILE_ROOT = "src/main/resources/temporaryImage.jpg";
-
     public BoardDto createBoard(Board board) {
         board.setStatus(ItemsStatus.OPENED);
         Board save = boardRepository.save(board);
@@ -124,9 +122,7 @@ public class BoardServiceImpl implements BoardService {
 
     public void saveBoardBackground(BoardDto boardDto){
         byte[] decodedImg = Base64.getDecoder().decode(boardDto.getImage().getBytes(StandardCharsets.UTF_8));
-        File imageFile = new File(IMAGE_FILE_ROOT);
-        decodeIntoFile(imageFile, decodedImg);
-        String cloudImageUrl = uploadImageOnCloud(imageFile, boardDto);
+        String cloudImageUrl = uploadImageOnCloud(decodedImg, boardDto);
         setCurrentImageUrlToBoard(cloudImageUrl, boardDto.getId());
     }
 
@@ -137,7 +133,7 @@ public class BoardServiceImpl implements BoardService {
         boardRepository.save(board);
     }
 
-    private String uploadImageOnCloud(File imageFile, BoardDto boardDto) {
+    private String uploadImageOnCloud(byte[] imageFile, BoardDto boardDto) {
         try {
             Cloudinary cloudinary = new Cloudinary(cloudUrl);
             Map params = ObjectUtils.asMap("public_id", "board_images/"
@@ -148,15 +144,6 @@ public class BoardServiceImpl implements BoardService {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private void decodeIntoFile(File imageFile, byte[] decodedImg) {
-        try (FileOutputStream fos = new FileOutputStream(imageFile)) {
-            fos.write(decodedImg);
-            fos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
 
