@@ -35,4 +35,7 @@ public class Sprint extends DateAudit{
     @Enumerated(EnumType.STRING)
     @Column(name = "sprint_status", nullable = false)
     private SprintStatus sprintStatus;
+
+    @Column(name = "sequence_number")
+    private Integer sequenceNumber;
 }

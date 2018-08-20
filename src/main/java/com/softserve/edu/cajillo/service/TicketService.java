@@ -16,6 +16,8 @@ public interface TicketService {
 
     List<TicketForBoardResponseDto> getTicketsByListId(Long tableListId);
 
+    List<TicketForBoardResponseDto> getTicketsBySprintId(Long sprintId);
+
     void deleteTicketsByTableListId(Long listId);
 
     void recoverTicketsByListId(Long listId);

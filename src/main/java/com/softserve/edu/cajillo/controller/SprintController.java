@@ -5,6 +5,8 @@ import com.softserve.edu.cajillo.service.SprintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api")
@@ -14,8 +16,18 @@ public class SprintController {
     private SprintService sprintService;
 
     @PostMapping("/sprint/{boardId}")
-    public void createSprint(@PathVariable("boardId") Long boardId, @RequestBody SprintDto sprintDto) {
-        sprintService.createSprint(sprintDto, boardId);
+    public SprintDto createSprint(@PathVariable("boardId") Long boardId, @RequestBody SprintDto sprintDto) {
+        return sprintService.createSprint(sprintDto, boardId);
+    }
+
+    @GetMapping("/sprint/backlog/{boardId}")
+    public SprintDto getSprintBacklog(@PathVariable("boardId") Long boardId) {
+        return sprintService.getSprintBacklog(boardId);
+    }
+
+    @GetMapping("/sprints/{boardId}")
+    public List<SprintDto> getSprintsByBoard(@PathVariable("boardId") Long boardId) {
+        return sprintService.getAllSprintsByBoardIdNotInArchive(boardId);
     }
 
     @GetMapping("/sprint/{sprintId}")
@@ -24,8 +36,8 @@ public class SprintController {
     }
 
     @PutMapping("/sprint/{sprintId}")
-    public void updateSprint(@PathVariable("sprintId") Long sprintId, @RequestBody SprintDto sprintDto) {
-        sprintService.updateSprint(sprintId, sprintDto);
+    public SprintDto updateSprint(@PathVariable("sprintId") Long sprintId, @RequestBody SprintDto sprintDto) {
+        return sprintService.updateSprint(sprintId, sprintDto);
     }
 
     @PutMapping("/sprint/archive/{sprintId}")
@@ -41,5 +53,10 @@ public class SprintController {
     @DeleteMapping("sprint/{sprintId}")
     public void deleteSprint(@PathVariable("sprintId") Long sprintId) {
         sprintService.deleteSprint(sprintId);
+    }
+
+    @PutMapping("/sprint/{sprintId1}/{sprintId2}")
+    public List<SprintDto> swapSequenceNumbers(@PathVariable Long sprintId1, @PathVariable Long sprintId2) {
+        return sprintService.swapSequenceNumbers(sprintId1, sprintId2);
     }
 }

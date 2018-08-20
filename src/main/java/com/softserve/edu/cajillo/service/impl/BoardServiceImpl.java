@@ -6,6 +6,7 @@ import com.softserve.edu.cajillo.converter.impl.BoardConverterImpl;
 import com.softserve.edu.cajillo.dto.BoardDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.RoleManager;
+import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.exception.BoardNotFoundException;
@@ -56,6 +57,10 @@ public class BoardServiceImpl implements BoardService {
         Board save = boardRepository.save(board);
         if (board.getBoardType() == BoardType.SCRUM) {
             sprintService.createSprintBacklog(board.getId());
+            TableList tableList = new TableList();
+            tableList.setName("To Do");
+            tableList.setSequenceNumber(0);
+            tableListService.createTableList(board.getId(), tableList);
         }
         return boardConverter.convertToDto(save);
     }
@@ -154,3 +159,4 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 }
+
