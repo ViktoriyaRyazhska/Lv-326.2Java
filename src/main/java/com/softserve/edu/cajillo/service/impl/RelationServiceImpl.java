@@ -30,14 +30,14 @@ public class RelationServiceImpl implements RelationService {
 
     @Override
     public List<Relation> getAllRelationServicesByUserId(Long id) {
-        return relationRepository.findAllByUserId(id).orElseThrow(
-                () -> new RelationServiceException(RELATIONSERVICE_USER_ID_NOT_FOUND_MESSAGE + id));
+        return relationRepository.findAllByUserId(id);
+//                .orElseThrow(
+//                () -> new RelationServiceException(RELATIONSERVICE_USER_ID_NOT_FOUND_MESSAGE + id));
     }
 
     public Map<User, RoleName> getAllUsersInTeam(Long teamId) {
         List<Relation> allByTeamId = relationRepository.findAllByTeamId(teamId);
         Map<User, RoleName> userWithHisRole = new HashMap<>();
-
         for (Relation manager : allByTeamId) {
             User user = manager.getUser();
             if (!userWithHisRole.containsKey(user)) {

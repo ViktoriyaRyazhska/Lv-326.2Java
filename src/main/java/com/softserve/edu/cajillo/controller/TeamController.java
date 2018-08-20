@@ -29,7 +29,7 @@ public class TeamController {
     private BoardService boardService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void createTeam(@RequestBody TeamDto teamDto, @CurrentUser UserPrincipal currentUser) {
         teamService.createTeam(teamDto, currentUser);
     }
@@ -82,19 +82,22 @@ public class TeamController {
 
     @GetMapping("/{teamId}/boards")
     public List<BoardDto> getAllTeamBoards(@PathVariable Long teamId) {
-        return boardService.getAllBoardsByTeamId(teamId);
+        return boardService.getAllActiveBoardsByTeamId(teamId);
     }
 
     @PostMapping("/{teamId}/boards")
     public BoardDto createNewTeamBoard(@PathVariable Long teamId, @RequestBody Board board) {
         return boardService.createNewTeamBoard(teamId, board);
     }
-//
-//    @DeleteMapping{"/{teamId}/boards/{boardId}"}
-//    public void deleteTeamBoard(@PathVariable ("boardId") Long boardId){
-//        boardService.deleteTeamBoard(boardId);
-//    }
 
-//    @PutMapping("/{teamId}/board")
-//    public Board addBoardToTeam (@PathVariable Long id, ){}
+    @DeleteMapping("/{teamId}/boards/{boardId}")
+    public void deleteTeamBoard(@PathVariable Long teamId, @PathVariable Long boardId) {
+        boardService.deleteTeamBoard(boardId, teamId);
+    }
+
+    @PutMapping("/{teamId}/{boardId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addBoardToTeam(@PathVariable Long teamId, @PathVariable Long boardId) {
+        boardService.addBoardToTeam(teamId, boardId);
+    }
 }

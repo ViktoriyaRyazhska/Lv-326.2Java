@@ -2,6 +2,8 @@ package com.softserve.edu.cajillo.controller;
 
 import com.softserve.edu.cajillo.dto.BoardDto;
 import com.softserve.edu.cajillo.entity.Board;
+import com.softserve.edu.cajillo.security.CurrentUser;
+import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +16,8 @@ public class BoardController {
     private BoardService boardService;
 
     @PostMapping
-    public BoardDto createBoard(@RequestBody Board board) {
-        return boardService.createBoard(board);
+    public BoardDto createBoard(@RequestBody Board board, @CurrentUser UserPrincipal userPrincipal) {
+        return boardService.createBoard(board, userPrincipal);
     }
 
     @PutMapping("/{id}")

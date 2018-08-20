@@ -3,9 +3,12 @@ package com.softserve.edu.cajillo.service;
 import com.softserve.edu.cajillo.dto.AvatarDto;
 import com.softserve.edu.cajillo.dto.TeamDto;
 import com.softserve.edu.cajillo.dto.UserDto;
+import com.softserve.edu.cajillo.entity.Relation;
 import com.softserve.edu.cajillo.entity.Team;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface TeamService {
 
