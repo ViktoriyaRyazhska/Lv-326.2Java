@@ -78,9 +78,10 @@ public class BoardServiceImpl implements BoardService {
     public BoardDto createBoard(Board board, UserPrincipal userPrincipal) {
 
         board.setStatus(ItemsStatus.OPENED);
+        Board save = boardRepository.save(board);
         relationRepository.save(relationConverter.convertToEntity(
                 new RelationDto(
-                        boardRepository.save(board).getId(),
+                        save.getId(),
                         userPrincipal.getId(),
                         RoleName.ADMIN,
                         null)
@@ -92,7 +93,7 @@ public class BoardServiceImpl implements BoardService {
             tableList.setSequenceNumber(0);
             tableListService.createTableList(board.getId(), tableList);
         }
-        return boardConverter.convertToDto(board);
+        return boardConverter.convertToDto(save);
     }
 
     public BoardDto updateBoard(Long id, Board board) {
