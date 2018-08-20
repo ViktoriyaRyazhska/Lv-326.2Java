@@ -3,7 +3,6 @@ package com.softserve.edu.cajillo.security;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -18,9 +17,7 @@ public class JwtTokenProvider {
     @Value("${app.jwtExpirationInMs}")
     private int jwtExpirationInMs;
 
-    public String generateToken(Authentication authentication) {
-
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+    public String generateToken(UserPrincipal userPrincipal) {
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
