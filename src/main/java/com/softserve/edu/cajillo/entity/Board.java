@@ -14,6 +14,9 @@ public class Board extends DateAudit {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "image_url")
+    private String image;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "board_type", nullable = false)
     private BoardType boardType;

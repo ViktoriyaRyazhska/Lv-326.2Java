@@ -37,4 +37,9 @@ public class BoardController {
     public BoardDto recoverBoard(@PathVariable("boardId") Long boardId) {
         return boardService.recoverBoard(boardId);
     }
+
+    @PutMapping("/image")
+    public void setBoardBackground(@RequestBody BoardDto boardDto) {
+        boardService.saveBoardBackground(boardDto);
+    }
 }
