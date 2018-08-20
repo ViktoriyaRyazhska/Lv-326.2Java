@@ -15,7 +15,7 @@ public class TableListController {
     @Autowired
     private TableListService tableListService;
 
-    @PostMapping("/b/{boardId}")
+    @PostMapping("/board/{boardId}")
     public TableListDto createTableList(@PathVariable Long boardId, @RequestBody TableList tableList) {
         return tableListService.createTableList(boardId, tableList);
     }
@@ -25,13 +25,13 @@ public class TableListController {
         tableListService.deleteTableList(listId);
     }
 
-    @PutMapping("/{listId}/b/{boardId}")
+    @PutMapping("/{listId}/board/{boardId}")
     public TableListDto updateTableList(@PathVariable("listId") Long listId, @PathVariable("boardId") Long boardId,
                                         @RequestBody TableList tableList) {
         return tableListService.updateTableList(listId, boardId, tableList);
     }
 
-    @GetMapping("/lists/b/{boardId}")
+    @GetMapping("/board/{boardId}")
     public List<TableListDto> getAllTableLists(@PathVariable("boardId") Long boardId) {
         return tableListService.getAllTableLists(boardId);
     }

@@ -49,7 +49,7 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private SprintService sprintService;
 
-    private static final String IMAGE_FILE_ROOT = "D:\\abc.jpg";
+    private static final String IMAGE_FILE_ROOT = "src/main/resources/temporaryImage.jpg";
 
     public BoardDto createBoard(Board board) {
         board.setStatus(ItemsStatus.OPENED);
