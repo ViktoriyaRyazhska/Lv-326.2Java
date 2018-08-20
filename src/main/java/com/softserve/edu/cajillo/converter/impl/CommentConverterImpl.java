@@ -41,6 +41,7 @@ public class CommentConverterImpl implements CommentConverter {
         CommentDto commentDto = modelMapper.map(entity, CommentDto.class);
         commentDto.setTicketId(entity.getTicket().getId());
         commentDto.setUserId(entity.getUser().getId());
+        commentDto.setUserName(entity.getUser().getFirstName() + " " + entity.getUser().getLastName());
         return commentDto;
     }
 
