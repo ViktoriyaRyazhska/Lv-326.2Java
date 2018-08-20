@@ -30,11 +30,17 @@ public class TicketDto extends BaseDto {
 
     private Long createdById;
 
+    private String assignedToName;
+
+    private String createdByName;
+
     private Long boardId;
 
     private Long sprintId;
 
     private Long tableListId;
+
+    private Long parentTicketId;
 
     private List<CommentDto> comments;
 }

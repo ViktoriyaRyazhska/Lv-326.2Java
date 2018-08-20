@@ -11,7 +11,6 @@ import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -41,6 +40,12 @@ public class TicketServiceImpl implements TicketService {
     public List<TicketForBoardResponseDto> getTicketsByListId(Long tableListId) {
         return ticketToBoardResponseDtoConverter
                 .convertToDto(ticketRepository.findAllByTableListIdAndStatus(tableListId, ItemsStatus.OPENED));
+    }
+
+    @Override
+    public List<TicketForBoardResponseDto> getTicketsBySprintId(Long sprintId) {
+        return ticketToBoardResponseDtoConverter
+                .convertToDto(ticketRepository.findAllBySprintId(sprintId));
     }
 
     @Override

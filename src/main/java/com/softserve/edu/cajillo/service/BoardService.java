@@ -28,4 +28,6 @@ public interface BoardService {
 
     Board getBoardEntity(Long id);
 
+    void saveBoardBackground(BoardDto boardDto);
+
 }
