@@ -1,10 +1,10 @@
 package com.softserve.edu.cajillo.controller;
 
 import com.softserve.edu.cajillo.dto.JwtAuthenticationResponseDto;
+import com.softserve.edu.cajillo.dto.LoginRequestDto;
 import com.softserve.edu.cajillo.dto.RegisterRequestDto;
 import com.softserve.edu.cajillo.dto.ResetPasswordDto;
 import com.softserve.edu.cajillo.service.AuthenticationService;
-import com.softserve.edu.cajillo.util.Base64DecoderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,8 @@ public class AuthApiController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestHeader("authorization") String authorization) {
-        return ResponseEntity.ok(authenticationService.authenticateUser(
-                Base64DecoderUtils.decodeAuthorizationHeader(authorization)));
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDto authorization) {
+        return ResponseEntity.ok(authenticationService.authenticateUser(authorization));
     }
 
     @PostMapping("/signup")
@@ -45,6 +44,11 @@ public class AuthApiController {
 
     @GetMapping("/oauth/google")
     public JwtAuthenticationResponseDto authenticateUserWithGoogle(@RequestParam(value = "access_token") String access_token) {
-        return authenticationService.authenticateUser(access_token);
+        return authenticationService.authenticateUserGoogle(access_token);
+    }
+
+    @GetMapping("/oauth/github")
+    public JwtAuthenticationResponseDto authenticateUserWithGithub(@RequestParam(value = "access_token") String access_token) {
+        return authenticationService.authenticateUserGithub(access_token);
     }
 }
