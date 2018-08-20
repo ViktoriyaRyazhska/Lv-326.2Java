@@ -1,4 +1,6 @@
 package com.softserve.edu.cajillo.controller;
+
+import com.softserve.edu.cajillo.dto.JwtAuthenticationResponseDto;
 import com.softserve.edu.cajillo.dto.RegisterRequestDto;
 import com.softserve.edu.cajillo.dto.ResetPasswordDto;
 import com.softserve.edu.cajillo.service.AuthenticationService;
@@ -6,7 +8,6 @@ import com.softserve.edu.cajillo.util.Base64DecoderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,7 +28,7 @@ public class AuthApiController {
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.OK)
     public void registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
-       authenticationService.registerUser(registerRequestDto);
+        authenticationService.registerUser(registerRequestDto);
     }
 
     @GetMapping("/reset")
@@ -40,5 +41,10 @@ public class AuthApiController {
     @ResponseStatus(HttpStatus.OK)
     public void resetPasswordConfirm(@RequestBody ResetPasswordDto resetPasswordDto) {
         authenticationService.resetUserPasswordConfirm(resetPasswordDto);
+    }
+
+    @GetMapping("/oauth/google")
+    public JwtAuthenticationResponseDto authenticateUserWithGoogle(@RequestParam(value = "access_token") String access_token) {
+        return authenticationService.authenticateUser(access_token);
     }
 }

@@ -7,10 +7,14 @@ import com.softserve.edu.cajillo.dto.ResetPasswordDto;
 import com.softserve.edu.cajillo.entity.PasswordResetToken;
 import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
-import com.softserve.edu.cajillo.exception.*;
+import com.softserve.edu.cajillo.exception.TokenExpiredException;
+import com.softserve.edu.cajillo.exception.TokenNotFoundException;
+import com.softserve.edu.cajillo.exception.UserAlreadyExistsException;
+import com.softserve.edu.cajillo.exception.UserNotFoundException;
 import com.softserve.edu.cajillo.repository.PasswordResetTokenRepository;
 import com.softserve.edu.cajillo.repository.UserRepository;
 import com.softserve.edu.cajillo.security.JwtTokenProvider;
+import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.AuthenticationService;
 import com.softserve.edu.cajillo.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +26,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.time.Instant;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -34,6 +41,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private static final String USER_EMAIL_NOT_FOUND_MESSAGE = "Could not find user with email='%s'";
     private static final String USER_ALREADY_EXISTS_MESSAGE = "Username or email is already taken";
     private static final String RESET_TOKEN_IS_NOT_VALID = "reset password token is invalid";
+    private static final String GOOGLE_TOKEN_EXCHANGE = "https://www.googleapis.com/oauth2/v2/userinfo?access_token=";
+    private static final String EMAIL = "email";
+    private static final String VERIFIED_EMAIL = "verified_email";
 
     @Autowired
     private UserRepository userRepository;
@@ -62,9 +72,48 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.generateToken(authentication);
+        String jwt = tokenProvider.generateToken((UserPrincipal) authentication.getPrincipal());
         return new JwtAuthenticationResponseDto(jwt);
     }
+
+
+    @Override
+    public JwtAuthenticationResponseDto authenticateUser(String accessToken) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            Map<String, Object> payload = restTemplate.getForObject(GOOGLE_TOKEN_EXCHANGE + accessToken, Map.class);
+
+            String email = (String) payload.get(EMAIL);
+            boolean verifiedEmail = (Boolean) payload.get(VERIFIED_EMAIL);
+
+            if (verifiedEmail) {
+                Optional<User> userByEmail = userRepository.findUserByEmail(email);
+                if (userByEmail.isPresent()) {
+                    log.error("User credentials are already taken");
+                    UserPrincipal userPrincipal = UserPrincipal.create(userByEmail.get());
+                    String jwt = tokenProvider.generateToken(userPrincipal);
+                    return new JwtAuthenticationResponseDto(jwt);
+                } else {
+                    registerUserGoogle(email);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Cannot authenticate user by google accessToken", e.getMessage());
+        }
+        return null;
+    }
+
+    public void registerUserGoogle(String email) {
+        log.info("Registering new user with email = " + email);
+        User user = new User();
+        user.setUsername(email.substring(0, email.indexOf('@')));
+        user.setEmail(email);
+        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        log.info("Creating new user: " + user);
+        userRepository.save(user);
+        emailSend(user);
+    }
+
 
     public void registerUser(RegisterRequestDto registerRequestDto) {
         log.info("Registering new user with email = " + registerRequestDto.getEmail()
@@ -81,6 +130,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setAccountStatus(UserAccountStatus.ACTIVE);
         log.info("Creating new user: " + user);
         userRepository.save(user);
+        emailSend(user);
+    }
+
+    private void emailSend(User user) {
         emailService.sendEmail(user.getEmail(), "You successfully registered Cajillo project.",
                 "Dear " + user.getUsername() + ",\n" +
                         "Thank you for joining Cajillo. \n" +

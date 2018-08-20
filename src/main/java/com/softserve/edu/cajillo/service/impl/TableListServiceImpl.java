@@ -5,6 +5,8 @@ import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
+import com.softserve.edu.cajillo.exception.BoardNotFoundException;
+import com.softserve.edu.cajillo.exception.TableListNotFoundException;
 import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.TableListRepository;
@@ -32,7 +34,7 @@ public class TableListServiceImpl implements TableListService {
 
     public TableListDto createTableList(Long id, TableList tableList) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         tableList.setBoard(board);
         tableList.setStatus(ItemsStatus.OPENED);
         Long maxSequenceValue = tableListRepository.getMaxSequenceValue(id);
@@ -43,7 +45,7 @@ public class TableListServiceImpl implements TableListService {
 
     public void deleteTableList(Long listId) {
         TableList tableList = tableListRepository.findById(listId)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId)));
+                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
         decrementNextTableLists(tableList.getBoard().getId(), listId);
         tableList.setSequenceNumber(null);
         tableList.setStatus(ItemsStatus.DELETED);
@@ -76,7 +78,7 @@ public class TableListServiceImpl implements TableListService {
 
     public TableListDto updateTableList(Long listId, Long boardId, TableList tableList) {
         TableList existingList = tableListRepository.findById(listId)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId)));
+                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
         existingList.setName(tableList.getName());
         return tableListConverter.convertToDto(tableListRepository.save(existingList));
     }
@@ -88,13 +90,13 @@ public class TableListServiceImpl implements TableListService {
 
     public TableListDto getTableList(Long listId) {
         TableList tableList = tableListRepository.findByIdAndStatus(listId, ItemsStatus.OPENED)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId)));
+                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
         return tableListConverter.convertToDto(tableList);
     }
 
     public void decrementNextTableLists(Long boardId, Long listId) {
         TableList tableList = tableListRepository.findById(listId)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId)));
+                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
         List<TableList> boards = tableListRepository
                 .findByBoardIdAndSequenceNumberGreaterThan(boardId, tableList.getSequenceNumber());
         for (TableList board : boards) {
@@ -104,9 +106,9 @@ public class TableListServiceImpl implements TableListService {
 
     public List<TableListDto> swapSequenceNumbers(Long listId1, Long listId2) {
         TableList tableList1 = tableListRepository.findById(listId1)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId1)));
+                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId1)));
         TableList tableList2 = tableListRepository.findById(listId2)
-                .orElseThrow(() -> new UnsatisfiedException(String.format("TableList with id %d not found", listId2)));
+                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId2)));
         swapNumbers(tableList1, tableList2);
         tableListRepository.save(tableList1);
         tableListRepository.save(tableList2);
