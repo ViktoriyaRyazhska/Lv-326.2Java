@@ -46,9 +46,11 @@ public class UserServiceImpl implements UserService {
     public void updateUser(Long userId, UpdateUserDto userDto) {
         User currentUser = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + userId));
-        String oldPassword = userDto.getOldPassword();
         String newPassword = userDto.getNewPassword();
-        if ((oldPassword != null) && (newPassword != null)
+        String oldPassword = userDto.getOldPassword();
+        if (currentUser.getPassword() == null) {
+            currentUser.setPassword(passwordEncoder.encode(newPassword));
+        } else if ((oldPassword != null) && (newPassword != null)
                 && passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
             currentUser.setPassword(passwordEncoder.encode(newPassword));
         }
