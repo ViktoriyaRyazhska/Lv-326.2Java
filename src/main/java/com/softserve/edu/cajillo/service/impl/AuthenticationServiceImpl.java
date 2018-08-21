@@ -6,7 +6,6 @@ import com.softserve.edu.cajillo.dto.RegisterRequestDto;
 import com.softserve.edu.cajillo.dto.ResetPasswordDto;
 import com.softserve.edu.cajillo.entity.PasswordResetToken;
 import com.softserve.edu.cajillo.entity.User;
-import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
 import com.softserve.edu.cajillo.exception.TokenExpiredException;
 import com.softserve.edu.cajillo.exception.TokenNotFoundException;
 import com.softserve.edu.cajillo.exception.UserAlreadyExistsException;
@@ -18,6 +17,7 @@ import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.AuthenticationService;
 import com.softserve.edu.cajillo.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,6 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private static final String GITHUB_TOKEN_EXCHANGE = "https://api.github.com//user?access_token=";
     private static final String EMAIL = "email";
     private static final String VERIFIED_EMAIL = "verified_email";
+    private static final String EMAIL_TOPIC = "You successfully registered Cajillo project.";
 
     @Autowired
     private UserRepository userRepository;
@@ -77,7 +78,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new JwtAuthenticationResponseDto(jwt);
     }
 
-
     @Override
     public JwtAuthenticationResponseDto authenticateUserGoogle(String accessToken) {
         try {
@@ -104,7 +104,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
-
     @Override
     public JwtAuthenticationResponseDto authenticateUserGithub(String accessToken) {
         try {
@@ -112,6 +111,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Map<String, Object> payload = restTemplate.getForObject(GITHUB_TOKEN_EXCHANGE + accessToken, Map.class);
 
             String username = (String) payload.get("login");
+            String email = (String) payload.get("email");
             if (accessToken != null) {
                 Optional<User> userByUsername = userRepository.findUserByUsername(username);
                 if (userByUsername.isPresent()) {
@@ -120,7 +120,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     String jwt = tokenProvider.generateToken(userPrincipal);
                     return new JwtAuthenticationResponseDto(jwt);
                 } else {
-                    registerUserGithub(username);
+                    registerUserGithub(username, email);
                 }
             }
         } catch (Exception e) {
@@ -129,29 +129,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
-
     public void registerUserGoogle(String email) {
         log.info("Registering new user with email = " + email);
-        User user = new User();
-        user.setUsername(email.substring(0, email.indexOf('@')));
-        user.setEmail(email);
-        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        String password = RandomStringUtils.randomAlphanumeric(8);
+        String encodedPassword = passwordEncoder.encode(password);
+        User user = new User(email.substring(0, email.indexOf('@')), email, encodedPassword, User.SignupType.GOOGLE);
         log.info("Creating new user: " + user);
         userRepository.save(user);
-        emailSend(user);
+        emailSend(user, getMessage(user.getUsername(), password));
     }
 
-    public void registerUserGithub(String username) {
+    public void registerUserGithub(String username, String email) {
         log.info("Registering new user with username = " + username);
-        User user = new User();
-        user.setUsername(username);
-//        user.setEmail(username + "@gmail.com");
-        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        String password = RandomStringUtils.randomAlphanumeric(8);
+        String encodedPassword = passwordEncoder.encode(password);
+        User user = new User(username, email, encodedPassword, User.SignupType.GITHUB);
         log.info("Creating new user: " + user);
         userRepository.save(user);
-        emailSend(user);
+        if (user.getEmail() != null) {
+            emailSend(user, getMessage(username, password));
+        }
     }
-
 
     public void registerUser(RegisterRequestDto registerRequestDto) {
         log.info("Registering new user with email = " + registerRequestDto.getEmail()
@@ -161,22 +159,36 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error("User credentials are already taken");
             throw new UserAlreadyExistsException(USER_ALREADY_EXISTS_MESSAGE);
         }
-        User user = new User();
-        user.setUsername(registerRequestDto.getUsername());
-        user.setEmail(registerRequestDto.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
-        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        User user = new User(registerRequestDto.getUsername(),registerRequestDto.getEmail(),
+                passwordEncoder.encode(registerRequestDto.getPassword()), User.SignupType.GENERAL);
         log.info("Creating new user: " + user);
         userRepository.save(user);
-        emailSend(user);
+        emailSend(user, getMessage(user.getUsername()));
     }
 
-    private void emailSend(User user) {
-        emailService.sendEmail(user.getEmail(), "You successfully registered Cajillo project.",
-                "Dear " + user.getUsername() + ",\n" +
-                        "Thank you for joining Cajillo. \n" +
-                        "RUN FOR YOUR LIFE!!!\n\n" +
-                        "Best regards\nCajillo Team");
+    private void emailSend(User user, String message) {
+        if (user.getSignupType() == User.SignupType.GENERAL) {
+            emailService.sendEmail(user.getEmail(), EMAIL_TOPIC, message);
+        } else {
+            emailService.sendEmail(user.getEmail(), EMAIL_TOPIC, message);
+        }
+    }
+
+    private String getMessage(String username) {
+        return "Dear " + username + ",\n" +
+                "Thank you for joining Cajillo. \n" +
+                "RUN FOR YOUR LIFE!!!\n\n" +
+                "Best regards\nCajillo Team";
+    }
+
+    private String getMessage(String username, String password) {
+        return "Dear " + username + ",\n" +
+                "Thank you for joining Cajillo. " +
+                "For general login: your login:" +
+                username + "and password" +
+                password + "\n" +
+                "RUN FOR YOUR LIFE!!!\n\n" +
+                "Best regards\nCajillo Team";
     }
 
     @Override

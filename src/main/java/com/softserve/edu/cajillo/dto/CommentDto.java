@@ -18,6 +18,8 @@ public class CommentDto extends BaseDto {
 
     private Long userId;
 
+    private String userName;
+
     private CommentStatus commentStatus;
 
     private Long ticketId;

@@ -4,13 +4,13 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.softserve.edu.cajillo.converter.impl.BoardConverterImpl;
 import com.softserve.edu.cajillo.dto.BoardDto;
+import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.RoleManager;
 import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.exception.BoardNotFoundException;
-import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.RoleManagerRepository;
 import com.softserve.edu.cajillo.service.BoardService;
@@ -20,14 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -49,8 +44,6 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private SprintService sprintService;
-
-    private static final String IMAGE_FILE_ROOT = "src/main/resources/temporaryImage.jpg";
 
     public BoardDto createBoard(Board board) {
         board.setStatus(ItemsStatus.OPENED);
@@ -74,7 +67,9 @@ public class BoardServiceImpl implements BoardService {
     public BoardDto getBoard(Long id) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
-        return boardConverter.convertToDto(board);
+        BoardDto boardDto = boardConverter.convertToDto(board);
+        sortTableListsBySequenceNumber(boardDto);
+        return boardDto;
     }
 
     public Board getBoardEntity(Long id) {
@@ -124,9 +119,7 @@ public class BoardServiceImpl implements BoardService {
 
     public void saveBoardBackground(BoardDto boardDto){
         byte[] decodedImg = Base64.getDecoder().decode(boardDto.getImage().getBytes(StandardCharsets.UTF_8));
-        File imageFile = new File(IMAGE_FILE_ROOT);
-        decodeIntoFile(imageFile, decodedImg);
-        String cloudImageUrl = uploadImageOnCloud(imageFile, boardDto);
+        String cloudImageUrl = uploadImageOnCloud(decodedImg, boardDto);
         setCurrentImageUrlToBoard(cloudImageUrl, boardDto.getId());
     }
 
@@ -137,7 +130,7 @@ public class BoardServiceImpl implements BoardService {
         boardRepository.save(board);
     }
 
-    private String uploadImageOnCloud(File imageFile, BoardDto boardDto) {
+    private String uploadImageOnCloud(byte[] imageFile, BoardDto boardDto) {
         try {
             Cloudinary cloudinary = new Cloudinary(cloudUrl);
             Map params = ObjectUtils.asMap("public_id", "board_images/"
@@ -150,13 +143,32 @@ public class BoardServiceImpl implements BoardService {
         return null;
     }
 
-    private void decodeIntoFile(File imageFile, byte[] decodedImg) {
-        try (FileOutputStream fos = new FileOutputStream(imageFile)) {
-            fos.write(decodedImg);
-            fos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void sortTableListsBySequenceNumber(BoardDto boardDto) {
+        List<TableListDto> tableListDtos = boardDto.getTableLists();
+        quickSort(0, tableListDtos.size() - 1, tableListDtos);
+    }
+
+    private void quickSort(int lowerIndex, int higherIndex, List<TableListDto> tableListDtos) {
+        int i = lowerIndex;
+        int j = higherIndex;
+        TableListDto pivot = tableListDtos.get(lowerIndex+(higherIndex-lowerIndex)/2);
+        while (i <= j) {
+            while (tableListDtos.get(i).getSequenceNumber() < pivot.getSequenceNumber()) {
+                i++;
+            }
+            while (tableListDtos.get(j).getSequenceNumber() > pivot.getSequenceNumber()) {
+                j--;
+            }
+            if (i <= j) {
+                Collections.swap(tableListDtos, i, j);
+                i++;
+                j--;
+            }
         }
+        if (lowerIndex < j)
+            quickSort(lowerIndex, j, tableListDtos);
+        if (i < higherIndex)
+            quickSort(i, higherIndex, tableListDtos);
     }
 }
 
