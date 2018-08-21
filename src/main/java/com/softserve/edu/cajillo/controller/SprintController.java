@@ -57,7 +57,7 @@ public class SprintController {
     }
 
     @PutMapping("/sprint/order")
-    public List<SprintDto> updateSprintOrdering(@RequestBody OrderSprintDto orderSprintDto) {
-        return sprintService.updateSprintOrdering(orderSprintDto);
+    public void updateSprintSequenceNumber(@RequestBody OrderSprintDto orderSprintDto) {
+        sprintService.updateSprintSequenceNumber(orderSprintDto);
     }
 }

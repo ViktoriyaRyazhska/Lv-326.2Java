@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.service;
 
+import com.softserve.edu.cajillo.dto.BoardDto;
 import com.softserve.edu.cajillo.dto.OrderSprintDto;
 import com.softserve.edu.cajillo.dto.SprintDto;
 
@@ -13,7 +14,7 @@ public interface SprintService {
 
     SprintDto createSprint(SprintDto sprintDto, Long boardid);
 
-    void createSprintBacklog(Long boardId);
+    SprintDto createSprintBacklog(Long boardId);
 
     List<SprintDto> getAllSprintsByBoardIdNotInArchive(Long boardId);
 
@@ -37,5 +38,7 @@ public interface SprintService {
 
     void decrementNextSprint(Long boardId, Long sprintId);
 
-    void updateSprintOrdering(OrderSprintDto orderSprintDto);
+    void updateSprintSequenceNumber(OrderSprintDto orderSprintDto);
+
+    List<SprintDto> sortSprintsBySequenceNumber(BoardDto boardDto);
 }

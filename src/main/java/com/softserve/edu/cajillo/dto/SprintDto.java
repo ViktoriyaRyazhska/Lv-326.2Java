@@ -33,5 +33,4 @@ public class  SprintDto extends BaseDto{
     private Integer sequenceNumber;
 
     private List<TicketForBoardResponseDto> ticketsForBoardResponse;
-
 }

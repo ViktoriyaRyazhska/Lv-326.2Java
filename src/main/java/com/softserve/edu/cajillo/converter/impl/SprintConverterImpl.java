@@ -2,11 +2,16 @@ package com.softserve.edu.cajillo.converter.impl;
 
 import com.softserve.edu.cajillo.converter.SprintConverter;
 import com.softserve.edu.cajillo.dto.SprintDto;
+import com.softserve.edu.cajillo.dto.TicketForBoardResponseDto;
 import com.softserve.edu.cajillo.entity.Sprint;
 import com.softserve.edu.cajillo.service.BoardService;
+import com.softserve.edu.cajillo.service.SprintService;
+import com.softserve.edu.cajillo.service.TicketService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class SprintConverterImpl implements SprintConverter {
@@ -16,6 +21,9 @@ public class SprintConverterImpl implements SprintConverter {
 
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private TicketService ticketService;
 
     @Override
     public Sprint convertToEntity(SprintDto sprintDto) {
@@ -28,6 +36,8 @@ public class SprintConverterImpl implements SprintConverter {
     public SprintDto convertToDto(Sprint sprint) {
         SprintDto sprintDto = modelMapper.map(sprint, SprintDto.class);
         sprintDto.setBoardId(sprint.getBoard().getId());
+        sprintDto.setTicketsForBoardResponse(ticketService.getTicketsBySprintId(sprint.getId()));
         return sprintDto;
+
     }
 }
