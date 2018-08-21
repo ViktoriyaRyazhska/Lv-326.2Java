@@ -71,8 +71,6 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private UserService userService;
 
-    private static final String IMAGE_FILE_ROOT = "src/main/resources/temporaryImage.jpg";
-
     public BoardDto createBoard(Board board, UserPrincipal userPrincipal) {
 
         board.setStatus(ItemsStatus.OPENED);
@@ -105,7 +103,9 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         BoardDto boardDto = boardConverter.convertToDto(board);
-        sortTableListsBySequenceNumber(boardDto);
+        if(!boardDto.getTableLists().isEmpty()) {
+            sortTableListsBySequenceNumber(boardDto);
+        }
         return boardDto;
     }
 

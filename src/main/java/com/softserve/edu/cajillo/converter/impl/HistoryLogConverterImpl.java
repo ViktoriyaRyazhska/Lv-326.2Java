@@ -40,6 +40,13 @@ public class HistoryLogConverterImpl implements HistoryLogConverter {
         historyLogDto.setBoardId(entity.getBoard().getId());
         historyLogDto.setUserId(entity.getUser().getId());
         historyLogDto.setUsername(entity.getUser().getUsername());
+        parseCreatedDate(historyLogDto);
         return historyLogDto;
+    }
+
+    private void parseCreatedDate(HistoryLogDto historyLogDto) {
+        String parsedCreatedDate = historyLogDto.getCreateTime()
+                .replace("T", " ").replace("Z", " ").substring(0, 19);
+        historyLogDto.setCreateTime(parsedCreatedDate);
     }
 }
