@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -30,5 +31,7 @@ public class  SprintDto extends BaseDto{
     private SprintStatus sprintStatus;
 
     private Integer sequenceNumber;
+
+    private List<TicketForBoardResponseDto> ticketsForBoardResponse;
 
 }

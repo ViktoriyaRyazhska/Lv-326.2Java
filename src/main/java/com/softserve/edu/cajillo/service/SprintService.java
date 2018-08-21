@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.service;
 
+import com.softserve.edu.cajillo.dto.OrderSprintDto;
 import com.softserve.edu.cajillo.dto.SprintDto;
 
 import java.util.List;
@@ -36,6 +37,5 @@ public interface SprintService {
 
     void decrementNextSprint(Long boardId, Long sprintId);
 
-    List<SprintDto> swapSequenceNumbers(Long sprintId1, Long sprintId2);
-
+    void updateSprintOrdering(OrderSprintDto orderSprintDto);
 }

@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.controller;
 
+import com.softserve.edu.cajillo.dto.OrderSprintDto;
 import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.service.SprintService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +56,8 @@ public class SprintController {
         sprintService.deleteSprint(sprintId);
     }
 
-    @PutMapping("/sprint/{sprintId1}/{sprintId2}")
-    public List<SprintDto> swapSequenceNumbers(@PathVariable Long sprintId1, @PathVariable Long sprintId2) {
-        return sprintService.swapSequenceNumbers(sprintId1, sprintId2);
+    @PutMapping("/sprint/order")
+    public List<SprintDto> updateSprintOrdering(@RequestBody OrderSprintDto orderSprintDto) {
+        return sprintService.updateSprintOrdering(orderSprintDto);
     }
 }
