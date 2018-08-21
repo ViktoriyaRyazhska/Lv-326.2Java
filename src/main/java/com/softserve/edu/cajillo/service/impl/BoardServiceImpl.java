@@ -271,30 +271,12 @@ public class BoardServiceImpl implements BoardService {
 
     private void sortTableListsBySequenceNumber(BoardDto boardDto) {
         List<TableListDto> tableListDtos = boardDto.getTableLists();
-        quickSort(0, tableListDtos.size() - 1, tableListDtos);
-    }
-
-    private void quickSort(int lowerIndex, int higherIndex, List<TableListDto> tableListDtos) {
-        int i = lowerIndex;
-        int j = higherIndex;
-        TableListDto pivot = tableListDtos.get(lowerIndex+(higherIndex-lowerIndex)/2);
-        while (i <= j) {
-            while (tableListDtos.get(i).getSequenceNumber() < pivot.getSequenceNumber()) {
-                i++;
+        Collections.sort(tableListDtos, new Comparator<TableListDto>() {
+            @Override
+            public int compare(TableListDto o1, TableListDto o2) {
+                return o1.getSequenceNumber().compareTo(o2.getSequenceNumber());
             }
-            while (tableListDtos.get(j).getSequenceNumber() > pivot.getSequenceNumber()) {
-                j--;
-            }
-            if (i <= j) {
-                Collections.swap(tableListDtos, i, j);
-                i++;
-                j--;
-            }
-        }
-        if (lowerIndex < j)
-            quickSort(lowerIndex, j, tableListDtos);
-        if (i < higherIndex)
-            quickSort(i, higherIndex, tableListDtos);
+        });
     }
 
     private void addUser(User newUserOnBoard, BoardDto currentBoard) {
