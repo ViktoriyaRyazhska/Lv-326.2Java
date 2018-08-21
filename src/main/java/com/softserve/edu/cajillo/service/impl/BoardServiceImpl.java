@@ -68,7 +68,9 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         BoardDto boardDto = boardConverter.convertToDto(board);
-        sortTableListsBySequenceNumber(boardDto);
+        if(!boardDto.getTableLists().isEmpty()) {
+            sortTableListsBySequenceNumber(boardDto);
+        }
         return boardDto;
     }
 
