@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TeamDto extends BaseDto {
 
+    private Long id;
+
     private String name;
 
     private String description;

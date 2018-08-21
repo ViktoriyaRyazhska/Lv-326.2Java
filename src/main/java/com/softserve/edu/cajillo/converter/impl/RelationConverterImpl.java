@@ -1,10 +1,10 @@
 package com.softserve.edu.cajillo.converter.impl;
 
 import com.softserve.edu.cajillo.converter.BoardConverter;
-import com.softserve.edu.cajillo.converter.RoleManagerConverter;
+import com.softserve.edu.cajillo.converter.RelationConverter;
 import com.softserve.edu.cajillo.converter.TeamConverter;
-import com.softserve.edu.cajillo.dto.RoleManagerDto;
-import com.softserve.edu.cajillo.entity.RoleManager;
+import com.softserve.edu.cajillo.dto.RelationDto;
+import com.softserve.edu.cajillo.entity.Relation;
 import com.softserve.edu.cajillo.service.BoardService;
 import com.softserve.edu.cajillo.service.TeamService;
 import com.softserve.edu.cajillo.service.UserService;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RoleManagerConverterImpl implements RoleManagerConverter {
+public class RelationConverterImpl implements RelationConverter {
 
     @Autowired
     private ModelMapper modelMapper;
@@ -34,8 +34,8 @@ public class RoleManagerConverterImpl implements RoleManagerConverter {
     private BoardConverter boardConverter;
 
     @Override
-    public RoleManager convertToEntity(RoleManagerDto dto) {
-        RoleManager entity = modelMapper.map(dto, RoleManager.class);
+    public Relation convertToEntity(RelationDto dto) {
+        Relation entity = modelMapper.map(dto, Relation.class);
         if (dto.getBoardId() != null){
             entity.setBoard(boardConverter.convertToEntity(boardService.getBoard(dto.getBoardId())));
         }
@@ -47,8 +47,8 @@ public class RoleManagerConverterImpl implements RoleManagerConverter {
     }
 
     @Override
-    public RoleManagerDto convertToDto(RoleManager entity) {
-        RoleManagerDto dto = modelMapper.map(entity, RoleManagerDto.class);
+    public RelationDto convertToDto(Relation entity) {
+        RelationDto dto = modelMapper.map(entity, RelationDto.class);
         dto.setTeamId(entity.getTeam().getId());
         dto.setUserId(entity.getUser().getId());
         return dto;
