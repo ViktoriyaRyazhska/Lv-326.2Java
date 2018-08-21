@@ -2,7 +2,6 @@ package com.softserve.edu.cajillo.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
@@ -34,7 +33,7 @@ public class User extends DateAudit {
 
     @Size(max = 40, message = "Email size < 40")
     @Email
-    @Column(name = "email", unique = true, nullable = false, length = 40)
+    @Column(name = "email", unique = true, length = 40)
     private String email;
 
     @ToString.Exclude
@@ -52,5 +51,22 @@ public class User extends DateAudit {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "account_status")
-    private UserAccountStatus accountStatus;
+    private UserAccountStatus accountStatus = UserAccountStatus.ACTIVE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "signup_type")
+    private SignupType signupType;
+
+    public enum SignupType{
+        GENERAL,
+        GOOGLE,
+        GITHUB
+    }
+
+    public User(String username, String email, String password, SignupType signupType) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.signupType = signupType;
+    }
 }
