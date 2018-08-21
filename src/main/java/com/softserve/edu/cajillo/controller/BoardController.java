@@ -1,7 +1,10 @@
 package com.softserve.edu.cajillo.controller;
 
 import com.softserve.edu.cajillo.dto.BoardDto;
+import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
+import com.softserve.edu.cajillo.security.CurrentUser;
+import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +17,8 @@ public class BoardController {
     private BoardService boardService;
 
     @PostMapping
-    public BoardDto createBoard(@RequestBody Board board) {
-        return boardService.createBoard(board);
+    public BoardDto createBoard(@RequestBody Board board, @CurrentUser UserPrincipal userPrincipal) {
+        return boardService.createBoard(board, userPrincipal);
     }
 
     @PutMapping("/{id}")
@@ -41,5 +44,18 @@ public class BoardController {
     @PutMapping("/image")
     public void setBoardBackground(@RequestBody BoardDto boardDto) {
         boardService.saveBoardBackground(boardDto);
+    }
+
+    // ??????
+    @PostMapping("/{boardId}/user")
+    public void addUserToBoard(@PathVariable Long boardId,
+                               @RequestBody UserDto userDto,
+                               @CurrentUser UserPrincipal userPrincipal){
+        boardService.addUserToBoard(boardId, userDto, userPrincipal);
+    }
+
+    @DeleteMapping("/{boardId}/{userId}")
+    public void deleteUserFromBoard(@PathVariable Long boardId, @PathVariable Long userId){
+        boardService.deleteUserFromBoard(boardId, userId);
     }
 }

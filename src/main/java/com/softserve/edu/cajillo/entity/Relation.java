@@ -6,9 +6,9 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "board_user_role")
+@Table(name = "board_user_role_team")
 @Data
-public class RoleManager extends BaseEntity<Long> {
+public class Relation extends BaseEntity<Long> {
 
     @ManyToOne(cascade = CascadeType.MERGE,
             fetch = FetchType.LAZY)
@@ -24,7 +24,7 @@ public class RoleManager extends BaseEntity<Long> {
     @Column(name = "role_name", nullable = false)
     private RoleName roleName;
 
-    @ManyToOne(cascade = CascadeType.ALL,
+    @ManyToOne(cascade = CascadeType.MERGE,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;

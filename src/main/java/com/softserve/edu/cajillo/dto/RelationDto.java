@@ -8,13 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleManagerDto extends BaseDto {
-
+public class RelationDto extends BaseDto {
     private Long boardId;
-
     private Long userId;
-
     private RoleName roleName;
-
     private Long teamId;
 }
