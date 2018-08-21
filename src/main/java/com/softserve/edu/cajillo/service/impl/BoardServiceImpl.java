@@ -69,7 +69,7 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         BoardDto boardDto = boardConverter.convertToDto(board);
         sortTableListsBySequenceNumber(boardDto);
-        sprintService.sortSprintsBySequenceNumber(boardDto);
+        sprintService.sortSprintsBySequenceNumber(boardDto.getSprints());
         return boardDto;
     }
 

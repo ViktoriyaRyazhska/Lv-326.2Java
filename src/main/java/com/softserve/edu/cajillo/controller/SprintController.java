@@ -26,11 +26,6 @@ public class SprintController {
         return sprintService.getSprintBacklog(boardId);
     }
 
-    @GetMapping("/sprints/{boardId}")
-    public List<SprintDto> getSprintsByBoard(@PathVariable("boardId") Long boardId) {
-        return sprintService.getAllSprintsByBoardIdNotInArchive(boardId);
-    }
-
     @GetMapping("/sprint/{sprintId}")
     public SprintDto getSprint(@PathVariable("sprintId") Long sprintId) {
         return sprintService.getSprint(sprintId);
@@ -41,7 +36,7 @@ public class SprintController {
         return sprintService.updateSprint(sprintId, sprintDto);
     }
 
-    @PutMapping("/sprint/archive/{sprintId}")
+    @DeleteMapping("/sprint/archive/{sprintId}")
     public void archiveSprint(@PathVariable("sprintId") Long sprintId) {
         sprintService.archiveSprint(sprintId);
     }

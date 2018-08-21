@@ -22,9 +22,6 @@ public class SprintConverterImpl implements SprintConverter {
     @Autowired
     private BoardService boardService;
 
-    @Autowired
-    private TicketService ticketService;
-
     @Override
     public Sprint convertToEntity(SprintDto sprintDto) {
         Sprint sprint = modelMapper.map(sprintDto, Sprint.class);
@@ -36,7 +33,6 @@ public class SprintConverterImpl implements SprintConverter {
     public SprintDto convertToDto(Sprint sprint) {
         SprintDto sprintDto = modelMapper.map(sprint, SprintDto.class);
         sprintDto.setBoardId(sprint.getBoard().getId());
-        sprintDto.setTicketsForBoardResponse(ticketService.getTicketsBySprintId(sprint.getId()));
         return sprintDto;
 
     }

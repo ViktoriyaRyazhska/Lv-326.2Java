@@ -40,5 +40,5 @@ public interface SprintService {
 
     void updateSprintSequenceNumber(OrderSprintDto orderSprintDto);
 
-    List<SprintDto> sortSprintsBySequenceNumber(BoardDto boardDto);
+    List<SprintDto> sortSprintsBySequenceNumber(List<SprintDto> sprintDto);
 }
