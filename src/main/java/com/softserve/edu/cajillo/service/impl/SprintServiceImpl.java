@@ -291,7 +291,9 @@ public class SprintServiceImpl implements SprintService {
     }
 
     public List<SprintDto> sortSprintsBySequenceNumber(List<SprintDto> sprintDtos) {
+        if(sprintDtos!=null){
         sprintDtos.sort(compareBySequenceNumber());
+        }
         return sprintDtos;
     }
 }
