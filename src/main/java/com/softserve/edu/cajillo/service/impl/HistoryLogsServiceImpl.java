@@ -9,6 +9,7 @@ import com.softserve.edu.cajillo.service.HistoryLogsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -37,4 +38,5 @@ public class HistoryLogsServiceImpl implements HistoryLogsService {
     public Long getCountLogs() {
         return historyLogsRepository.count();
     }
+
 }

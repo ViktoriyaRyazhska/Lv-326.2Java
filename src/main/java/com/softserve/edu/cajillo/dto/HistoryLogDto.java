@@ -11,5 +11,5 @@ public class HistoryLogDto extends BaseDto{
     private Long userId;
     private String username;
     private String message;
-    private Instant createTime;
+    private String createTime;
 }
