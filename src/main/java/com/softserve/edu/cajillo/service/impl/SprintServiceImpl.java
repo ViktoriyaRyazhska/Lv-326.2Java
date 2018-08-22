@@ -1,7 +1,6 @@
 package com.softserve.edu.cajillo.service.impl;
 
 import com.softserve.edu.cajillo.converter.SprintConverter;
-import com.softserve.edu.cajillo.dto.BoardDto;
 import com.softserve.edu.cajillo.dto.OrderSprintDto;
 import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.entity.Sprint;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -254,7 +252,6 @@ public class SprintServiceImpl implements SprintService {
     * sequence number of Sprint - for swap functionality
     */
 
-//    !!!!!
     public void decrementNextSprint(Long boardId, Long sprintId) {
         Sprint sprint = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
@@ -269,29 +266,15 @@ public class SprintServiceImpl implements SprintService {
     public void updateSprintSequenceNumber(OrderSprintDto orderSprintDto) {
         Sprint sprint = sprintRepository.findById(orderSprintDto.getSprintId())
                 .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + orderSprintDto.getSprintId()));
-        System.out.println("\n\n\n\n\n"+orderSprintDto+"\n"+sprint+"\n\n\n\n");
         if(sprint.getSequenceNumber() < orderSprintDto.getSequenceNumber()) {
-            decrementAllSprintsBefore(sprint.getSequenceNumber() + 1, orderSprintDto.getSequenceNumber());
-
-            int n = sprint.getSequenceNumber() + 1;
-            System.out.println("FIRST "+ " FROM= "+ n+" TO="+orderSprintDto.getSequenceNumber());
-
+            sprintRepository.decrementSprints(sprint.getSequenceNumber() + 1, orderSprintDto.getSequenceNumber());
             sprint.setSequenceNumber(orderSprintDto.getSequenceNumber());
             sprintRepository.save(sprint);
         } else if(sprint.getSequenceNumber() > orderSprintDto.getSequenceNumber()) {
-            int n = sprint.getSequenceNumber() - 1;
-            incrementAllSprintsAfter(orderSprintDto.getSequenceNumber(), sprint.getSequenceNumber() - 1);
-            System.out.println("SECOND " +" FROM="+orderSprintDto.getSequenceNumber()+" TO= "+ n);
+            sprintRepository.incrementSprints(orderSprintDto.getSequenceNumber(), sprint.getSequenceNumber() - 1);
             sprint.setSequenceNumber(orderSprintDto.getSequenceNumber());
             sprintRepository.save(sprint);
         }
-    }
-
-    private void decrementAllSprintsBefore(int startId, int endId) {
-        sprintRepository.decrementSprints(startId, endId);
-    }
-    private void incrementAllSprintsAfter(int startId, int endId) {
-        sprintRepository.incrementSprints(startId, endId);
     }
 
     /*
@@ -303,30 +286,6 @@ public class SprintServiceImpl implements SprintService {
             @Override
             public int compare(SprintDto sprintDto, SprintDto t1) {
                 return sprintDto.getSequenceNumber() - t1.getSequenceNumber();
-            }
-        };
-    }
-
-    /*
-     * Comparators for sorting by Start Date
-     */
-    private Comparator<SprintDto> compareByStartDate() {
-        return new Comparator<SprintDto>() {
-            @Override
-            public int compare(SprintDto sprintDto, SprintDto t1) {
-                return sprintDto.getStartDate().compareTo(t1.getStartDate());
-            }
-        };
-    }
-
-    /*
-     * Comparators for sorting by Label
-     */
-    private Comparator<SprintDto> compareByName() {
-        return new Comparator<SprintDto>() {
-            @Override
-            public int compare(SprintDto sprintDto, SprintDto t1) {
-                return sprintDto.getLabel().compareTo(t1.getLabel());
             }
         };
     }
