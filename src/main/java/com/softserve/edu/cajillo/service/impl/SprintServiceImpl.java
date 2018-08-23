@@ -1,9 +1,9 @@
 package com.softserve.edu.cajillo.service.impl;
 
-import com.softserve.edu.cajillo.converter.impl.SprintConverterImpl;
+import com.softserve.edu.cajillo.converter.SprintConverter;
+import com.softserve.edu.cajillo.dto.OrderSprintDto;
 import com.softserve.edu.cajillo.dto.SprintDto;
 import com.softserve.edu.cajillo.entity.Sprint;
-import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.SprintStatus;
@@ -15,8 +15,10 @@ import com.softserve.edu.cajillo.service.SprintService;
 import com.softserve.edu.cajillo.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -36,7 +38,7 @@ public class SprintServiceImpl implements SprintService {
     private SprintRepository sprintRepository;
 
     @Autowired
-    private SprintConverterImpl sprintConverter;
+    private SprintConverter sprintConverter;
 
     @Autowired
     private TicketService ticketService;
@@ -81,13 +83,13 @@ public class SprintServiceImpl implements SprintService {
         sprintDto.setSprintType(SprintType.SPRINT);
         sprintDto.setSprintStatus(SprintStatus.CREATED);
         Long maxSequenceValue = sprintRepository.getMaxSequenceValue(boardId);
-        sprintDto.setSequenceNumber(Math.toIntExact((maxSequenceValue == null) ? 1 : ++maxSequenceValue));
+        sprintDto.setSequenceNumber(Math.toIntExact((maxSequenceValue == null) ? 0 : ++maxSequenceValue));
         return sprintConverter.convertToDto(sprintRepository.save(
                 sprintConverter.convertToEntity(sprintDto)));
     }
 
     @Override
-    public void createSprintBacklog(Long boardId){
+    public SprintDto createSprintBacklog(Long boardId){
         if(boardId == null){
             throw new BoardNotFoundException(BOARD_ID_NULL);
         }
@@ -97,8 +99,8 @@ public class SprintServiceImpl implements SprintService {
         backlogDto.setSprintType(SprintType.BACKLOG);
         backlogDto.setSprintStatus(SprintStatus.CREATED);
         backlogDto.setSequenceNumber(null);
-        sprintRepository.save(
-                sprintConverter.convertToEntity(backlogDto));
+        return sprintConverter.convertToDto(sprintRepository.save(
+                sprintConverter.convertToEntity(backlogDto)));
     }
 
     @Override
@@ -260,23 +262,38 @@ public class SprintServiceImpl implements SprintService {
         }
     }
 
-    public List<SprintDto> swapSequenceNumbers(Long sprintId1, Long sprintId2) {
-        Sprint sprint1 = sprintRepository.findById(sprintId1)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId1));
-        Sprint sprint2 = sprintRepository.findById(sprintId2)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId2));
-        swapNumbers(sprint1, sprint2);
-        sprintRepository.save(sprint1);
-        sprintRepository.save(sprint1);
-        List<Sprint> sprints = sprintRepository.getAllByBoardIdAndSprintStatusNotAndSprintType
-                (sprint1.getBoard().getId(), SprintStatus.IN_ARCHIVE, SprintType.SPRINT);
-        return sprintConverter.convertToDto(sprints);
+    @Transactional
+    public void updateSprintSequenceNumber(OrderSprintDto orderSprintDto) {
+        Sprint sprint = sprintRepository.findById(orderSprintDto.getSprintId())
+                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + orderSprintDto.getSprintId()));
+        if(sprint.getSequenceNumber() < orderSprintDto.getSequenceNumber()) {
+            sprintRepository.decrementSprints(sprint.getSequenceNumber() + 1, orderSprintDto.getSequenceNumber());
+            sprint.setSequenceNumber(orderSprintDto.getSequenceNumber());
+            sprintRepository.save(sprint);
+        } else if(sprint.getSequenceNumber() > orderSprintDto.getSequenceNumber()) {
+            sprintRepository.incrementSprints(orderSprintDto.getSequenceNumber(), sprint.getSequenceNumber() - 1);
+            sprint.setSequenceNumber(orderSprintDto.getSequenceNumber());
+            sprintRepository.save(sprint);
+        }
     }
 
-    public void swapNumbers(Sprint sprint1, Sprint sprint2) {
-        int number = sprint1.getSequenceNumber();
-        sprint1.setSequenceNumber(sprint1.getSequenceNumber());
-        sprint2.setSequenceNumber(number);
+    /*
+    * Comparators for sorting by SequenceNumber
+    */
+
+    private Comparator<SprintDto> compareBySequenceNumber() {
+        return new Comparator<SprintDto>() {
+            @Override
+            public int compare(SprintDto sprintDto, SprintDto t1) {
+                return sprintDto.getSequenceNumber() - t1.getSequenceNumber();
+            }
+        };
     }
 
+    public List<SprintDto> sortSprintsBySequenceNumber(List<SprintDto> sprintDtos) {
+        if(sprintDtos!=null){
+        sprintDtos.sort(compareBySequenceNumber());
+        }
+        return sprintDtos;
+    }
 }
