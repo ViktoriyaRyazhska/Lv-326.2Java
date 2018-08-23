@@ -274,6 +274,8 @@ public class BoardServiceImpl implements BoardService {
         Collections.sort(tableListDtos, new Comparator<TableListDto>() {
             @Override
             public int compare(TableListDto o1, TableListDto o2) {
+                System.out.println(o1.toString());
+                System.out.println(o2.toString());
                 return o1.getSequenceNumber().compareTo(o2.getSequenceNumber());
             }
         });
