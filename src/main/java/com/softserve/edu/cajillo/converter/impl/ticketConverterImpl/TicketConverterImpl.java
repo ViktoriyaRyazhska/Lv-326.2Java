@@ -65,10 +65,10 @@ public class TicketConverterImpl implements TicketConverter {
             ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
                     new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + dto.getSprintId())));
         }
-        if (dto.getParentTicketId() != null) {
-            ticket.setParentTicket(ticketRepository.findById(dto.getParentTicketId()).orElseThrow(() ->
-                    new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + dto.getParentTicketId())));
-        }
+//        if (dto.getParentTicketId() != null) {
+//            ticket.setParentTicket(ticketRepository.findById(dto.getParentTicketId()).orElseThrow(() ->
+//                    new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + dto.getParentTicketId())));
+//        }
         return ticket;
     }
 
@@ -83,8 +83,8 @@ public class TicketConverterImpl implements TicketConverter {
         if (entity.getSprint() != null)
             ticketDto.setSprintId(entity.getSprint().getId());
         ticketDto.setTableListId(entity.getTableList().getId());
-        if (entity.getParentTicket() != null)
-            ticketDto.setParentTicketId(entity.getParentTicket().getId());
+//        if (entity.getParentTicket() != null)
+//            ticketDto.setParentTicketId(entity.getParentTicket().getId());
         if (ticketDto.getAssignedToId() != null)
             ticketDto.setAssignedToName(entity.getAssignedTo().getFirstName() + " " + entity.getAssignedTo().getLastName());
         ticketDto.setCreatedByName(entity.getCreatedBy().getFirstName() + " " + entity.getCreatedBy().getLastName());
