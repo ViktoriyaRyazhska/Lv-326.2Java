@@ -9,6 +9,8 @@ import com.softserve.edu.cajillo.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/boards")
 public class BoardController {
@@ -29,6 +31,11 @@ public class BoardController {
     @GetMapping("/{id}")
     public BoardDto getBoard(@PathVariable Long id) {
         return boardService.getBoard(id);
+    }
+
+    @GetMapping
+    public List<BoardDto> getAllUserBoards(@CurrentUser UserPrincipal currentUser){
+        return boardService.getAllUserBoards(currentUser);
     }
 
     @DeleteMapping("/{id}")

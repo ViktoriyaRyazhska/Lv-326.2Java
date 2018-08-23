@@ -109,6 +109,17 @@ public class BoardServiceImpl implements BoardService {
         return boardConverter.convertToDto(board);
     }
 
+    @Override
+    public List<BoardDto> getAllUserBoards(UserPrincipal currentUser) {
+        List<Relation> allByUserId = relationRepository.findAllByUserId(currentUser.getId());
+        List<Board> allUserBoards = new ArrayList<>();
+        for (Relation relation : allByUserId) {
+            if (relation.getBoard() != null)
+            allUserBoards.add(relation.getBoard());
+        }
+        return boardConverter.convertToDto(allUserBoards);
+    }
+
     public Board getBoardEntity(Long id) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));

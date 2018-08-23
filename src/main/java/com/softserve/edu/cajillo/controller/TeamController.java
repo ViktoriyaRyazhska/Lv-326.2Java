@@ -28,6 +28,11 @@ public class TeamController {
     @Autowired
     private BoardService boardService;
 
+    @GetMapping
+    public List<TeamDto> getAllUserTeams(@CurrentUser UserPrincipal currentUser) {
+        return teamService.getAllUserTeams(currentUser);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createTeam(@RequestBody TeamDto teamDto, @CurrentUser UserPrincipal currentUser) {

@@ -65,6 +65,18 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public List<TeamDto> getAllUserTeams(UserPrincipal currentUser) {
+        List<Relation> allByUserId = relationRepository.findAllByUserId(currentUser.getId());
+        List<Team> allUserTeams = new ArrayList<>();
+        for (Relation relation : allByUserId) {
+            if (relation.getTeam() != null){
+                allUserTeams.add(relation.getTeam());
+            }
+        }
+        return teamConverter.convertToDto(allUserTeams);
+    }
+
+    @Override
     public void createTeam(TeamDto teamDto, UserPrincipal currentUser) {
         relationRepository.save(relationConverter.convertToEntity(
                 new RelationDto(
@@ -126,27 +138,27 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void addUserToTeam(UserDto userDto, Long teamId) {
-       if(getTeam(teamId) != null) {
-           User newTeamMember = userService.getUserByEmail(userDto.getEmail());
-           List<Board> allBoardsForCurrentTeam = boardConverter.convertToEntity(boardService.getAllActiveBoardsByTeamId(teamId));
-           Long boardId = null;
-           List<Relation> allByTeamId = relationRepository.findAllByTeamId(teamId);
-           List<Relation> allByUserId = relationRepository.findAllByUserId(newTeamMember.getId());
-           if (allBoardsForCurrentTeam.size() != 0) {
-               if (allByUserId.size() == 0 || !allByUserId.containsAll(allByTeamId)) {
-                   for (Board board : allBoardsForCurrentTeam) {
-                       boardId = board.getId();
-                       saveRelation(boardId, newTeamMember.getId(), teamId);
-                   }
-               }
-           } else {
-               if (allByUserId.size() == 0) {
-                   saveRelation(boardId, newTeamMember.getId(), teamId);
-               } else if (!allByTeamId.containsAll(allByUserId)) {
-                   saveRelation(boardId, newTeamMember.getId(), teamId);
-               }
-           }
-       }
+        if (getTeam(teamId) != null) {
+            User newTeamMember = userService.getUserByEmail(userDto.getEmail());
+            List<Board> allBoardsForCurrentTeam = boardConverter.convertToEntity(boardService.getAllActiveBoardsByTeamId(teamId));
+            Long boardId = null;
+            List<Relation> allByTeamId = relationRepository.findAllByTeamId(teamId);
+            List<Relation> allByUserId = relationRepository.findAllByUserId(newTeamMember.getId());
+            if (allBoardsForCurrentTeam.size() != 0) {
+                if (allByUserId.size() == 0 || !allByUserId.containsAll(allByTeamId)) {
+                    for (Board board : allBoardsForCurrentTeam) {
+                        boardId = board.getId();
+                        saveRelation(boardId, newTeamMember.getId(), teamId);
+                    }
+                }
+            } else {
+                if (allByUserId.size() == 0) {
+                    saveRelation(boardId, newTeamMember.getId(), teamId);
+                } else if (!allByTeamId.containsAll(allByUserId)) {
+                    saveRelation(boardId, newTeamMember.getId(), teamId);
+                }
+            }
+        }
     }
 
     @Override
