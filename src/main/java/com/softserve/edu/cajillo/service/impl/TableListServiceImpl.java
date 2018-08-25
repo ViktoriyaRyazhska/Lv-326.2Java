@@ -6,9 +6,8 @@ import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
-import com.softserve.edu.cajillo.exception.BoardNotFoundException;
+import com.softserve.edu.cajillo.exception.ResourceNotFoundException;
 import com.softserve.edu.cajillo.exception.TableListNotFoundException;
-import com.softserve.edu.cajillo.exception.UnsatisfiedException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.TableListRepository;
 import com.softserve.edu.cajillo.service.TableListService;
@@ -36,7 +35,7 @@ public class TableListServiceImpl implements TableListService {
 
     public TableListDto createTableList(Long id, TableList tableList) {
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
-                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
         tableList.setBoard(board);
         tableList.setStatus(ItemsStatus.OPENED);
         Long maxSequenceValue = tableListRepository.getMaxSequenceValue(id);

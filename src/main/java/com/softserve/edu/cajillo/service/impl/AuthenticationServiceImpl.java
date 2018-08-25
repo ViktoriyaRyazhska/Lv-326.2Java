@@ -6,10 +6,10 @@ import com.softserve.edu.cajillo.dto.RegisterRequestDto;
 import com.softserve.edu.cajillo.dto.ResetPasswordDto;
 import com.softserve.edu.cajillo.entity.PasswordResetToken;
 import com.softserve.edu.cajillo.entity.User;
+import com.softserve.edu.cajillo.exception.ResourceNotFoundException;
 import com.softserve.edu.cajillo.exception.TokenExpiredException;
 import com.softserve.edu.cajillo.exception.TokenNotFoundException;
 import com.softserve.edu.cajillo.exception.UserAlreadyExistsException;
-import com.softserve.edu.cajillo.exception.UserNotFoundException;
 import com.softserve.edu.cajillo.repository.PasswordResetTokenRepository;
 import com.softserve.edu.cajillo.repository.UserRepository;
 import com.softserve.edu.cajillo.security.JwtTokenProvider;
@@ -37,8 +37,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
-
-    private static final String USER_EMAIL_NOT_FOUND_MESSAGE = "Could not find user with email='%s'";
+    
     private static final String USER_ALREADY_EXISTS_MESSAGE = "Username or email is already taken";
     private static final String RESET_TOKEN_IS_NOT_VALID = "reset password token is invalid";
     private static final String GOOGLE_TOKEN_EXCHANGE = "https://www.googleapis.com/oauth2/v2/userinfo?access_token=";
@@ -213,7 +212,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void resetUserPasswordRequest(String email) {
         log.info("Resetting password for user  with email " + email);
         User user = userRepository.findUserByEmail(email).orElseThrow(() ->
-                new UserNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MESSAGE, email)));
+                new ResourceNotFoundException("User", "email", email));
         String token = UUID.randomUUID().toString();
         passwordResetTokenRepository.save(new PasswordResetToken(token, user));
         emailService.sendEmail(email, "Password recovery", String.format("Token: %s\nUser id: %s", token,
