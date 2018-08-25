@@ -12,13 +12,16 @@ import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.TableListRepository;
 import com.softserve.edu.cajillo.service.TableListService;
 import com.softserve.edu.cajillo.service.TicketService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Component
+@Slf4j
+@Service
 public class TableListServiceImpl implements TableListService {
 
     @Autowired
@@ -34,6 +37,7 @@ public class TableListServiceImpl implements TableListService {
     private TicketService ticketService;
 
     public TableListDto createTableList(Long id, TableList tableList) {
+        log.info(String.format("Creating table list with id %d: " + tableList, id));
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
                 .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
         tableList.setBoard(board);
@@ -45,6 +49,7 @@ public class TableListServiceImpl implements TableListService {
     }
 
     public void deleteTableList(Long listId) {
+        log.info(String.format("Deleting table list with id %d", listId));
         TableList tableList = tableListRepository.findById(listId)
                 .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
         decrementNextTableLists(tableList.getBoard().getId(), listId);
@@ -55,10 +60,12 @@ public class TableListServiceImpl implements TableListService {
     }
 
     private void deleteAllInternalTickets(Long listId) {
+        log.info(String.format("Deleting all internal elements in table list with id %d", listId));
         ticketService.deleteTicketsByTableListId(listId);
     }
 
     public void recoverTableListsByBoardId(Long boardId) {
+        log.info(String.format("Recovering all table lists in board with id %d", boardId));
         List<TableList> lists = tableListRepository.findAllByBoardIdAndStatus(boardId, ItemsStatus.DELETED);
         for (TableList list : lists) {
             list.setStatus(ItemsStatus.OPENED);
@@ -68,6 +75,7 @@ public class TableListServiceImpl implements TableListService {
     }
 
     public void deleteTableListsByBoardId(Long boardId) {
+        log.info(String.format("Deleting all table lists in board with id %d", boardId));
         List<TableList> allByBoardIdAndStatus = tableListRepository
                 .findAllByBoardIdAndStatus(boardId, ItemsStatus.OPENED);
         for (TableList tableList : allByBoardIdAndStatus) {
@@ -78,6 +86,7 @@ public class TableListServiceImpl implements TableListService {
     }
 
     public TableListDto updateTableList(Long listId, Long boardId, TableList tableList) {
+        log.info(String.format("Updating table list with id %d: " + tableList, listId));
         TableList existingList = tableListRepository.findById(listId)
                 .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
         existingList.setName(tableList.getName());
@@ -85,11 +94,13 @@ public class TableListServiceImpl implements TableListService {
     }
 
     public List<TableListDto> getAllTableLists(Long boardId) {
+        log.info(String.format("Getting all table lists where board id %d", boardId));
         List<TableList> allByBoardId = tableListRepository.findAllByBoardIdAndStatus(boardId, ItemsStatus.OPENED);
         return tableListConverter.convertToDto(allByBoardId);
     }
 
     public TableListDto getTableList(Long listId) {
+        log.info(String.format("Getting table list with id %d", listId));
         TableList tableList = tableListRepository.findByIdAndStatus(listId, ItemsStatus.OPENED)
                 .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
         return tableListConverter.convertToDto(tableList);
@@ -107,6 +118,7 @@ public class TableListServiceImpl implements TableListService {
 
     @Transactional
     public void updateListOrdering(OrderTableListDto orderTableListDto) {
+        log.info("Updating list ordering");
         TableList tableList = tableListRepository.findByIdAndStatus(orderTableListDto.getListId(), ItemsStatus.OPENED)
                 .orElseThrow(() -> new TableListNotFoundException(
                         String.format("Table list with id %d not found", orderTableListDto.getListId())));
