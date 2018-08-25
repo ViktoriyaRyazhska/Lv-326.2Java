@@ -183,9 +183,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private String getMessage(String username, String password) {
         return "Dear " + username + ",\n" +
-                "Thank you for joining Cajillo. " +
-                "For general login: your login:" +
-                username + "and password" +
+                "Thank you for joining Cajillo.\n" +
+                "For general login use your \n  username: " +
+                username + "\n  password: " +
                 password + "\n" +
                 "RUN FOR YOUR LIFE!!!\n\n" +
                 "Best regards\nCajillo Team";
