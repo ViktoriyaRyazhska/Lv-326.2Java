@@ -30,4 +30,6 @@ public class TicketForBoardResponseDto extends BaseDto implements Serializable {
     private Long boardId;
 
     private Long tableListId;
+
+    private Integer sequenceNumber;
 }

@@ -31,6 +31,12 @@ public class TicketController {
         return ticketService.updateTicket(ticketDto);
     }
 
+    @PutMapping("/order")
+    public void updateTicketSequenceNumber(@RequestBody OrderTicketDto orderTicketDto) {
+        System.out.println(orderTicketDto);
+        ticketService.updateTicketSequenceNumber(orderTicketDto);
+    }
+
     @PostMapping
     public CreateTicketDto createTicket(@RequestBody CreateTicketDto createTicketRequest,
                                         @CurrentUser UserPrincipal userPrincipal) {

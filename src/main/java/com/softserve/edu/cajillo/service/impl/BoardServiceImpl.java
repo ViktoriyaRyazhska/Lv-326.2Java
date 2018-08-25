@@ -115,6 +115,7 @@ public class BoardServiceImpl implements BoardService {
         if (!boardDto.getTableLists().isEmpty()) {
             sortTableListsBySequenceNumber(boardDto);
         }
+        sprintService.sortSprintsBySequenceNumber(boardDto.getSprints());
         return boardDto;
     }
 

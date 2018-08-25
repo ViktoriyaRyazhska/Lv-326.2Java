@@ -52,9 +52,9 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
         if (dto.getSprintId() != null)
             ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
                     new UserNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + dto.getSprintId())));
-        if (dto.getParentTicketId() != null)
-            ticket.setParentTicket(ticketRepository.findById(dto.getParentTicketId()).orElseThrow(() ->
-                    new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + dto.getParentTicketId())));
+//        if (dto.getParentTicketId() != null)
+//            ticket.setParentTicket(ticketRepository.findById(dto.getParentTicketId()).orElseThrow(() ->
+//                    new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + dto.getParentTicketId())));
         return ticket;
     }
 
@@ -66,8 +66,8 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
         createTicketDto.setBoardId(entity.getBoard().getId());
         if (entity.getSprint() != null)
             createTicketDto.setSprintId(entity.getSprint().getId());
-        if (entity.getParentTicket() != null)
-            createTicketDto.setParentTicketId(entity.getParentTicket().getId());
+//        if (entity.getParentTicket() != null)
+//            createTicketDto.setParentTicketId(entity.getParentTicket().getId());
         return createTicketDto;
     }
 }
