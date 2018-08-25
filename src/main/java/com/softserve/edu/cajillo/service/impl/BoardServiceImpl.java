@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.service.impl;
 
+import com.cloudinary.Api;
 import com.softserve.edu.cajillo.converter.RelationConverter;
 import com.softserve.edu.cajillo.converter.TeamConverter;
 import com.cloudinary.Cloudinary;
@@ -22,9 +23,13 @@ import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.RelationRepository;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.*;
+import lombok.extern.slf4j.Slf4j;
+import org.cloudinary.json.JSONArray;
+import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.io.File;
@@ -33,6 +38,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@Slf4j
 @Service
 public class BoardServiceImpl implements BoardService {
 
@@ -89,6 +95,7 @@ public class BoardServiceImpl implements BoardService {
             tableList.setSequenceNumber(0);
             tableListService.createTableList(board.getId(), tableList);
         }
+        log.info("Creating board: " + board);
         return boardConverter.convertToDto(save);
     }
 
@@ -96,14 +103,16 @@ public class BoardServiceImpl implements BoardService {
         Board existedBoard = boardRepository.findById(id)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         existedBoard.setName(board.getName());
+        log.info(String.format("Updating board with id %d to: " + board, id));
         return boardConverter.convertToDto(boardRepository.save(existedBoard));
     }
 
     public BoardDto getBoard(Long id) {
+        log.info(String.format("Getting board with id %d", id));
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         BoardDto boardDto = boardConverter.convertToDto(board);
-        if(!boardDto.getTableLists().isEmpty()) {
+        if (!boardDto.getTableLists().isEmpty()) {
             sortTableListsBySequenceNumber(boardDto);
         }
         sprintService.sortSprintsBySequenceNumber(boardDto.getSprints());
@@ -111,12 +120,14 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public Board getBoardEntity(Long id) {
+        log.info(String.format("Getting board with id %d", id));
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         return board;
     }
 
     public void deleteBoard(Long id) {
+        log.info(String.format("Deleting board with id %d", id));
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
         deleteAllInternalBoardItems(id);
@@ -125,6 +136,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private void deleteAllInternalBoardItems(Long boardId) {
+        log.info(String.format("Deleting all internal items in board %d", boardId));
         tableListService.deleteTableListsByBoardId(boardId);
         sprintService.archiveAllSprintsByBoard(boardId);
 
@@ -133,6 +145,7 @@ public class BoardServiceImpl implements BoardService {
     public BoardDto recoverBoard(Long boardId) {
         Board board = boardRepository.findByIdAndStatus(boardId, ItemsStatus.DELETED)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", boardId)));
+        log.info(String.format("Recovering board with id %d", boardId));
         board.setStatus(ItemsStatus.OPENED);
         recoverAllInternalItems(boardId);
         boardRepository.save(board);
@@ -140,6 +153,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private void recoverAllInternalItems(Long boardId) {
+        log.info(String.format("Recovering all internal items in board %d", boardId));
         tableListService.recoverTableListsByBoardId(boardId);
         sprintService.recoverAllSprintsByBoard(boardId);
     }
@@ -251,6 +265,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private void setCurrentImageUrlToBoard(String cloudImageUrl, Long boardId) {
+        log.info(String.format("Setting new image url to board %d", boardId));
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", boardId)));
         board.setImage(cloudImageUrl);
@@ -258,6 +273,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private String uploadImageOnCloud(byte[] imageFile, BoardDto boardDto) {
+        log.info(String.format("Saving new background image to board %d on cloud", boardDto.getId()));
         try {
             Cloudinary cloudinary = new Cloudinary(cloudUrl);
             Map params = ObjectUtils.asMap("public_id", "board_images/"
@@ -272,14 +288,8 @@ public class BoardServiceImpl implements BoardService {
 
     private void sortTableListsBySequenceNumber(BoardDto boardDto) {
         List<TableListDto> tableListDtos = boardDto.getTableLists();
-        Collections.sort(tableListDtos, new Comparator<TableListDto>() {
-            @Override
-            public int compare(TableListDto o1, TableListDto o2) {
-                System.out.println(o1.toString());
-                System.out.println(o2.toString());
-                return o1.getSequenceNumber().compareTo(o2.getSequenceNumber());
-            }
-        });
+        log.info(String.format("Sorting lists in board with id %d", boardDto.getId()));
+        Collections.sort(tableListDtos, (Comparator.comparing(TableListDto::getSequenceNumber)));
     }
 
     private void addUser(User newUserOnBoard, BoardDto currentBoard) {
@@ -321,5 +331,47 @@ public class BoardServiceImpl implements BoardService {
                 relationRepository.delete(relation);
             } else throw new RelationServiceException(CAN_NOT_DELETE);
         }
+    }
+
+    @Override
+    public List<String> getAllBackgroundImagesByBoardId(Long boarId) {
+        Cloudinary cloudinary = new Cloudinary(cloudUrl);
+        Api api = cloudinary.api();
+        String jsonNext = null;
+        boolean ifWeHaveMoreResources = true;
+        ArrayList<String> listRes = new ArrayList<>();
+        try {
+            while (ifWeHaveMoreResources) {
+                JSONObject outerObject = new JSONObject(
+                        api.resources(ObjectUtils.asMap("max_results", 500, "next_cursor", jsonNext)));
+                if (outerObject.has("next_cursor")) {
+                    jsonNext = outerObject.get("next_cursor").toString();
+                    ifWeHaveMoreResources = true;
+                } else {
+                    ifWeHaveMoreResources = false;
+                }
+                JSONArray jsonArray = outerObject.getJSONArray("resources");
+                for (int i = 0, size = jsonArray.length(); i < size; i++) {
+                    JSONObject objectInArray = jsonArray.getJSONObject(i);
+                    String url = objectInArray.get("url").toString();
+                    if (url.contains("/board_images/" + boarId)) {
+                        listRes.add(url);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listRes;
+    }
+
+    @Transactional
+    public void setExistingImageOnBackground(Long boardId, String imageUrl) {
+        boardRepository.setExistingImageOnBackground(boardId, imageUrl);
+    }
+
+    @Transactional
+    public void clearBoardBackground(Long boardId) {
+        boardRepository.clearBoardBackground(boardId);
     }
 }
