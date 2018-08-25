@@ -13,5 +13,6 @@ public class BoardDto extends BaseDto {
     private String imageName;
     private List<TableListDto> tableLists;
     private List<SprintDto> sprints;
+    private SprintDto backlog;
     private List<HistoryLogDto> logs;
 }
