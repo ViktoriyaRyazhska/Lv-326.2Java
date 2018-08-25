@@ -19,6 +19,7 @@ public class AuthApiController {
     @Autowired
     private AuthenticationService authenticationService;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDto authorization) {
         return ResponseEntity.ok(authenticationService.authenticateUser(authorization));
