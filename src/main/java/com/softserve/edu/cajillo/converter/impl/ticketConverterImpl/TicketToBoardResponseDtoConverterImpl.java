@@ -24,8 +24,6 @@ public class TicketToBoardResponseDtoConverterImpl implements TicketToBoardRespo
         if (entity.getAssignedTo() != null)
             result.setAssignedTo(entity.getAssignedTo().getUsername());
         result.setTicketIssueType(entity.getTicketIssueType());
-        if (entity.getParentTicket() != null)
-            result.setParentTicketId(entity.getParentTicket().getId());
         return result;
     }
 }

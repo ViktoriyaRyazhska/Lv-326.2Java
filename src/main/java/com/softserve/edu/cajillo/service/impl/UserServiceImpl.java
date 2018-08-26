@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
 
     private static final String USER_EMAIL_TAKEN = "Email is already taken";
     private static final String USER_USERNAME_TAKEN = "Username is already taken";
-    private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id=";
     private static final String UNSUPPORTED_MIME_TYPES_ERROR_MESSAGE = "Unsupported media type";
     private static final String REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE = "Avatar size is too large. Maximum size is 256 KiB";
     private static final String FILES_SAVE_ERROR_MESSAGE = "Could not save file for user with id=%s";
@@ -39,13 +38,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
     }
 
     @Override
     public void updateUser(Long userId, UpdateUserDto userDto) {
         User currentUser = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + userId));
+                new ResourceNotFoundException("User", "id", userId));
         String newPassword = userDto.getNewPassword();
         String oldPassword = userDto.getOldPassword();
         if (currentUser.getPassword() == null) {
@@ -63,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
+                () -> new ResourceNotFoundException("User", "id", id));
         user.setAccountStatus(UserAccountStatus.DELETED);
         log.info("Deleting user " + user);
         userRepository.save(user);
@@ -72,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void restoreUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + id));
+                () -> new ResourceNotFoundException("User", "id", id));
         user.setAccountStatus(UserAccountStatus.ACTIVE);
         log.info("Restoring user " + user);
         userRepository.save(user);
@@ -82,7 +81,7 @@ public class UserServiceImpl implements UserService {
     public User getUserByEmail(String email) {
         log.info("Getting user by email: " + email);
         return userRepository.findUserByEmail(email).orElseThrow(() ->
-                new UserNotFoundException(USER_USERNAME_NOT_FOUND_MESSAGE_BY_EMAIL + email));
+                new ResourceNotFoundException("User", "email", email));
     }
 
     public void uploadAvatar(Long userId, MultipartFile avatar) {
@@ -94,7 +93,7 @@ public class UserServiceImpl implements UserService {
             log.error(avatar.getContentType() + " is not supported");
             throw new UnsupportedOperationException(UNSUPPORTED_MIME_TYPES_ERROR_MESSAGE);
         }
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         try {
             user.setAvatar(Base64.getMimeEncoder().encodeToString(avatar.getBytes()));
             userRepository.save(user);
@@ -108,14 +107,14 @@ public class UserServiceImpl implements UserService {
     public AvatarDto getUserAvatar(Long userId) {
         log.info("Getting avatar for user with id: " + userId);
         return new AvatarDto(userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE)).getAvatar());
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId)).getAvatar());
     }
 
     @Override
     public void deleteUserAvatar(Long userId) {
         log.info("Deleting avatar for user with id: " + userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         user.setAvatar(null);
         userRepository.save(user);
     }

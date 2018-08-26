@@ -20,7 +20,7 @@ public interface SprintService {
 
     List<SprintDto> getAllSprintsByBoardAndStatusCreated(Long boardId);
 
-    List<SprintDto> getAllSprintsByBoardAndStatusInProgress(Long boardId);
+    List<SprintDto> getAllSprintsByBoardAndStatusActive(Long boardId);
 
     List<SprintDto> getAllSprintsByBoardAndStatusCompleted(Long boardId);
 

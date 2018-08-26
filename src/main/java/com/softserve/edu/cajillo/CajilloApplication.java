@@ -11,9 +11,11 @@ import java.util.TimeZone;
 @SpringBootApplication
 @EntityScan(basePackageClasses = {
 		CajilloApplication.class,
-		Jsr310JpaConverters.class
+		Jsr310JpaConverters.class,
 })
 public class CajilloApplication extends SpringBootServletInitializer {
+
+
 	@PostConstruct
 	void init() {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));

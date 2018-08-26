@@ -17,8 +17,8 @@ import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.entity.enums.BoardType;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.entity.enums.RoleName;
-import com.softserve.edu.cajillo.exception.BoardNotFoundException;
 import com.softserve.edu.cajillo.exception.RelationServiceException;
+import com.softserve.edu.cajillo.exception.ResourceNotFoundException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.RelationRepository;
 import com.softserve.edu.cajillo.security.UserPrincipal;
@@ -81,13 +81,6 @@ public class BoardServiceImpl implements BoardService {
 
         board.setStatus(ItemsStatus.OPENED);
         Board save = boardRepository.save(board);
-        relationRepository.save(relationConverter.convertToEntity(
-                new RelationDto(
-                        save.getId(),
-                        userPrincipal.getId(),
-                        RoleName.ADMIN,
-                        null)
-        ));
         if (board.getBoardType() == BoardType.SCRUM) {
             sprintService.createSprintBacklog(board.getId());
             TableList tableList = new TableList();
@@ -95,13 +88,20 @@ public class BoardServiceImpl implements BoardService {
             tableList.setSequenceNumber(0);
             tableListService.createTableList(board.getId(), tableList);
         }
+        relationRepository.save(relationConverter.convertToEntity(
+                new RelationDto(
+                        save.getId(),
+                        userPrincipal.getId(),
+                        RoleName.ADMIN,
+                        null)
+        ));
         log.info("Creating board: " + board);
         return boardConverter.convertToDto(save);
     }
 
     public BoardDto updateBoard(Long id, Board board) {
         Board existedBoard = boardRepository.findById(id)
-                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
         existedBoard.setName(board.getName());
         log.info(String.format("Updating board with id %d to: " + board, id));
         return boardConverter.convertToDto(boardRepository.save(existedBoard));
@@ -110,7 +110,7 @@ public class BoardServiceImpl implements BoardService {
     public BoardDto getBoard(Long id) {
         log.info(String.format("Getting board with id %d", id));
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
-                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
         BoardDto boardDto = boardConverter.convertToDto(board);
         if (!boardDto.getTableLists().isEmpty()) {
             sortTableListsBySequenceNumber(boardDto);
@@ -122,14 +122,14 @@ public class BoardServiceImpl implements BoardService {
     public Board getBoardEntity(Long id) {
         log.info(String.format("Getting board with id %d", id));
         Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
-                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
         return board;
     }
 
     public void deleteBoard(Long id) {
         log.info(String.format("Deleting board with id %d", id));
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
         deleteAllInternalBoardItems(id);
         board.setStatus(ItemsStatus.DELETED);
         boardRepository.save(board);
@@ -144,7 +144,7 @@ public class BoardServiceImpl implements BoardService {
 
     public BoardDto recoverBoard(Long boardId) {
         Board board = boardRepository.findByIdAndStatus(boardId, ItemsStatus.DELETED)
-                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", boardId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", boardId));
         log.info(String.format("Recovering board with id %d", boardId));
         board.setStatus(ItemsStatus.OPENED);
         recoverAllInternalItems(boardId);
@@ -215,7 +215,7 @@ public class BoardServiceImpl implements BoardService {
                 }
             }
         } else {
-            throw new BoardNotFoundException(String.format("Board with id %d not found", boardId));
+            throw new ResourceNotFoundException("Board", "id", boardId);
         }
 
     }
@@ -232,7 +232,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void addBoardToTeam(Long teamId, Long boardId) {
         Board currentBoard = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", boardId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", boardId));
         if (currentBoard.getStatus().equals(ItemsStatus.DELETED)) {
             currentBoard.setStatus(ItemsStatus.OPENED);
             recoverAllInternalItems(boardId);
@@ -267,7 +267,7 @@ public class BoardServiceImpl implements BoardService {
     private void setCurrentImageUrlToBoard(String cloudImageUrl, Long boardId) {
         log.info(String.format("Setting new image url to board %d", boardId));
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardNotFoundException(String.format("Board with id %d not found", boardId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", boardId));
         board.setImage(cloudImageUrl);
         boardRepository.save(board);
     }
