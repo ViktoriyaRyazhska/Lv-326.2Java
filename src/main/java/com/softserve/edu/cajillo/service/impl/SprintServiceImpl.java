@@ -24,9 +24,6 @@ import java.util.List;
 @Service
 public class SprintServiceImpl implements SprintService {
 
-    private static final String BOARD_ID_NULL = "Could not find board with id=null";
-    private static final String SPRINT_ID_NULL = "Could not find sprint with id=null";
-    private static final String SPRINT_ID_NOT_FOUND_MESSAGE = "Could not find sprint with id=";
     private static final String SPRINT_ID_FOUND_IN_ARCHIVE = "Find in archive sprint or backlog with id=";
     private static final String SPRINT_FOR_CUSTOM_BOARD_MISMATCH = "Could not create sprint for custom board with id=";
     private static final String BACKLOG_DELETE_IS_PROHIBITED = "Prohibited to delete sprint backlog";
