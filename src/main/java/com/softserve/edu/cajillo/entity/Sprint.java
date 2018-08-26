@@ -5,7 +5,6 @@ import com.softserve.edu.cajillo.entity.enums.SprintType;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.Instant;
 
 @Data
