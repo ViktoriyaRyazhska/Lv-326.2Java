@@ -1,7 +1,7 @@
 package com.softserve.edu.cajillo.security;
 
 import com.softserve.edu.cajillo.entity.User;
-import com.softserve.edu.cajillo.exception.UserNotFoundException;
+import com.softserve.edu.cajillo.exception.ResourceNotFoundException;
 import com.softserve.edu.cajillo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,8 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException("User with id=" + id + "not found")
-        );
+                () -> new ResourceNotFoundException("User", "id", id));
         return UserPrincipal.create(user);
     }
 }
