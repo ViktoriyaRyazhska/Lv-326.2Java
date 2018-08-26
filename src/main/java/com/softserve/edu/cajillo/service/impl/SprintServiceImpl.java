@@ -126,13 +126,13 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public List<SprintDto> getAllSprintsByBoardAndStatusInProgress(Long boardId) {
+    public List<SprintDto> getAllSprintsByBoardAndStatusActive(Long boardId) {
         if(boardId == null){
             throw new BoardNotFoundException(BOARD_ID_NULL);
         }
         return sprintConverter.convertToDto(
                 sprintRepository.getAllByBoardIdAndSprintStatusNotAndSprintType
-                        (boardId, SprintStatus.IN_PROGRESS, SprintType.SPRINT));
+                        (boardId, SprintStatus.ACTIVE, SprintType.SPRINT));
     }
 
     @Override
@@ -282,12 +282,7 @@ public class SprintServiceImpl implements SprintService {
     */
 
     private Comparator<SprintDto> compareBySequenceNumber() {
-        return new Comparator<SprintDto>() {
-            @Override
-            public int compare(SprintDto sprintDto, SprintDto t1) {
-                return sprintDto.getSequenceNumber() - t1.getSequenceNumber();
-            }
-        };
+        return (sprintDto, t1) -> (sprintDto.getSequenceNumber() - t1.getSequenceNumber());
     }
 
     public List<SprintDto> sortSprintsBySequenceNumber(List<SprintDto> sprintDtos) {
