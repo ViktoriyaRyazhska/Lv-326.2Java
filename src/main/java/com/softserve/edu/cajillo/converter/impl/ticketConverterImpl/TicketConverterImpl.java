@@ -48,23 +48,30 @@ public class TicketConverterImpl implements TicketConverter {
     @Override
     public Ticket convertToEntity(TicketDto dto) {
         Ticket ticket = modelMapper.map(dto, Ticket.class);
-        ticket.setAssignedTo(userRepository.findById(dto.getAssignedToId()).orElseThrow(() ->
-                new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getAssignedToId())));
+        if (dto.getAssignedToId() != null) {
+            ticket.setAssignedTo(userRepository.findById(dto.getAssignedToId()).orElseThrow(() ->
+                    new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getAssignedToId())));
+        }
         ticket.setCreatedBy(userRepository.findById(dto.getCreatedById()).orElseThrow(() ->
                 new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getCreatedById())));
-        if (dto.getTicketPriority() != null)
-            ticket.setTicketPriority(TicketPriority.valueOf(dto.getTicketPriority()));
+//        if (dto.getTicketPriority() != null) {
+//            ticket.setTicketPriority(TicketPriority.valueOf(dto.getTicketPriority()));
+//        }
         ticket.setTableList(tableListRepository.findById(dto.getTableListId()).orElseThrow(() ->
                 new TableListNotFoundException(TABLE_LIST_ID_NOT_FOUND_MESSAGE + dto.getTableListId())));
         ticket.setBoard(boardRepository.findById(dto.getBoardId()).orElseThrow(() ->
                 new BoardNotFoundException(BOARD_ID_NOT_FOUND_MESSAGE + dto.getBoardId())));
-        ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
-                new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + dto.getSprintId())));
-        if (dto.getParentTicketId() != null)
-            ticket.setParentTicket(ticketRepository.findById(dto.getParentTicketId()).orElseThrow(() ->
-                    new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + dto.getParentTicketId())));
+        if (dto.getSprintId() != null) {
+            ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
+                    new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + dto.getSprintId())));
+        }
+//        if (dto.getParentTicketId() != null) {
+//            ticket.setParentTicket(ticketRepository.findById(dto.getParentTicketId()).orElseThrow(() ->
+//                    new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + dto.getParentTicketId())));
+//        }
         return ticket;
     }
+
 
     @Override
     public TicketDto convertToDto(Ticket entity) {
@@ -76,8 +83,8 @@ public class TicketConverterImpl implements TicketConverter {
         if (entity.getSprint() != null)
             ticketDto.setSprintId(entity.getSprint().getId());
         ticketDto.setTableListId(entity.getTableList().getId());
-        if (entity.getParentTicket() != null)
-            ticketDto.setParentTicketId(entity.getParentTicket().getId());
+//        if (entity.getParentTicket() != null)
+//            ticketDto.setParentTicketId(entity.getParentTicket().getId());
         if (ticketDto.getAssignedToId() != null)
             ticketDto.setAssignedToName(entity.getAssignedTo().getFirstName() + " " + entity.getAssignedTo().getLastName());
         ticketDto.setCreatedByName(entity.getCreatedBy().getFirstName() + " " + entity.getCreatedBy().getLastName());
