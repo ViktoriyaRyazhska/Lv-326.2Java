@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Value;
+import static org.junit.Assert.*;
 
 import java.util.Optional;
 
@@ -60,6 +60,7 @@ public class BoardServiceImplTest {
         Mockito.when(boardRepository.save(Mockito.any(Board.class))).thenReturn(boardInstance());
         Mockito.when(boardConverter.convertToDto(Mockito.any(Board.class))).thenReturn(boardDtoInstance());
         BoardDto boardDto = boardService.updateBoard(Long.valueOf(1), boardInstance());
+        assertEquals(boardDto.getName(), boardInstance().getName());
     }
 
     private Board boardInstance() {
