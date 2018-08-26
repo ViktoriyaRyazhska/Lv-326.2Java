@@ -4,7 +4,7 @@ import com.softserve.edu.cajillo.converter.ticketConverter.*;
 import com.softserve.edu.cajillo.dto.*;
 import com.softserve.edu.cajillo.entity.Ticket;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
-import com.softserve.edu.cajillo.exception.TicketNotFoundException;
+import com.softserve.edu.cajillo.exception.ResourceNotFoundException;
 import com.softserve.edu.cajillo.repository.*;
 import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
@@ -18,8 +18,6 @@ import java.util.List;
 
 @Service
 public class TicketServiceImpl implements TicketService {
-
-    private static final String TICKET_ID_NOT_FOUND_MESSAGE = "Could not find ticket with id = ";
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -37,8 +35,8 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     public void updateTicketSequenceNumber(OrderTicketDto orderTicketDto) {
-        Ticket ticket = ticketRepository.findById(orderTicketDto.getTicketId())
-                .orElseThrow(() -> new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + orderTicketDto.getTicketId()));
+        Ticket ticket = ticketRepository.findById(orderTicketDto.getTicketId()).orElseThrow(() ->
+                new ResourceNotFoundException("Ticket", "id", orderTicketDto.getTicketId()));
         if (ticket.getSequenceNumber() < orderTicketDto.getSequenceNumber()) {
             ticketRepository.decrementTicket(ticket.getSequenceNumber() + 1, orderTicketDto.getSequenceNumber());
             ticket.setSequenceNumber(orderTicketDto.getSequenceNumber());
@@ -69,7 +67,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public TicketDto getTicket(Long id) {
         return ticketConverter.convertToDto(ticketRepository.findById(id).orElseThrow(() ->
-                new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + id)));
+                new ResourceNotFoundException("Ticket", "id", id)));
     }
 
     @Override
@@ -87,7 +85,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public void deleteTicket(Long ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() ->
-                new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + ticketId));
+                new ResourceNotFoundException("Ticket", "id", ticketId));
         ticket.setStatus(ItemsStatus.DELETED);
         ticketRepository.save(ticket);
     }

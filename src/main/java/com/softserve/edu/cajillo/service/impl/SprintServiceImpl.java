@@ -49,10 +49,10 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public SprintDto getSprint(Long sprintId) {
         if(sprintId == null){
-            throw new SprintNotFoundException(SPRINT_ID_NULL);
+            throw new ResourceNotFoundException("Sprint", "id", "null");
         }
         Sprint foundSprint = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint", "id", sprintId));
         if(foundSprint.getSprintStatus().equals(SprintStatus.IN_ARCHIVE)){
             throw new SprintNotFoundException(SPRINT_ID_FOUND_IN_ARCHIVE + sprintId);
         } else {
@@ -63,7 +63,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public SprintDto getSprintBacklog(Long boardId) {
         if(boardId == null){
-            throw new BoardNotFoundException(BOARD_ID_NULL);
+            throw new ResourceNotFoundException("Board", "id", "null");
         }
         boardService.getBoardEntity(boardId);
         return sprintConverter.convertToDto
@@ -73,7 +73,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public SprintDto createSprint(SprintDto sprintDto, Long boardId) {
         if(boardId == null){
-            throw new BoardNotFoundException(BOARD_ID_NULL);
+            throw new ResourceNotFoundException("Board", "id", "null");
         }
         sprintDto.setBoardId(boardId);
         if(sprintConverter.convertToEntity(sprintDto).getBoard().getBoardType()
@@ -91,7 +91,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public SprintDto createSprintBacklog(Long boardId){
         if(boardId == null){
-            throw new BoardNotFoundException(BOARD_ID_NULL);
+            throw new ResourceNotFoundException("Board", "id", "null");
         }
         SprintDto backlogDto = new SprintDto();
         backlogDto.setBoardId(boardId);
@@ -106,7 +106,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public List<SprintDto> getAllSprintsByBoardIdNotInArchive(Long boardId) {
         if(boardId == null){
-            throw new BoardNotFoundException(BOARD_ID_NULL);
+            throw new ResourceNotFoundException("Board", "id", "null");
         }
         return sprintConverter.convertToDto(sprintRepository.getAllByBoardIdAndSprintStatusNotAndSprintType
                 (boardId, SprintStatus.IN_ARCHIVE, SprintType.SPRINT));
@@ -118,7 +118,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public List<SprintDto> getAllSprintsByBoardAndStatusCreated(Long boardId) {
         if(boardId == null){
-            throw new BoardNotFoundException(BOARD_ID_NULL);
+            throw new ResourceNotFoundException("Board", "id", "null");
         }
         return sprintConverter.convertToDto(
                 sprintRepository.getAllByBoardIdAndSprintStatusNotAndSprintType
@@ -128,7 +128,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public List<SprintDto> getAllSprintsByBoardAndStatusActive(Long boardId) {
         if(boardId == null){
-            throw new BoardNotFoundException(BOARD_ID_NULL);
+            throw new ResourceNotFoundException("Board", "id", "null");
         }
         return sprintConverter.convertToDto(
                 sprintRepository.getAllByBoardIdAndSprintStatusNotAndSprintType
@@ -138,7 +138,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public List<SprintDto> getAllSprintsByBoardAndStatusCompleted(Long boardId) {
         if(boardId == null){
-            throw new BoardNotFoundException(BOARD_ID_NULL);
+            throw new ResourceNotFoundException("Board", "id", "null");
         }
         return sprintConverter.convertToDto(
                 sprintRepository.getAllByBoardIdAndSprintStatusNotAndSprintType
@@ -148,10 +148,10 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public SprintDto updateSprint(Long sprintId, SprintDto updatedSprintDto) {
         if(sprintId == null){
-            throw new SprintNotFoundException(SPRINT_ID_NULL);
+            throw new ResourceNotFoundException("Sprint", "id", "null");
         }
         Sprint currentSprint = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint", "id", sprintId));
         if(currentSprint.getSprintType().equals(SprintType.BACKLOG)){
             throw new BacklogModificationException(BACKLOG_UPDATE_IS_PROHIBITED);
         }
@@ -170,10 +170,10 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public void deleteSprint(Long sprintId) {
         if(sprintId == null){
-            throw new SprintNotFoundException(SPRINT_ID_NULL);
+            throw new ResourceNotFoundException("Sprint", "id", "null");
         }
         Sprint currentSprint = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint", "id", sprintId));
         if(currentSprint.getSprintType().equals(SprintType.BACKLOG)){
             throw new BacklogModificationException(BACKLOG_DELETE_IS_PROHIBITED);
         }
@@ -186,10 +186,10 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public SprintDto archiveSprint(Long sprintId){
         if(sprintId == null){
-            throw new SprintNotFoundException(SPRINT_ID_NULL);
+            throw new ResourceNotFoundException("Sprint", "id", "null");
         }
         Sprint currentSprint = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint", "id", sprintId));
         if(currentSprint.getSprintType().equals(SprintType.BACKLOG)){
             throw new BacklogModificationException(BACKLOG_DELETE_IS_PROHIBITED);
         }
@@ -204,10 +204,10 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public SprintDto recoverSprint(Long sprintId){
         if(sprintId == null){
-            throw new SprintNotFoundException(SPRINT_ID_NULL);
+            throw new ResourceNotFoundException("Sprint", "id", "null");
         }
         Sprint currentSprint = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint", "id", sprintId));
         if(currentSprint.getSprintType().equals(SprintType.BACKLOG)){
             throw new BacklogModificationException(BACKLOG_RECOVERY_IS_PROHIBITED);
         }
@@ -222,7 +222,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public void archiveAllSprintsByBoard(Long boardId){
         if(boardId == null){
-            throw new BoardNotFoundException(BOARD_ID_NULL);
+            throw new ResourceNotFoundException("Board", "id", "null");
         }
         List<Sprint> sprintList = sprintRepository.getAllByBoardIdAndSprintStatusNot
                 (boardId, SprintStatus.IN_ARCHIVE);
@@ -235,7 +235,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public  List<SprintDto> recoverAllSprintsByBoard(Long boardId){
         if(boardId == null){
-            throw new BoardNotFoundException(BOARD_ID_NULL);
+            throw new ResourceNotFoundException("Board", "id", "null");
         }
         List<Sprint> sprintList = sprintRepository.getAllByBoardIdAndSprintStatusNot
                 (boardId, SprintStatus.IN_ARCHIVE);
@@ -254,7 +254,7 @@ public class SprintServiceImpl implements SprintService {
 
     public void decrementNextSprint(Long boardId, Long sprintId) {
         Sprint sprint = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + sprintId));
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint", "id", sprintId));
         List<Sprint> sprints = sprintRepository
                 .findByBoardIdAndSequenceNumberGreaterThan(boardId, sprint.getSequenceNumber());
         for (Sprint s: sprints) {
@@ -265,7 +265,7 @@ public class SprintServiceImpl implements SprintService {
     @Transactional
     public void updateSprintSequenceNumber(OrderSprintDto orderSprintDto) {
         Sprint sprint = sprintRepository.findById(orderSprintDto.getSprintId())
-                .orElseThrow(() -> new SprintNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + orderSprintDto.getSprintId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint", "id", orderSprintDto.getSprintId()));
         if(sprint.getSequenceNumber() < orderSprintDto.getSequenceNumber()) {
             sprintRepository.decrementSprints(sprint.getSequenceNumber() + 1, orderSprintDto.getSequenceNumber());
             sprint.setSequenceNumber(orderSprintDto.getSequenceNumber());
