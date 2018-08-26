@@ -81,13 +81,6 @@ public class BoardServiceImpl implements BoardService {
 
         board.setStatus(ItemsStatus.OPENED);
         Board save = boardRepository.save(board);
-        relationRepository.save(relationConverter.convertToEntity(
-                new RelationDto(
-                        save.getId(),
-                        userPrincipal.getId(),
-                        RoleName.ADMIN,
-                        null)
-        ));
         if (board.getBoardType() == BoardType.SCRUM) {
             sprintService.createSprintBacklog(board.getId());
             TableList tableList = new TableList();
@@ -95,6 +88,13 @@ public class BoardServiceImpl implements BoardService {
             tableList.setSequenceNumber(0);
             tableListService.createTableList(board.getId(), tableList);
         }
+        relationRepository.save(relationConverter.convertToEntity(
+                new RelationDto(
+                        save.getId(),
+                        userPrincipal.getId(),
+                        RoleName.ADMIN,
+                        null)
+        ));
         log.info("Creating board: " + board);
         return boardConverter.convertToDto(save);
     }
