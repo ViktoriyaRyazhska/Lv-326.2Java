@@ -3,24 +3,15 @@ package com.softserve.edu.cajillo.converter.impl.ticketConverterImpl;
 import com.softserve.edu.cajillo.converter.ticketConverter.TicketToCreateTicketDtoConverter;
 import com.softserve.edu.cajillo.dto.CreateTicketDto;
 import com.softserve.edu.cajillo.entity.Ticket;
-import com.softserve.edu.cajillo.exception.BoardNotFoundException;
-import com.softserve.edu.cajillo.exception.TableListNotFoundException;
-import com.softserve.edu.cajillo.exception.TicketNotFoundException;
-import com.softserve.edu.cajillo.exception.UserNotFoundException;
+import com.softserve.edu.cajillo.exception.*;
 import com.softserve.edu.cajillo.repository.*;
+import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicketDtoConverter {
-
-    private static final String USER_ID_NOT_FOUND_MESSAGE = "Could not find user with id = ";
-    private static final String BOARD_ID_NOT_FOUND_MESSAGE = "Could not find board with id = ";
-    private static final String TABLE_LIST_ID_NOT_FOUND_MESSAGE = "Could not find table list with id = ";
-    private static final String SPRINT_ID_NOT_FOUND_MESSAGE = "Could not find sprint with id = ";
-    private static final String TICKET_ID_NOT_FOUND_MESSAGE = "Could not find ticket with id = ";
-
 
     @Autowired
     private ModelMapper modelMapper;
@@ -37,24 +28,18 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
     @Autowired
     private SprintRepository sprintRepository;
 
-    @Autowired
-    private TicketRepository ticketRepository;
-
     @Override
     public Ticket convertToEntity(CreateTicketDto dto) {
         Ticket ticket = modelMapper.map(dto, Ticket.class);
         ticket.setBoard(boardRepository.findById(dto.getBoardId()).orElseThrow(() ->
-                new BoardNotFoundException(BOARD_ID_NOT_FOUND_MESSAGE + dto.getBoardId())));
+                new ResourceNotFoundException("Board", "id", dto.getBoardId())));
         ticket.setTableList(tableListRepository.findById(dto.getTableListId()).orElseThrow(() ->
-                new TableListNotFoundException(TABLE_LIST_ID_NOT_FOUND_MESSAGE + dto.getTableListId())));
+                new ResourceNotFoundException("Table list", "id", dto.getTableListId())));
         ticket.setCreatedBy(userRepository.findById(dto.getCreatedById()).orElseThrow(() ->
-                new UserNotFoundException(USER_ID_NOT_FOUND_MESSAGE + dto.getCreatedById())));
+                new ResourceNotFoundException("User", "id", dto.getCreatedById())));
         if (dto.getSprintId() != null)
             ticket.setSprint(sprintRepository.findById(dto.getSprintId()).orElseThrow(() ->
-                    new UserNotFoundException(SPRINT_ID_NOT_FOUND_MESSAGE + dto.getSprintId())));
-//        if (dto.getParentTicketId() != null)
-//            ticket.setParentTicket(ticketRepository.findById(dto.getParentTicketId()).orElseThrow(() ->
-//                    new TicketNotFoundException(TICKET_ID_NOT_FOUND_MESSAGE + dto.getParentTicketId())));
+                    new ResourceNotFoundException("Sprint", "id", dto.getSprintId())));
         return ticket;
     }
 
@@ -66,8 +51,6 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
         createTicketDto.setBoardId(entity.getBoard().getId());
         if (entity.getSprint() != null)
             createTicketDto.setSprintId(entity.getSprint().getId());
-//        if (entity.getParentTicket() != null)
-//            createTicketDto.setParentTicketId(entity.getParentTicket().getId());
         return createTicketDto;
     }
 }

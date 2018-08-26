@@ -33,7 +33,6 @@ public class TicketController {
 
     @PutMapping("/order")
     public void updateTicketSequenceNumber(@RequestBody OrderTicketDto orderTicketDto) {
-        System.out.println(orderTicketDto);
         ticketService.updateTicketSequenceNumber(orderTicketDto);
     }
 
