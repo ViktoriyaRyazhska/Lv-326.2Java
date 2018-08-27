@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("api/tickets")
 public class TicketController {
@@ -29,6 +31,11 @@ public class TicketController {
     @PutMapping
     public TicketDto updateTicket(@RequestBody TicketDto ticketDto) {
         return ticketService.updateTicket(ticketDto);
+    }
+
+    @PatchMapping
+    public TicketDto updateTicketPatchMethod(@RequestBody Map<String, String> updates) {
+        return ticketService.updateTicketWithMap(updates);
     }
 
     @PutMapping("/order")
