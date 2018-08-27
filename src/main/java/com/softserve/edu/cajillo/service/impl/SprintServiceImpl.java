@@ -24,9 +24,6 @@ import java.util.List;
 @Service
 public class SprintServiceImpl implements SprintService {
 
-    private static final String BOARD_ID_NULL = "Could not find board with id=null";
-    private static final String SPRINT_ID_NULL = "Could not find sprint with id=null";
-    private static final String SPRINT_ID_NOT_FOUND_MESSAGE = "Could not find sprint with id=";
     private static final String SPRINT_ID_FOUND_IN_ARCHIVE = "Find in archive sprint or backlog with id=";
     private static final String SPRINT_FOR_CUSTOM_BOARD_MISMATCH = "Could not create sprint for custom board with id=";
     private static final String BACKLOG_DELETE_IS_PROHIBITED = "Prohibited to delete sprint backlog";
@@ -126,13 +123,13 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public List<SprintDto> getAllSprintsByBoardAndStatusInProgress(Long boardId) {
+    public List<SprintDto> getAllSprintsByBoardAndStatusActive(Long boardId) {
         if(boardId == null){
             throw new ResourceNotFoundException("Board", "id", "null");
         }
         return sprintConverter.convertToDto(
                 sprintRepository.getAllByBoardIdAndSprintStatusNotAndSprintType
-                        (boardId, SprintStatus.IN_PROGRESS, SprintType.SPRINT));
+                        (boardId, SprintStatus.ACTIVE, SprintType.SPRINT));
     }
 
     @Override
@@ -282,12 +279,7 @@ public class SprintServiceImpl implements SprintService {
     */
 
     private Comparator<SprintDto> compareBySequenceNumber() {
-        return new Comparator<SprintDto>() {
-            @Override
-            public int compare(SprintDto sprintDto, SprintDto t1) {
-                return sprintDto.getSequenceNumber() - t1.getSequenceNumber();
-            }
-        };
+        return (sprintDto, t1) -> (sprintDto.getSequenceNumber() - t1.getSequenceNumber());
     }
 
     public List<SprintDto> sortSprintsBySequenceNumber(List<SprintDto> sprintDtos) {

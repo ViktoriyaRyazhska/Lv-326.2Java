@@ -2,7 +2,7 @@ package com.softserve.edu.cajillo.entity.enums;
 
 public enum SprintStatus {
     CREATED,
-    IN_PROGRESS,
+    ACTIVE,
     COMPLETED,
     IN_ARCHIVE,
 }
