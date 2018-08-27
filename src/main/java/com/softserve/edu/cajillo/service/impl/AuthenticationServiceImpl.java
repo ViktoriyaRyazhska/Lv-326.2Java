@@ -89,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (verifiedEmail) {
                 Optional<User> userByEmail = userRepository.findUserByEmail(email);
                 if (userByEmail.isPresent()) {
-                    log.error("User credentials are already taken");
+                    log.debug("User credentials are already taken");
                     UserPrincipal userPrincipal = UserPrincipal.create(userByEmail.get());
                     String jwt = tokenProvider.generateToken(userPrincipal);
                     return new JwtAuthenticationResponseDto(jwt);
