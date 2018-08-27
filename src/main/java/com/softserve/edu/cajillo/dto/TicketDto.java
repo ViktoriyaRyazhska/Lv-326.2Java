@@ -1,5 +1,7 @@
 package com.softserve.edu.cajillo.dto;
 
+import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
+import com.softserve.edu.cajillo.entity.enums.TicketPriority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,8 @@ public class TicketDto extends BaseDto {
 
     private Long id;
 
+    private ItemsStatus status;
+
     private Instant createTime;
 
     private Instant updateTime;
@@ -24,7 +28,7 @@ public class TicketDto extends BaseDto {
 
     private String name;
 
-    private String ticketPriority;
+    private TicketPriority ticketPriority;
 
     private Long assignedToId;
 
@@ -39,8 +43,6 @@ public class TicketDto extends BaseDto {
     private Long sprintId;
 
     private Long tableListId;
-
-    private Long parentTicketId;
 
     private List<CommentDto> comments;
 }

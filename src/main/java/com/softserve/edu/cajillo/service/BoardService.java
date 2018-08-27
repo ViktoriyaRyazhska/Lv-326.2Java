@@ -36,4 +36,10 @@ public interface BoardService {
     void addUserToBoard(Long boardId, UserDto userDto, UserPrincipal userPrincipal);
 
     void deleteUserFromBoard(Long boardId, Long userId);
+
+    List<String> getAllBackgroundImagesByBoardId(Long boarId);
+
+    void setExistingImageOnBackground(Long boardId, String imageUrl);
+
+    void clearBoardBackground(Long boardId);
 }

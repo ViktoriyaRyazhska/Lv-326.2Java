@@ -40,7 +40,7 @@ public class EmailServiceImpl implements EmailService {
             });
             try {
                 Message message = new MimeMessage(session);
-                String systemEmail = "system@cajillo.com";
+                String systemEmail = "system@cajillo.ga";
                 message.setFrom(new InternetAddress(systemEmail));
                 message.setRecipients(
                         Message.RecipientType.TO, InternetAddress.parse(email));

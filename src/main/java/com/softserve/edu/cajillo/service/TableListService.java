@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.service;
 
+import com.softserve.edu.cajillo.dto.OrderTableListDto;
 import com.softserve.edu.cajillo.dto.TableListDto;
 import com.softserve.edu.cajillo.entity.TableList;
 
@@ -19,9 +20,7 @@ public interface TableListService {
 
     void decrementNextTableLists(Long boardId, Long listId);
 
-    List<TableListDto> swapSequenceNumbers(Long listId1, Long listId2);
-
-    void swapNumbers(TableList tableList1, TableList tableList2);
+    void updateListOrdering(OrderTableListDto orderTableListDto);
 
     void deleteTableListsByBoardId(Long boardId);
 

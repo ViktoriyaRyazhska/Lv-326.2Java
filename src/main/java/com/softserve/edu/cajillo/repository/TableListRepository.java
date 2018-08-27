@@ -28,4 +28,14 @@ public interface TableListRepository extends JpaRepository<TableList, Long> {
     Long getMaxSequenceValue(@Param("id") Long id);
 
     List<TableList> findByBoardIdAndSequenceNumberGreaterThan(Long id, Integer sequenceNumber);
+
+    @Modifying
+    @Query(value = "update table_lists set sequence_number = sequence_number - 1 " +
+            "where sequence_number >= :start and sequence_number <= :end", nativeQuery = true)
+    void decrementTableLists(@Param("start") int start, @Param("end") int end);
+
+    @Modifying
+    @Query(value = "update table_lists set sequence_number = sequence_number + 1 " +
+            "where sequence_number >= :start and sequence_number <= :end", nativeQuery = true)
+    void incrementTableLists(@Param("start") int start, @Param("end") int end);
 }
