@@ -15,6 +15,8 @@ public interface BoardService {
 
     BoardDto getBoard(Long id);
 
+    List<BoardDto> getAllUserBoards(UserPrincipal currentUser);
+
     void deleteBoard(Long id);
 
     List<BoardDto> getAllActiveBoardsByTeamId(Long teamId);
