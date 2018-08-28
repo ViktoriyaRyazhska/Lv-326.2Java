@@ -98,8 +98,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<TicketForBoardResponseDto> getTicketsByListId(Long tableListId) {
-        return ticketToBoardResponseDtoConverter
-                .convertToDto(ticketRepository.findAllByTableListIdAndStatus(tableListId, ItemsStatus.OPENED));
+        return sortTicketsBySequenceNumber(ticketToBoardResponseDtoConverter
+                .convertToDto(ticketRepository.findAllByTableListIdAndStatus(tableListId, ItemsStatus.OPENED)));
     }
 
     @Override
