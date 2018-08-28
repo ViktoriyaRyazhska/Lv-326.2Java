@@ -7,14 +7,12 @@ import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.TableList;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
 import com.softserve.edu.cajillo.exception.ResourceNotFoundException;
-import com.softserve.edu.cajillo.exception.TableListNotFoundException;
 import com.softserve.edu.cajillo.repository.BoardRepository;
 import com.softserve.edu.cajillo.repository.TableListRepository;
 import com.softserve.edu.cajillo.service.TableListService;
 import com.softserve.edu.cajillo.service.TicketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +49,7 @@ public class TableListServiceImpl implements TableListService {
     public void deleteTableList(Long listId) {
         log.info(String.format("Deleting table list with id %d", listId));
         TableList tableList = tableListRepository.findById(listId)
-                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Table list", "id", listId));
         decrementNextTableLists(tableList.getBoard().getId(), listId);
         tableList.setSequenceNumber(null);
         tableList.setStatus(ItemsStatus.DELETED);
@@ -88,7 +86,7 @@ public class TableListServiceImpl implements TableListService {
     public TableListDto updateTableList(Long listId, Long boardId, TableList tableList) {
         log.info(String.format("Updating table list with id %d: " + tableList, listId));
         TableList existingList = tableListRepository.findById(listId)
-                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Table list", "id", listId));
         existingList.setName(tableList.getName());
         return tableListConverter.convertToDto(tableListRepository.save(existingList));
     }
@@ -102,13 +100,13 @@ public class TableListServiceImpl implements TableListService {
     public TableListDto getTableList(Long listId) {
         log.info(String.format("Getting table list with id %d", listId));
         TableList tableList = tableListRepository.findByIdAndStatus(listId, ItemsStatus.OPENED)
-                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Table list", "id", listId));
         return tableListConverter.convertToDto(tableList);
     }
 
     public void decrementNextTableLists(Long boardId, Long listId) {
         TableList tableList = tableListRepository.findById(listId)
-                .orElseThrow(() -> new TableListNotFoundException(String.format("TableList with id %d not found", listId)));
+                .orElseThrow(() -> new ResourceNotFoundException("Table list", "id", listId));
         List<TableList> boards = tableListRepository
                 .findByBoardIdAndSequenceNumberGreaterThan(boardId, tableList.getSequenceNumber());
         for (TableList board : boards) {
@@ -120,8 +118,8 @@ public class TableListServiceImpl implements TableListService {
     public void updateListOrdering(OrderTableListDto orderTableListDto) {
         log.info("Updating list ordering");
         TableList tableList = tableListRepository.findByIdAndStatus(orderTableListDto.getListId(), ItemsStatus.OPENED)
-                .orElseThrow(() -> new TableListNotFoundException(
-                        String.format("Table list with id %d not found", orderTableListDto.getListId())));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Table list", "id", orderTableListDto.getListId()));
         if(tableList.getSequenceNumber() < orderTableListDto.getSequenceNumber()) {
             decrementAllIntermediateLists(tableList.getSequenceNumber() + 1, orderTableListDto.getSequenceNumber());
             tableList.setSequenceNumber(orderTableListDto.getSequenceNumber());

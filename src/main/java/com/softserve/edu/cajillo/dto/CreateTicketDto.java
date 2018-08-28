@@ -28,5 +28,5 @@ public class CreateTicketDto extends BaseDto {
     private Long sprintId;
 
     @NotBlank
-    private Long parentTicketId;
+    private Long sequenceNumber;
 }

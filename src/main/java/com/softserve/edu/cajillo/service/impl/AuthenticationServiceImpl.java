@@ -8,7 +8,6 @@ import com.softserve.edu.cajillo.entity.PasswordResetToken;
 import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.exception.ResourceNotFoundException;
 import com.softserve.edu.cajillo.exception.TokenExpiredException;
-import com.softserve.edu.cajillo.exception.TokenNotFoundException;
 import com.softserve.edu.cajillo.exception.UserAlreadyExistsException;
 import com.softserve.edu.cajillo.repository.PasswordResetTokenRepository;
 import com.softserve.edu.cajillo.repository.UserRepository;
@@ -194,7 +193,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void resetUserPasswordConfirm(ResetPasswordDto resetPasswordDto) {
         log.info("Confirming password reset for user with id = " + resetPasswordDto.getUserId());
         PasswordResetToken token = passwordResetTokenRepository.findByToken(resetPasswordDto.getToken())
-                .orElseThrow(() -> new TokenNotFoundException(RESET_TOKEN_IS_NOT_VALID));
+                .orElseThrow(() -> new ResourceNotFoundException(RESET_TOKEN_IS_NOT_VALID));
         if (validatePasswordResetToken(token, resetPasswordDto.getUserId())) {
             log.info("Token is valid. Setting new password and saving user.");
             User user = token.getUser();

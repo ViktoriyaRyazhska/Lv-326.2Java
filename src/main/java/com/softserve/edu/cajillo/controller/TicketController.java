@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("api/tickets")
 public class TicketController {
@@ -31,12 +33,18 @@ public class TicketController {
         return ticketService.updateTicket(ticketDto);
     }
 
+    @PatchMapping
+    public void updateTicketPatchMethod(@RequestBody Map<String, String> updates) {
+         ticketService.updateTicketWithMap(updates);
+    }
+
     @PutMapping("/order")
     public void updateTicketSequenceNumber(@RequestBody OrderTicketDto orderTicketDto) {
         ticketService.updateTicketSequenceNumber(orderTicketDto);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CreateTicketDto createTicket(@RequestBody CreateTicketDto createTicketRequest,
                                         @CurrentUser UserPrincipal userPrincipal) {
         return ticketService.createTicket(createTicketRequest, userPrincipal);

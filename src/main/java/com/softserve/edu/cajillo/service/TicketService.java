@@ -8,6 +8,7 @@ import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TicketService {
 
@@ -32,4 +33,6 @@ public interface TicketService {
     TicketDto updateTicket(TicketDto ticketDto);
 
     void deleteTicket(Long ticketId);
+
+    TicketDto updateTicketWithMap(Map<String, String> updates);
 }
