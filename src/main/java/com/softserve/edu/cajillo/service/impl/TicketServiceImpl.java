@@ -153,6 +153,7 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public void updateTicketSequenceNumber(OrderTicketDto orderTicketDto) {
         Ticket ticket = getTicketByTicketId(orderTicketDto.getTicketId());
+        ticket.setTableList(getTableListByTableListId(orderTicketDto.getTableListId()));
         if (ticket.getSequenceNumber() < orderTicketDto.getSequenceNumber()) {
             ticketRepository.decrementTicket(ticket.getSequenceNumber() + 1, orderTicketDto.getSequenceNumber());
             ticket.setSequenceNumber(orderTicketDto.getSequenceNumber());
