@@ -3,7 +3,11 @@ package com.softserve.edu.cajillo.service.impl;
 import com.softserve.edu.cajillo.converter.BoardConverter;
 import com.softserve.edu.cajillo.converter.RelationConverter;
 import com.softserve.edu.cajillo.converter.TeamConverter;
-import com.softserve.edu.cajillo.dto.*;
+import com.softserve.edu.cajillo.converter.UserConverter;
+import com.softserve.edu.cajillo.dto.AvatarDto;
+import com.softserve.edu.cajillo.dto.RelationDto;
+import com.softserve.edu.cajillo.dto.TeamDto;
+import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.Relation;
 import com.softserve.edu.cajillo.entity.Team;
@@ -16,6 +20,7 @@ import com.softserve.edu.cajillo.repository.RelationRepository;
 import com.softserve.edu.cajillo.repository.TeamRepository;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.BoardService;
+import com.softserve.edu.cajillo.service.RelationService;
 import com.softserve.edu.cajillo.service.TeamService;
 import com.softserve.edu.cajillo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +57,13 @@ public class TeamServiceImpl implements TeamService {
     private UserService userService;
 
     @Autowired
+    private UserConverter userConverter;
+
+    @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private RelationService relationService;
 
     @Autowired
     private BoardConverter boardConverter;
@@ -69,13 +80,25 @@ public class TeamServiceImpl implements TeamService {
         List<Relation> allByUserId = relationRepository.findAllByUserId(currentUser.getId());
         List<Team> allUserTeamsWithDublicates = new ArrayList<>();
         for (Relation relation : allByUserId) {
-            if (relation.getTeam() != null){
+            if (relation.getTeam() != null) {
                 allUserTeamsWithDublicates.add(relation.getTeam());
             }
         }
         List<Team> allUserTeams = new ArrayList<>(
                 new HashSet<>(allUserTeamsWithDublicates));
         return teamConverter.convertToDto(allUserTeams);
+    }
+
+    @Override
+    public List<UserDto> getAllTeamMembers(Long teamId) {
+        Map<User, RoleName> allUsersInTeam = relationService.getAllUsersInTeam(teamId);
+        List<User> allUsers = new ArrayList<>();
+        for (Map.Entry<User, RoleName> entry : allUsersInTeam.entrySet()) {
+            User user = entry.getKey();
+            RoleName role = entry.getValue();
+            allUsers.add(user);
+        }
+        return userConverter.convertToDto(allUsers);
     }
 
     @Override

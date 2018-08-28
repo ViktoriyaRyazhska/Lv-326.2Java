@@ -9,6 +9,7 @@ import com.softserve.edu.cajillo.entity.Team;
 import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.BoardService;
+import com.softserve.edu.cajillo.service.RelationService;
 import com.softserve.edu.cajillo.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,9 @@ public class TeamController {
 
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private RelationService relationService;
 
     @GetMapping
     public List<TeamDto> getAllUserTeams(@CurrentUser UserPrincipal currentUser) {
@@ -88,6 +92,11 @@ public class TeamController {
     @GetMapping("/{teamId}/boards")
     public List<BoardDto> getAllTeamBoards(@PathVariable Long teamId) {
         return boardService.getAllActiveBoardsByTeamId(teamId);
+    }
+
+    @GetMapping("/{teamId}/members")
+    public List<UserDto> getAllTeamMembers(@PathVariable Long teamId){
+        return teamService.getAllTeamMembers(teamId);
     }
 
     @PostMapping("/{teamId}/boards")
