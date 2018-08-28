@@ -51,7 +51,7 @@ public class SprintServiceImpl implements SprintService {
         Sprint foundSprint = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sprint", "id", sprintId));
         if(foundSprint.getSprintStatus().equals(SprintStatus.IN_ARCHIVE)){
-            throw new SprintNotFoundException(SPRINT_ID_FOUND_IN_ARCHIVE + sprintId);
+            throw new ResourceNotFoundException(SPRINT_ID_FOUND_IN_ARCHIVE + sprintId);
         } else {
             return sprintConverter.convertToDto(foundSprint);
         }

@@ -11,7 +11,7 @@ import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.entity.enums.RoleName;
 import com.softserve.edu.cajillo.exception.FileOperationException;
 import com.softserve.edu.cajillo.exception.RelationServiceException;
-import com.softserve.edu.cajillo.exception.TeamNotFoundException;
+import com.softserve.edu.cajillo.exception.ResourceNotFoundException;
 import com.softserve.edu.cajillo.repository.RelationRepository;
 import com.softserve.edu.cajillo.repository.TeamRepository;
 import com.softserve.edu.cajillo.security.UserPrincipal;
@@ -30,7 +30,6 @@ import java.util.*;
 @Service
 public class TeamServiceImpl implements TeamService {
 
-    private static final String TEAM_ID_NOT_FOUND_MESSAGE = "Could not find team with id=";
     private static final String CAN_NOT_DELETE = "You can't delete this user, he is admin";
     private static final String REQUEST_ENTITY_TOO_LARGE_ERROR_MESSAGE = "Avatar size is too large. Maximum size is 256 KiB";
     private static final String UNSUPPORTED_MIME_TYPES_ERROR_MESSAGE = "Unsupported media type";
@@ -60,7 +59,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public TeamDto getTeam(Long id) {
         Team team = teamRepository.findById(id)
-                .orElseThrow(() -> new TeamNotFoundException(TEAM_ID_NOT_FOUND_MESSAGE + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Team", "id", id));
         return teamConverter.convertToDto(team);
     }
 
@@ -79,7 +78,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public TeamDto updateTeam(Long id, Team team) {
         Team existedTeam = teamRepository.findById(id)
-                .orElseThrow(() -> new TeamNotFoundException(TEAM_ID_NOT_FOUND_MESSAGE + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Team", "id", id));
         if (team.getName() != null) {
             existedTeam.setName(team.getName());
         }
@@ -172,7 +171,7 @@ public class TeamServiceImpl implements TeamService {
             log.error(avatar.getContentType() + " is not supported");
             throw new UnsupportedOperationException(UNSUPPORTED_MIME_TYPES_ERROR_MESSAGE);
         }
-        Team team = teamRepository.findById(teamId).orElseThrow(() -> new TeamNotFoundException(TEAM_ID_NOT_FOUND_MESSAGE + teamId));
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new ResourceNotFoundException("Team", "id", teamId));
         try {
             team.setAvatar(Base64.getMimeEncoder().encodeToString(avatar.getBytes()));
             teamRepository.save(team);
@@ -186,14 +185,14 @@ public class TeamServiceImpl implements TeamService {
     public AvatarDto getTeamAvatar(Long teamId) {
         log.info("Getting avatar for team with id: " + teamId);
         return new AvatarDto(teamRepository.findById(teamId)
-                .orElseThrow(() -> new TeamNotFoundException(TEAM_ID_NOT_FOUND_MESSAGE + teamId)).getAvatar());
+                .orElseThrow(() -> new ResourceNotFoundException("Team", "id", teamId)).getAvatar());
     }
 
     @Override
     public void deleteTeamAvatar(Long teamId) {
         log.info("Deleting avatar for user with id: " + teamId);
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new TeamNotFoundException(TEAM_ID_NOT_FOUND_MESSAGE + teamId));
+                .orElseThrow(() -> new ResourceNotFoundException("Team", "id", teamId));
         team.setAvatar(null);
         teamRepository.save(team);
     }

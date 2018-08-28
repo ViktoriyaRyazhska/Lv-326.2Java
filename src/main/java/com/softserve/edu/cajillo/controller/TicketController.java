@@ -34,8 +34,8 @@ public class TicketController {
     }
 
     @PatchMapping
-    public TicketDto updateTicketPatchMethod(@RequestBody Map<String, String> updates) {
-        return ticketService.updateTicketWithMap(updates);
+    public void updateTicketPatchMethod(@RequestBody Map<String, String> updates) {
+         ticketService.updateTicketWithMap(updates);
     }
 
     @PutMapping("/order")
@@ -44,6 +44,7 @@ public class TicketController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CreateTicketDto createTicket(@RequestBody CreateTicketDto createTicketRequest,
                                         @CurrentUser UserPrincipal userPrincipal) {
         return ticketService.createTicket(createTicketRequest, userPrincipal);
