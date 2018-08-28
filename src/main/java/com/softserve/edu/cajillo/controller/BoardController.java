@@ -33,6 +33,11 @@ public class BoardController {
         return boardService.getBoard(id);
     }
 
+    @GetMapping
+    public List<BoardDto> getAllUserBoards(@CurrentUser UserPrincipal currentUser){
+        return boardService.getAllUserBoards(currentUser);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteBoard(@PathVariable Long id) {
         boardService.deleteBoard(id);
