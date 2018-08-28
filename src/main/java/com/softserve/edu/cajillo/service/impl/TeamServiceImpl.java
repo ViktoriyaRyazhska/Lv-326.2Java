@@ -67,12 +67,14 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public List<TeamDto> getAllUserTeams(UserPrincipal currentUser) {
         List<Relation> allByUserId = relationRepository.findAllByUserId(currentUser.getId());
-        List<Team> allUserTeams = new ArrayList<>();
+        List<Team> allUserTeamsWithDublicates = new ArrayList<>();
         for (Relation relation : allByUserId) {
             if (relation.getTeam() != null){
-                allUserTeams.add(relation.getTeam());
+                allUserTeamsWithDublicates.add(relation.getTeam());
             }
         }
+        List<Team> allUserTeams = new ArrayList<>(
+                new HashSet<>(allUserTeamsWithDublicates));
         return teamConverter.convertToDto(allUserTeams);
     }
 
