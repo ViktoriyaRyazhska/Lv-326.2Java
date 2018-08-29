@@ -1,6 +1,10 @@
 package com.softserve.edu.cajillo.exception;
 
-public class UserAlreadyExistsException extends ConflictException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.CONFLICT)
+public class UserAlreadyExistsException extends ServiceException {
 
     public UserAlreadyExistsException() {
     }

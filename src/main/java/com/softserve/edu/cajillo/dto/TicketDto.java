@@ -1,6 +1,8 @@
 package com.softserve.edu.cajillo.dto;
 
+import com.softserve.edu.cajillo.entity.Ticket;
 import com.softserve.edu.cajillo.entity.enums.ItemsStatus;
+import com.softserve.edu.cajillo.entity.enums.TicketIssueType;
 import com.softserve.edu.cajillo.entity.enums.TicketPriority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +36,8 @@ public class TicketDto extends BaseDto {
 
     private Long createdById;
 
+    private TicketIssueType ticketIssueType;
+
     private String assignedToName;
 
     private String createdByName;
@@ -43,6 +47,10 @@ public class TicketDto extends BaseDto {
     private Long sprintId;
 
     private Long tableListId;
+
+    private Integer sequenceNumber;
+
+    private Ticket.Estimation estimation;
 
     private List<CommentDto> comments;
 }
