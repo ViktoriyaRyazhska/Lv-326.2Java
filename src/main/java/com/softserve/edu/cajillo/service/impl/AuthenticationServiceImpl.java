@@ -84,7 +84,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             String email = (String) payload.get(EMAIL);
             boolean verifiedEmail = (Boolean) payload.get(VERIFIED_EMAIL);
-
             if (verifiedEmail) {
                 Optional<User> userByEmail = userRepository.findUserByEmail(email);
                 if (userByEmail.isPresent()) {

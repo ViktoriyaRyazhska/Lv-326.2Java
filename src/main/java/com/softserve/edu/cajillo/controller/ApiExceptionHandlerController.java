@@ -12,11 +12,9 @@ public class ApiExceptionHandlerController {
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<String> handleExceptions(ServiceException e) {
         HttpStatus httpStatus;
-        if (e instanceof TokenExpiredException) {
-            httpStatus = HttpStatus.UNAUTHORIZED;
-        } else {
+//        if() {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
+//        }
         return ResponseEntity.status(httpStatus).body(e.getMessage());
     }
 }
