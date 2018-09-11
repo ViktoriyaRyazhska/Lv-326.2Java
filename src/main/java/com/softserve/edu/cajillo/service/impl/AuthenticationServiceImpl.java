@@ -73,7 +73,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken((UserPrincipal) authentication.getPrincipal());
-        return new JwtAuthenticationResponseDto(jwt);
+        return new JwtAuthenticationResponseDto(jwt,
+                ((UserPrincipal) authentication.getPrincipal()).getChosenLanguage());
     }
 
     @Override
@@ -90,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     log.debug("User credentials are already taken");
                     UserPrincipal userPrincipal = UserPrincipal.create(userByEmail.get());
                     String jwt = tokenProvider.generateToken(userPrincipal);
-                    return new JwtAuthenticationResponseDto(jwt);
+                    return new JwtAuthenticationResponseDto(jwt, userPrincipal.getChosenLanguage());
                 } else {
                     registerUserGoogle(email);
                 }
@@ -115,7 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     log.error("User credentials are already taken");
                     UserPrincipal userPrincipal = UserPrincipal.create(userByUsername.get());
                     String jwt = tokenProvider.generateToken(userPrincipal);
-                    return new JwtAuthenticationResponseDto(jwt);
+                    return new JwtAuthenticationResponseDto(jwt, userPrincipal.getChosenLanguage());
                 } else {
                     registerUserGithub(username, email);
                 }
@@ -130,7 +131,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         log.info("Registering new user with email = " + email);
         String password = RandomStringUtils.randomAlphanumeric(8);
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(email.substring(0, email.indexOf('@')), email, encodedPassword, User.SignupType.GOOGLE);
+        User user = new User(email.substring(0, email.indexOf('@')), email, encodedPassword,
+                User.SignupType.GOOGLE, User.ChosenLanguage.en);
         log.info("Creating new user: " + user);
         userRepository.save(user);
         emailSend(user, getMessage(user.getUsername(), password));
@@ -140,7 +142,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         log.info("Registering new user with username = " + username);
         String password = RandomStringUtils.randomAlphanumeric(8);
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(username, email, encodedPassword, User.SignupType.GITHUB);
+        User user = new User(username, email, encodedPassword, User.SignupType.GITHUB, User.ChosenLanguage.en);
         log.info("Creating new user: " + user);
         userRepository.save(user);
         if (user.getEmail() != null) {
@@ -157,7 +159,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new UserAlreadyExistsException(USER_ALREADY_EXISTS_MESSAGE);
         }
         User user = new User(registerRequestDto.getUsername(),registerRequestDto.getEmail(),
-                passwordEncoder.encode(registerRequestDto.getPassword()), User.SignupType.GENERAL);
+                passwordEncoder.encode(registerRequestDto.getPassword()), User.SignupType.GENERAL,
+                registerRequestDto.getChosenLanguage());
         log.info("Creating new user: " + user);
         userRepository.save(user);
         emailSend(user, getMessage(user.getUsername()));

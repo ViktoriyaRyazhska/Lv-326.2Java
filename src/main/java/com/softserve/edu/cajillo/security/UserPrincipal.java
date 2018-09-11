@@ -24,6 +24,7 @@ public class UserPrincipal implements UserDetails {
     private String email;
     @JsonIgnore
     private String password;
+    private User.ChosenLanguage chosenLanguage;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserPrincipal create(User user) {
@@ -36,6 +37,7 @@ public class UserPrincipal implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getChosenLanguage(),
                 authorities);
     }
 
