@@ -18,12 +18,6 @@ public interface SprintService {
 
     List<SprintDto> getAllSprintsByBoardIdNotInArchive(Long boardId);
 
-    List<SprintDto> getAllSprintsByBoardAndStatusCreated(Long boardId);
-
-    List<SprintDto> getAllSprintsByBoardAndStatusActive(Long boardId);
-
-    List<SprintDto> getAllSprintsByBoardAndStatusCompleted(Long boardId);
-
     SprintDto updateSprint(Long boardId, SprintDto sprintDto);
 
     SprintDto archiveSprint(Long sprintId);

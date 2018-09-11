@@ -33,6 +33,7 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
         Ticket ticket = modelMapper.map(dto, Ticket.class);
         ticket.setBoard(boardRepository.findById(dto.getBoardId()).orElseThrow(() ->
                 new ResourceNotFoundException("Board", "id", dto.getBoardId())));
+        if (dto.getTableListId() != null)
         ticket.setTableList(tableListRepository.findById(dto.getTableListId()).orElseThrow(() ->
                 new ResourceNotFoundException("Table list", "id", dto.getTableListId())));
         ticket.setCreatedBy(userRepository.findById(dto.getCreatedById()).orElseThrow(() ->
@@ -47,6 +48,7 @@ public class TicketToCreateTicketDtoConverterImpl implements TicketToCreateTicke
     public CreateTicketDto convertToDto(Ticket entity) {
         CreateTicketDto createTicketDto = modelMapper.map(entity, CreateTicketDto.class);
         createTicketDto.setCreatedById(entity.getCreatedBy().getId());
+        if (entity.getTableList() != null)
         createTicketDto.setTableListId(entity.getTableList().getId());
         createTicketDto.setBoardId(entity.getBoard().getId());
         if (entity.getSprint() != null)

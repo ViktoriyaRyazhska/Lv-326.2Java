@@ -46,7 +46,7 @@ public class Ticket extends DateAudit {
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JoinColumn(name = "table_list_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "table_list_id", referencedColumnName = "id")
     private TableList tableList;
 
     @ManyToOne(fetch = FetchType.LAZY,
