@@ -62,4 +62,27 @@ public class BoardConverterImpl implements BoardConverter {
                 historyLogsService.getCountLogs() + 1));
         return dto;
     }
+
+   @Override
+    public BoardDto convertToDto(Board entity, Long sprintId) {
+        List<TableListDto> allTableLists = tableListService.getAllTableLists(entity.getId());
+        for (TableListDto listDto : allTableLists) {
+            listDto.setTicketsForBoardResponse(ticketService.getTicketsByListIdAndSprintId(listDto.getId(), sprintId));
+        }
+        BoardDto dto = modelMapper.map(entity, BoardDto.class);
+        if(entity.getBoardType() == BoardType.SCRUM) {
+            List<SprintDto> allSprintsByBoardId = sprintService.getAllSprintsByBoardIdNotInArchive(dto.getId());
+            for (SprintDto sprintDto: allSprintsByBoardId) {
+                sprintDto.setTicketsForBoardResponse(ticketService.getTicketsBySprintId(sprintDto.getId()));
+            }
+            dto.setSprints(allSprintsByBoardId);
+            SprintDto backlogDto = sprintService.getSprintBacklog(dto.getId());
+            backlogDto.setTicketsForBoardResponse(ticketService.getTicketsBySprintId(backlogDto.getId()));
+            dto.setBacklog(backlogDto);
+        }
+        dto.setTableLists(allTableLists);
+        dto.setLogs(historyLogsService.getTwentyLogsByBoardId(dto.getId(),
+                historyLogsService.getCountLogs() + 1));
+        return dto;
+    }
 }
