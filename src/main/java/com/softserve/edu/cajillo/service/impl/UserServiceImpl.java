@@ -1,6 +1,7 @@
 package com.softserve.edu.cajillo.service.impl;
 
 
+import com.softserve.edu.cajillo.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import com.softserve.edu.cajillo.exception.*;
 import com.softserve.edu.cajillo.entity.User;
@@ -14,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.softserve.edu.cajillo.entity.enums.UserAccountStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -127,5 +128,11 @@ public class UserServiceImpl implements UserService {
         if ((email != null) && userRepository.existsByEmail(email)) {
             throw new UserAlreadyExistsException(USER_EMAIL_TAKEN);
         }
+    }
+
+    @Override
+    @Transactional
+    public void changeChosenLanguage(String language, UserPrincipal userPrincipal) {
+        userRepository.changeChosenLanguage(language, userPrincipal.getId());
     }
 }

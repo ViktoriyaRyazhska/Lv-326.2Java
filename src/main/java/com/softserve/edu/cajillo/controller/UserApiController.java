@@ -4,6 +4,7 @@ import com.softserve.edu.cajillo.converter.UserConverter;
 import com.softserve.edu.cajillo.dto.AvatarDto;
 import com.softserve.edu.cajillo.dto.UpdateUserDto;
 import com.softserve.edu.cajillo.dto.UserDto;
+import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import com.softserve.edu.cajillo.service.UserService;
@@ -85,5 +86,10 @@ public class UserApiController {
     public void checkIfUserEmailOrUsernameAvailable(@RequestParam(required = false, name = "email") String email,
                                                     @RequestParam(required = false, name = "username") String username) {
         userService.isAvailableUsernameAndEmail(username, email);
+    }
+
+    @PatchMapping("/language")
+    public void changeChosenLanguage(@RequestBody String language, @CurrentUser UserPrincipal userPrincipal) {
+        userService.changeChosenLanguage(language, userPrincipal);
     }
 }
