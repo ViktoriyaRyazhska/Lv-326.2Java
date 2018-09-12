@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.dto;
 
+import com.softserve.edu.cajillo.entity.User;
 import lombok.Data;
 
 @Data
@@ -9,7 +10,10 @@ public class JwtAuthenticationResponseDto {
 
     private String tokenType = "Bearer";
 
-    public JwtAuthenticationResponseDto(String accessToken) {
+    private User.ChosenLanguage chosenLanguage;
+
+    public JwtAuthenticationResponseDto(String accessToken, User.ChosenLanguage chosenLanguage) {
         this.accessToken = accessToken;
+        this.chosenLanguage = chosenLanguage;
     }
 }

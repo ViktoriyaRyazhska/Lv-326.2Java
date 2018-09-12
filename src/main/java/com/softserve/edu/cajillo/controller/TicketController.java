@@ -23,9 +23,9 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteTicket(@PathVariable("id") Long id) {
-        ticketService.deleteTicket(id);
+        @ResponseStatus(HttpStatus.OK)
+        public void deleteTicket(@PathVariable("id") Long id) {
+            ticketService.deleteTicket(id);
     }
 
     @PutMapping

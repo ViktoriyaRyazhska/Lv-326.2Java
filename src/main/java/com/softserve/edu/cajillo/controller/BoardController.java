@@ -1,6 +1,7 @@
 package com.softserve.edu.cajillo.controller;
 
 import com.softserve.edu.cajillo.dto.BoardDto;
+import com.softserve.edu.cajillo.dto.SimpleBoardDto;
 import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.security.CurrentUser;
@@ -34,7 +35,7 @@ public class BoardController {
     }
 
     @GetMapping
-    public List<BoardDto> getAllUserBoards(@CurrentUser UserPrincipal currentUser){
+    public List<SimpleBoardDto> getAllUserBoards(@CurrentUser UserPrincipal currentUser){
         return boardService.getAllUserBoards(currentUser);
     }
 

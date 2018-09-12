@@ -2,14 +2,12 @@ package com.softserve.edu.cajillo.service.impl;
 
 import com.cloudinary.Api;
 import com.softserve.edu.cajillo.converter.RelationConverter;
+import com.softserve.edu.cajillo.converter.SimpleBoardConverter;
 import com.softserve.edu.cajillo.converter.TeamConverter;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.softserve.edu.cajillo.converter.impl.BoardConverterImpl;
-import com.softserve.edu.cajillo.dto.BoardDto;
-import com.softserve.edu.cajillo.dto.RelationDto;
-import com.softserve.edu.cajillo.dto.UserDto;
-import com.softserve.edu.cajillo.dto.TableListDto;
+import com.softserve.edu.cajillo.dto.*;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.entity.Relation;
 import com.softserve.edu.cajillo.entity.User;
@@ -49,6 +47,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private BoardConverterImpl boardConverter;
+
+    @Autowired
+    private SimpleBoardConverter simpleBoardConverter;
 
     @Autowired
     private BoardRepository boardRepository;
@@ -120,14 +121,14 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardDto> getAllUserBoards(UserPrincipal currentUser) {
+    public List<SimpleBoardDto> getAllUserBoards(UserPrincipal currentUser) {
         List<Relation> allByUserId = relationRepository.findAllByUserId(currentUser.getId());
         List<Board> allUserBoards = new ArrayList<>();
         for (Relation relation : allByUserId) {
             if (relation.getBoard() != null)
             allUserBoards.add(relation.getBoard());
         }
-        return boardConverter.convertToDto(allUserBoards);
+        return simpleBoardConverter.convertToDto(allUserBoards);
     }
 
     public Board getBoardEntity(Long id) {
@@ -284,8 +285,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private String uploadImageOnCloud(byte[] imageFile, BoardDto boardDto) {
-        log.info(String.format("Saving new background image to board %d on cloud", boardDto.getId()));
         try {
+            log.info(String.format("Saving new background image to board %d on cloud", boardDto.getId()));
             Cloudinary cloudinary = new Cloudinary(cloudUrl);
             Map params = ObjectUtils.asMap("public_id", "board_images/"
                     + boardDto.getId() + "/" + boardDto.getImageName());
@@ -293,8 +294,8 @@ public class BoardServiceImpl implements BoardService {
             return uploadResult.get("url").toString();
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     private void sortTableListsBySequenceNumber(BoardDto boardDto) {
@@ -357,7 +358,6 @@ public class BoardServiceImpl implements BoardService {
                         api.resources(ObjectUtils.asMap("max_results", 500, "next_cursor", jsonNext)));
                 if (outerObject.has("next_cursor")) {
                     jsonNext = outerObject.get("next_cursor").toString();
-                    ifWeHaveMoreResources = true;
                 } else {
                     ifWeHaveMoreResources = false;
                 }
