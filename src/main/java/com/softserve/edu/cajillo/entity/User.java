@@ -63,10 +63,22 @@ public class User extends DateAudit {
         GITHUB
     }
 
-    public User(String username, String email, String password, SignupType signupType) {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "chosen_language")
+    private ChosenLanguage chosenLanguage;
+
+    public enum ChosenLanguage {
+        en,
+        uk,
+        ge,
+        fr
+    }
+
+    public User(String username, String email, String password, SignupType signupType, ChosenLanguage chosenLanguage) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.signupType = signupType;
+        this.chosenLanguage = chosenLanguage;
     }
 }

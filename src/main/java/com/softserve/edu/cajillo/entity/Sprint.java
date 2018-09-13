@@ -21,6 +21,9 @@ public class Sprint extends DateAudit{
     @Column(name = "end_date")
     private Instant endDate;
 
+    @Column(name = "date_of_end")
+    private Instant dateOfEndDate;
+
     @Column(name = "goal")
     private String goal;
 

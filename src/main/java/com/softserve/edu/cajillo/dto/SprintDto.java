@@ -22,6 +22,8 @@ public class  SprintDto extends BaseDto{
 
     private Instant endDate;
 
+    private Instant dateOfEnd;
+
     private String goal;
 
     private Long boardId;

@@ -1,6 +1,7 @@
 package com.softserve.edu.cajillo.service;
 
 import com.softserve.edu.cajillo.dto.BoardDto;
+import com.softserve.edu.cajillo.dto.SimpleBoardDto;
 import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.security.UserPrincipal;
@@ -17,7 +18,7 @@ public interface BoardService {
 
     BoardDto getBoard(Long id, Long sprintId);
 
-    List<BoardDto> getAllUserBoards(UserPrincipal currentUser);
+    List<SimpleBoardDto> getAllUserBoards(UserPrincipal currentUser);
 
     void deleteBoard(Long id);
 

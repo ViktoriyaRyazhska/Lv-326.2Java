@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.dto;
 
+import com.softserve.edu.cajillo.entity.User;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -16,4 +17,6 @@ public class RegisterRequestDto extends BaseDto {
 
     @Size(min = 8)
     private String password;
+
+    private User.ChosenLanguage chosenLanguage;
 }

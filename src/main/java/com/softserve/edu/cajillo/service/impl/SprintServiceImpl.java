@@ -87,6 +87,7 @@ public class SprintServiceImpl implements SprintService {
         currentSprint.setBoard(updatedSprint.getBoard());
         currentSprint.setSprintStatus(updatedSprint.getSprintStatus());
         currentSprint.setSequenceNumber(updatedSprint.getSequenceNumber());
+        currentSprint.setDateOfEndDate(updatedSprint.getDateOfEndDate());
         return sprintConverter.convertToDto(sprintRepository.save(currentSprint));
     }
 
