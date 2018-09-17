@@ -18,6 +18,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     List<Ticket> findAllByTableListIdAndStatus(Long tableListId, ItemsStatus status);
 
+    List<Ticket> findAllByTableListIdAndStatusAndSprintId(Long tableListId, ItemsStatus status, Long sprintId);
+
     List<Ticket> findAllBySprintId(Long sprintId);
 
     @Modifying

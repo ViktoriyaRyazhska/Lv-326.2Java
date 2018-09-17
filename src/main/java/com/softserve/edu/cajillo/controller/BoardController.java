@@ -29,6 +29,11 @@ public class BoardController {
         return boardService.updateBoard(id, board);
     }
 
+    @GetMapping("/{boardId}/sprint/{sprintId}")
+    public BoardDto getBoardForSprint(@PathVariable Long boardId, @PathVariable Long sprintId) {
+        return boardService.getBoard(boardId, sprintId);
+    }
+
     @GetMapping("/{id}")
     public BoardDto getBoard(@PathVariable Long id) {
         return boardService.getBoard(id);

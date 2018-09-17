@@ -103,9 +103,15 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public List<TicketForBoardResponseDto> getTicketsByListIdAndSprintId(Long tableListId, Long sprintId) {
+        return sortTicketsBySequenceNumber(ticketToBoardResponseDtoConverter
+                .convertToDto(ticketRepository.findAllByTableListIdAndStatusAndSprintId(tableListId, ItemsStatus.OPENED, sprintId)));
+    }
+
+    @Override
     public List<TicketForBoardResponseDto> getTicketsBySprintId(Long sprintId) {
-        return ticketToBoardResponseDtoConverter
-                .convertToDto(ticketRepository.findAllBySprintId(sprintId));
+        return sortTicketsBySequenceNumber(ticketToBoardResponseDtoConverter
+                .convertToDto(ticketRepository.findAllBySprintId(sprintId)));
     }
 
     @Override
@@ -153,7 +159,10 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public void updateTicketSequenceNumber(OrderTicketDto orderTicketDto) {
         Ticket ticket = getTicketByTicketId(orderTicketDto.getTicketId());
+        if(orderTicketDto.getTableListId() != null)
         ticket.setTableList(getTableListByTableListId(orderTicketDto.getTableListId()));
+        if(orderTicketDto.getSprintId() != null)
+        ticket.setSprint(getSprintBySprintId(orderTicketDto.getSprintId()));
         if (ticket.getSequenceNumber() < orderTicketDto.getSequenceNumber()) {
             ticketRepository.decrementTicket(ticket.getSequenceNumber() + 1, orderTicketDto.getSequenceNumber());
             ticket.setSequenceNumber(orderTicketDto.getSequenceNumber());

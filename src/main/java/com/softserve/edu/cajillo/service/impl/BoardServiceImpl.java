@@ -120,6 +120,18 @@ public class BoardServiceImpl implements BoardService {
         return boardDto;
     }
 
+    public BoardDto getBoard(Long id, Long sprintId) {
+        log.info(String.format("Getting board with id %d", id));
+        Board board = boardRepository.findByIdAndStatus(id, ItemsStatus.OPENED)
+                .orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
+        BoardDto boardDto = boardConverter.convertToDto(board, sprintId);
+        if (!boardDto.getTableLists().isEmpty()) {
+            sortTableListsBySequenceNumber(boardDto);
+        }
+        sprintService.sortSprintsBySequenceNumber(boardDto.getSprints());
+        return boardDto;
+    }
+
     @Override
     public List<SimpleBoardDto> getAllUserBoards(UserPrincipal currentUser) {
         List<Relation> allByUserId = relationRepository.findAllByUserId(currentUser.getId());

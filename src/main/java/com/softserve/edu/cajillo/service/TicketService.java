@@ -20,6 +20,8 @@ public interface TicketService {
 
     List<TicketForBoardResponseDto> getTicketsByListId(Long tableListId);
 
+    List<TicketForBoardResponseDto> getTicketsByListIdAndSprintId(Long tableListId, Long sprintId);
+
     List<TicketForBoardResponseDto> getTicketsBySprintId(Long sprintId);
 
     void deleteTicketsByTableListId(Long listId);

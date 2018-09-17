@@ -26,6 +26,7 @@ public class SprintConverterImpl implements SprintConverter {
     public Sprint convertToEntity(SprintDto sprintDto) {
         Sprint sprint = modelMapper.map(sprintDto, Sprint.class);
         sprint.setBoard(boardService.getBoardEntity(sprintDto.getBoardId()));
+        sprint.setDateOfEndDate(sprintDto.getStartDate());
         return sprint;
     }
 
@@ -33,6 +34,7 @@ public class SprintConverterImpl implements SprintConverter {
     public SprintDto convertToDto(Sprint sprint) {
         SprintDto sprintDto = modelMapper.map(sprint, SprintDto.class);
         sprintDto.setBoardId(sprint.getBoard().getId());
+        sprintDto.setDateOfEnd(sprint.getDateOfEndDate());
         return sprintDto;
 
     }
