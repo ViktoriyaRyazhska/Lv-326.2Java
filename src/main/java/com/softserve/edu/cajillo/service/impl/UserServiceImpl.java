@@ -1,6 +1,7 @@
 package com.softserve.edu.cajillo.service.impl;
 
 
+import com.softserve.edu.cajillo.dto.UserFirstLastNameDto;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import com.softserve.edu.cajillo.exception.*;
@@ -135,4 +136,11 @@ public class UserServiceImpl implements UserService {
     public void changeChosenLanguage(String language, UserPrincipal userPrincipal) {
         userRepository.changeChosenLanguage(language, userPrincipal.getId());
     }
+
+    @Override
+    @Transactional
+    public void changeFirstLastName(UserFirstLastNameDto dto, Long id) {
+        userRepository.changeFirstLastName(dto.getFirstName(), dto.getLastName(), id);
+    }
+
 }

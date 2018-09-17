@@ -6,6 +6,7 @@ import com.softserve.edu.cajillo.dto.UserDto;
 import com.softserve.edu.cajillo.entity.Board;
 import com.softserve.edu.cajillo.security.UserPrincipal;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface BoardService {
@@ -34,13 +35,13 @@ public interface BoardService {
 
     Board getBoardEntity(Long id);
 
-    void saveBoardBackground(BoardDto boardDto);
+    void saveBoardBackground(BoardDto boardDto) throws IOException;
 
     void addUserToBoard(Long boardId, UserDto userDto, UserPrincipal userPrincipal);
 
     void deleteUserFromBoard(Long boardId, Long userId);
 
-    List<String> getAllBackgroundImagesByBoardId(Long boarId);
+    List<String> getAllBackgroundImagesByBoardId(Long boarId) throws Exception;
 
     void setExistingImageOnBackground(Long boardId, String imageUrl);
 

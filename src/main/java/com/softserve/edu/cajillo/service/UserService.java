@@ -1,5 +1,6 @@
 package com.softserve.edu.cajillo.service;
 
+import com.softserve.edu.cajillo.dto.UserFirstLastNameDto;
 import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.dto.AvatarDto;
 import com.softserve.edu.cajillo.dto.UpdateUserDto;
@@ -27,4 +28,6 @@ public interface UserService {
     void deleteUser(Long id);
 
     void changeChosenLanguage(String language, UserPrincipal userPrincipal);
+
+    void changeFirstLastName(UserFirstLastNameDto dto, Long id);
 }

@@ -4,6 +4,7 @@ import com.softserve.edu.cajillo.converter.UserConverter;
 import com.softserve.edu.cajillo.dto.AvatarDto;
 import com.softserve.edu.cajillo.dto.UpdateUserDto;
 import com.softserve.edu.cajillo.dto.UserDto;
+import com.softserve.edu.cajillo.dto.UserFirstLastNameDto;
 import com.softserve.edu.cajillo.entity.User;
 import com.softserve.edu.cajillo.security.CurrentUser;
 import com.softserve.edu.cajillo.security.UserPrincipal;
@@ -91,5 +92,10 @@ public class UserApiController {
     @PatchMapping("/language")
     public void changeChosenLanguage(@RequestBody String language, @CurrentUser UserPrincipal userPrincipal) {
         userService.changeChosenLanguage(language, userPrincipal);
+    }
+
+    @PatchMapping("/name")
+    public void changeFirstName(@RequestBody UserFirstLastNameDto dto, @CurrentUser UserPrincipal userPrincipal) {
+        userService.changeFirstLastName(dto, userPrincipal.getId());
     }
 }

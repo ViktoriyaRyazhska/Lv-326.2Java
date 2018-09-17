@@ -282,7 +282,7 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    public void saveBoardBackground(BoardDto boardDto) {
+    public void saveBoardBackground(BoardDto boardDto) throws IOException {
         byte[] decodedImg = Base64.getDecoder().decode(boardDto.getImage().getBytes(StandardCharsets.UTF_8));
         String cloudImageUrl = uploadImageOnCloud(decodedImg, boardDto);
         setCurrentImageUrlToBoard(cloudImageUrl, boardDto.getId());
@@ -296,18 +296,13 @@ public class BoardServiceImpl implements BoardService {
         boardRepository.save(board);
     }
 
-    private String uploadImageOnCloud(byte[] imageFile, BoardDto boardDto) {
-        try {
-            log.info(String.format("Saving new background image to board %d on cloud", boardDto.getId()));
-            Cloudinary cloudinary = new Cloudinary(cloudUrl);
-            Map params = ObjectUtils.asMap("public_id", "board_images/"
-                    + boardDto.getId() + "/" + boardDto.getImageName());
-            Map uploadResult = cloudinary.uploader().upload(imageFile, params);
-            return uploadResult.get("url").toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    private String uploadImageOnCloud(byte[] imageFile, BoardDto boardDto) throws IOException {
+        log.info(String.format("Saving new background image to board %d on cloud", boardDto.getId()));
+        Cloudinary cloudinary = new Cloudinary(cloudUrl);
+        Map params = ObjectUtils.asMap("public_id", "board_images/"
+                + boardDto.getId() + "/" + boardDto.getImageName());
+        Map uploadResult = cloudinary.uploader().upload(imageFile, params);
+        return uploadResult.get("url").toString();
     }
 
     private void sortTableListsBySequenceNumber(BoardDto boardDto) {
@@ -358,32 +353,28 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<String> getAllBackgroundImagesByBoardId(Long boarId) {
+    public List<String> getAllBackgroundImagesByBoardId(Long boarId) throws Exception {
         Cloudinary cloudinary = new Cloudinary(cloudUrl);
         Api api = cloudinary.api();
         String jsonNext = null;
         boolean ifWeHaveMoreResources = true;
         ArrayList<String> listRes = new ArrayList<>();
-        try {
-            while (ifWeHaveMoreResources) {
-                JSONObject outerObject = new JSONObject(
-                        api.resources(ObjectUtils.asMap("max_results", 500, "next_cursor", jsonNext)));
-                if (outerObject.has("next_cursor")) {
-                    jsonNext = outerObject.get("next_cursor").toString();
-                } else {
-                    ifWeHaveMoreResources = false;
-                }
-                JSONArray jsonArray = outerObject.getJSONArray("resources");
-                for (int i = 0, size = jsonArray.length(); i < size; i++) {
-                    JSONObject objectInArray = jsonArray.getJSONObject(i);
-                    String url = objectInArray.get("url").toString();
-                    if (url.contains("/board_images/" + boarId)) {
-                        listRes.add(url);
-                    }
+        while (ifWeHaveMoreResources) {
+            JSONObject outerObject = new JSONObject(
+                    api.resources(ObjectUtils.asMap("max_results", 500, "next_cursor", jsonNext)));
+            if (outerObject.has("next_cursor")) {
+                jsonNext = outerObject.get("next_cursor").toString();
+            } else {
+                ifWeHaveMoreResources = false;
+            }
+            JSONArray jsonArray = outerObject.getJSONArray("resources");
+            for (int i = 0, size = jsonArray.length(); i < size; i++) {
+                JSONObject objectInArray = jsonArray.getJSONObject(i);
+                String url = objectInArray.get("url").toString();
+                if (url.contains("/board_images/" + boarId)) {
+                    listRes.add(url);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return listRes;
     }
