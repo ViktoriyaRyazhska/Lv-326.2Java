@@ -70,7 +70,7 @@ public class User extends DateAudit {
     public enum ChosenLanguage {
         en,
         uk,
-        ge,
+        de,
         fr
     }
 

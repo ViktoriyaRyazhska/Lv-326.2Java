@@ -28,4 +28,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "update users set chosen_language = :lang where id = :id", nativeQuery = true)
     void changeChosenLanguage(@Param("lang") String language, @Param("id") Long id);
+
+    @Modifying
+    @Query(value = "update users set first_name = :firstName, last_name = :lastName where id = :id", nativeQuery = true)
+    void changeFirstLastName(@Param("firstName") String firstName,
+                             @Param("lastName") String lastName,
+                             @Param("id") Long id);
 }
